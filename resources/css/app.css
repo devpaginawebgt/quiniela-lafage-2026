@@ -7,6 +7,57 @@
 @source "../../public/js/*.js";
 @source "../../node_modules/flowbite/dist/flowbite.js";
 
+/* ── Fuentes FuturaLTPro ── */
+@font-face {
+    font-family: "FuturaLTPro";
+    src: url("../fonts/FuturaLTProBook.otf") format("opentype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "FuturaLTPro";
+    src: url("../fonts/FuturaLTProLight.otf") format("opentype");
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "FuturaLTPro";
+    src: url("../fonts/FuturaLTProMedium.otf") format("opentype");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "FuturaLTPro";
+    src: url("../fonts/FuturaLTProBold.otf") format("opentype");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "FuturaLTPro";
+    src: url("../fonts/FuturaLTProXBold.otf") format("opentype");
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "FuturaLTPro";
+    src: url("../fonts/FuturaLTProBookOblique.otf") format("opentype");
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: "FuturaLTPro";
+    src: url("../fonts/FuturaLTProBoldOblique.otf") format("opentype");
+    font-weight: 700;
+    font-style: italic;
+    font-display: swap;
+}
+
 /* Backdrop de Flowbite drawer — oscurecer más sobre fondo dark */
 [drawer-backdrop] {
     background-color: rgba(0, 0, 0, 0.6) !important;
@@ -19,21 +70,22 @@
     background: var(--color-complementary-dark);
     opacity: 1;
 }
-[class*="brands-swiper-"][class*="-pagination"] .swiper-pagination-bullet-active,
+[class*="brands-swiper-"][class*="-pagination"]
+    .swiper-pagination-bullet-active,
 .carousel-home-banners .swiper-pagination-bullet-active,
 .carousel-section-banners .swiper-pagination-bullet-active {
     background: var(--color-primary);
 }
 
 @theme {
-    --font-sans: 'Arial', ui-sans-serif, system-ui, sans-serif;
-    --color-primary: #206EB6;
-    --color-secondary: #F44236;
-    --color-dark: #1B1C1B;
-    --color-light: #FAFAFA;
+    --font-sans: "FuturaLTPro", ui-sans-serif, system-ui, sans-serif;
+    --color-primary: #206eb6;
+    --color-secondary: #f44236;
+    --color-dark: #1b1c1b;
+    --color-light: #fafafa;
     --color-secondary-light: #e7e8ec;
-    --color-complementary-primary: #C0D0E0;
-    --color-complementary-secondary: #D13B2D;
+    --color-complementary-primary: #c0d0e0;
+    --color-complementary-secondary: #d13b2d;
     --color-complementary-dark: #9c9c9c;
-    --color-complementary-light: #CFCFCF;
+    --color-complementary-light: #cfcfcf;
 }
