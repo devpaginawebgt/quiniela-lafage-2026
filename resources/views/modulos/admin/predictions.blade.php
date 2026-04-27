@@ -40,15 +40,10 @@
                         <th class="px-4 py-3 border border-gray-200">Usuario</th>
                         <th class="px-4 py-3 border border-gray-200">Correo Electrónico</th>
                         <th class="px-4 py-3 border border-gray-200">No. Documento</th>
-                        <th class="px-4 py-3 border border-gray-200">Teléfono</th>
-                        <th class="px-4 py-3 border border-gray-200">Dirección</th>
                         <th class="px-4 py-3 border border-gray-200">Colegiado</th>
                         <th class="px-4 py-3 border border-gray-200">País</th>
                         <th class="px-4 py-3 border border-gray-200">Tipo</th>
                         <th class="px-4 py-3 border border-gray-200">Cadena</th>
-                        <th class="px-4 py-3 border border-gray-200">Visitador</th>
-                        <th class="px-4 py-3 border border-gray-200">Región</th>
-                        <th class="px-4 py-3 border border-gray-200">Capital</th>
                         <th class="px-4 py-3 border border-gray-200">Farmacia</th>
                         <th class="px-4 py-3 border border-gray-200">Partido</th>
                         <th class="px-4 py-3 border border-gray-200">Jornada</th>
