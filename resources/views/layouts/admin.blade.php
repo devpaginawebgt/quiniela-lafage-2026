@@ -30,7 +30,7 @@
 <body class="font-sans antialiased text-light bg-complementary-primary">
 
     {{-- Topbar móvil (botón para abrir sidebar) --}}
-    <header class="lg:hidden fixed top-0 left-0 right-0 z-50 bg-complementary-primary border-b border-zinc-400">
+    <header class="lg:hidden fixed top-0 left-0 right-0 z-50 bg-primary border-b border-zinc-400">
         <div class="flex items-center justify-between px-4 h-14">
             {{-- Branding --}}
             <div class="flex items-center gap-2">
@@ -58,7 +58,7 @@
         class="fixed top-14 left-0 z-40 w-full max-h-[calc(100vh-3.5rem)] overflow-y-auto
                   lg:top-0 lg:max-h-none lg:min-h-screen lg:w-64
                   transition-transform -translate-y-full lg:translate-y-0
-                  bg-complementary-primary border-r border-zinc-400"
+                  bg-primary border-r border-zinc-400"
         aria-label="Sidebar admin">
 
         <div class="flex flex-col h-full">

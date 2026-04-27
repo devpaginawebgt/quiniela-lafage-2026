@@ -2,6 +2,7 @@ import './bootstrap';
 import 'flowbite';
 import { initToastErrors } from './components/toast-errors';
 import { initPasswordToggle } from './components/password-toggle';
+import.meta.glob(['../fonts/**']);
 
 document.addEventListener('DOMContentLoaded', () => {
     initToastErrors();

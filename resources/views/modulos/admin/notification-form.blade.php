@@ -3,7 +3,7 @@
 
         {{-- Módulo: Notificaciones Push --}}
         @can('admin.enviar-notificaciones-push')
-            <section class="rounded-2xl bg-complementary-primary backdrop-blur shadow-lg py-4 sm:py-6 px-4 sm:px-6 mb-6">
+            <section class="rounded-2xl bg-primary backdrop-blur shadow-lg py-4 sm:py-6 px-4 sm:px-6 mb-6">
 
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-3">
@@ -131,7 +131,7 @@
                         <p class="text-xs uppercase tracking-wider text-complementary-light mb-2">Vista previa</p>
                         <div class="rounded-xl border border-zinc-100 bg-zinc-600 backdrop-blur-xl p-4">
                             <div class="flex items-start gap-3">
-                                <img src="{{ asset('images/logos/logo-sm.png') }}"
+                                <img src="{{ asset('images/logos/logo-sm-dark.png') }}"
                                     alt="{{ config('app.name', 'Quiniela') }}"
                                     class="shrink-0 w-10 h-10 rounded-lg object-contain bg-complementary-primary p-1" />
                                 <div class="min-w-0 flex-1">

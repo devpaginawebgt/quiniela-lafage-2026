@@ -25,7 +25,6 @@ class PronosticosExport implements FromQuery, WithHeadings, WithMapping, WithChu
             'user.country',
             'user.type',
             'user.company',
-            'user.visitor',
             'partido.jornada',
             'partido.equipos.equipoUno',
             'partido.equipos.equipoDos',
@@ -42,7 +41,6 @@ class PronosticosExport implements FromQuery, WithHeadings, WithMapping, WithChu
                         ->orWhereHas('user.country', fn($q) => $q->where('name', 'like', "%{$this->search}%"))
                         ->orWhereHas('user.type', fn($q) => $q->where('name', 'like', "%{$this->search}%"))
                         ->orWhereHas('user.company', fn($q) => $q->where('name', 'like', "%{$this->search}%"))
-                        ->orWhereHas('user.visitor', fn($q) => $q->whereRaw("CONCAT(name, ' ', lastname) LIKE ?", ["%{$this->search}%"]))
                         ->orWhereHas('partido.jornada', fn($j) => $j->where('name', 'like', "%{$this->search}%"));
                 });
             })
@@ -61,15 +59,10 @@ class PronosticosExport implements FromQuery, WithHeadings, WithMapping, WithChu
             'Usuario',
             'Correo Electrónico',
             'No. Documento',
-            'Teléfono',
-            'Dirección',
             'Colegiado',
             'País',
             'Tipo',
             'Cadena',
-            'Visitador',
-            'Región',
-            'Capital',
             'Farmacia',
             'Partido',
             'Jornada',
@@ -101,15 +94,10 @@ class PronosticosExport implements FromQuery, WithHeadings, WithMapping, WithChu
             $p->user->nombres . ' ' . $p->user->apellidos,
             $p->user->email,
             $p->user->numero_documento ?? 'N/A',
-            $p->user->telefono ?? 'N/A',
-            $p->user->direccion ?? 'N/A',
             $p->user->colegiado ?? 'N/A',
             $p->user->country?->name ?? 'N/A',
             $p->user->type?->name ?? 'N/A',
             $p->user->company?->name ?? 'N/A',
-            $p->user->visitor ? $p->user->visitor->name . ' ' . $p->user->visitor->lastname : 'N/A',
-            $p->user->region ?? 'N/A',
-            $p->user->capital ?? 'N/A',
             $p->user->branch ?? 'N/A',
             $partido,
             $p->partido?->jornada ? 'Jornada ' . $p->partido->jornada->name : 'N/A',

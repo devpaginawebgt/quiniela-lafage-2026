@@ -38,7 +38,7 @@ class User extends Authenticatable
         'colegiado',
         'company_id',
         'branch',
-        
+
         'status_user',
         'accepted_terms_version',
         'password',
@@ -109,5 +109,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Line::class);
     }
-    
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class, 'company_id');
+    }
 }

@@ -29,14 +29,10 @@ class ReportsController extends Controller
         return DataTables::eloquent($query)
             ->addColumn('nombre_completo', fn($u) => $u->nombres . ' ' . $u->apellidos)
             ->addColumn('numero_documento', fn($u) => $u->numero_documento ?? 'N/A')
-            ->addColumn('direccion', fn($u) => $u->direccion ?? 'N/A')
             ->addColumn('colegiado', fn($u) => $u->colegiado ?? 'N/A')
             ->addColumn('pais', fn($u) => $u->country?->name ?? 'N/A')
             ->addColumn('tipo', fn($u) => $u->type?->name ?? 'N/A')
             ->addColumn('cadena', fn($u) => $u->company?->name ?? 'N/A')
-            ->addColumn('visitador', fn($u) => $u->visitor ? $u->visitor->name . ' ' . $u->visitor->lastname : 'N/A')
-            ->addColumn('region', fn($u) => $u->region ?? 'N/A')
-            ->addColumn('capital', fn($u) => $u->capital ?? 'N/A')
             ->addColumn('farmacia', fn($u) => $u->branch ?? 'N/A')
             ->addColumn('fecha_registro', fn($u) => $u->created_at->timezone('America/Guatemala')->format('d/m/Y h:i A'))
             ->addColumn('estado_badge', function ($u) {
@@ -95,9 +91,6 @@ class ReportsController extends Controller
             ->filterColumn('cadena', function ($query, $keyword) {
                 $query->whereHas('company', fn($q) => $q->where('name', 'like', "%{$keyword}%"));
             })
-            ->filterColumn('visitador', function ($query, $keyword) {
-                $query->whereHas('visitor', fn($q) => $q->whereRaw("CONCAT(name, ' ', lastname) LIKE ?", ["%{$keyword}%"]));
-            })
             ->rawColumns(['estado_badge', 'notificaciones_badge'])
             ->make(true);
     }
@@ -124,17 +117,10 @@ class ReportsController extends Controller
             ->addColumn('usuario', fn($p) => $p->user->nombres . ' ' . $p->user->apellidos)
             ->addColumn('email', fn($p) => $p->user->email)
             ->addColumn('numero_documento', fn($p) => $p->user->numero_documento ?? 'N/A')
-            ->addColumn('telefono', fn($p) => $p->user->telefono ?? 'N/A')
-            ->addColumn('direccion', fn($p) => $p->user->direccion ?? 'N/A')
             ->addColumn('colegiado', fn($p) => $p->user->colegiado ?? 'N/A')
             ->addColumn('pais', fn($p) => $p->user->country?->name ?? 'N/A')
             ->addColumn('tipo', fn($p) => $p->user->type?->name ?? 'N/A')
             ->addColumn('cadena', fn($p) => $p->user->company?->name ?? 'N/A')
-            ->addColumn('visitador', fn($p) => $p->user->visitor
-                ? $p->user->visitor->name . ' ' . $p->user->visitor->lastname
-                : 'N/A')
-            ->addColumn('region', fn($p) => $p->user->region ?? 'N/A')
-            ->addColumn('capital', fn($p) => $p->user->capital ?? 'N/A')
             ->addColumn('farmacia', fn($p) => $p->user->branch ?? 'N/A')
             ->addColumn('partido', function ($p) {
                 $equipos = $p->partido?->equipos;
@@ -200,9 +186,6 @@ class ReportsController extends Controller
             })
             ->filterColumn('cadena', function ($query, $keyword) {
                 $query->whereHas('user.company', fn($q) => $q->where('name', 'like', "%{$keyword}%"));
-            })
-            ->filterColumn('visitador', function ($query, $keyword) {
-                $query->whereHas('user.visitor', fn($q) => $q->whereRaw("CONCAT(name, ' ', lastname) LIKE ?", ["%{$keyword}%"]));
             })
             ->filterColumn('jornada', function ($query, $keyword) {
                 $query->whereHas('partido.jornada', fn($q) => $q->where('name', 'like', "%{$keyword}%"));
