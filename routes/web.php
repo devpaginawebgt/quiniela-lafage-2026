@@ -34,20 +34,9 @@ Route::middleware(['auth'])->as('web.')->group(function () {
         Route::post('predicciones', 'savePrediccionesWeb')->name('save-predicciones');
     });
 
-    Route::controller(JornadaController::class)->group(function () {
-        Route::get('calendario', 'calendarioWeb')->name('calendario');
-    });
-
-    Route::controller(EstadioController::class)->group(function () {
-        Route::get('estadios', 'estadiosWeb')->name('estadios');
-    });
-
-    Route::controller(GrupoController::class)->group(function () {
-        Route::get('grupos', 'gruposWeb')->name('grupos');
-    });
-
-    Route::controller(EquipoController::class)->group(function () {
-        Route::get('equipos', 'equiposWeb')->name('equipos');
+    Route::controller(JornadaController::class)->prefix('partidos')->group(function () {
+        Route::get('/{jornada}', 'partidosJornada');
+        Route::get('/', 'partidosWeb')->name('partidos');
     });    
 
     // Grupos
@@ -55,13 +44,6 @@ Route::middleware(['auth'])->as('web.')->group(function () {
     Route::controller(GrupoController::class)->prefix('grupos')->as('grupos.')->group(function () {
         Route::get('/{grupo_id}/equipos', 'getEquiposWeb')->name('equipos');
         Route::get('/{grupo_id}/jornadas', 'getJornadasWeb')->name('jornadas');
-    });
-
-    // Jornadas
-
-    Route::controller(JornadaController::class)->prefix('jornadas')->group(function () {
-        Route::post('/partidos-grupo', 'partidosGrupo');
-        Route::get('/partidos-jornada/{jornada}', 'partidosJornada');
     });
 
     // Partidos y resultados
@@ -109,6 +91,18 @@ Route::middleware(['auth'])->as('web.')->group(function () {
     Route::get('/', function () {
         return redirect()->route('web.proximos-partidos');
     });
+
+    // Route::controller(EstadioController::class)->group(function () {
+    //     Route::get('estadios', 'estadiosWeb')->name('estadios');
+    // });
+
+    // Route::controller(GrupoController::class)->group(function () {
+    //     Route::get('grupos', 'gruposWeb')->name('grupos');
+    // });
+
+    // Route::controller(EquipoController::class)->group(function () {
+    //     Route::get('equipos', 'equiposWeb')->name('equipos');
+    // });
 });
 
 require __DIR__ . '/auth.php';

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\Jornada\JornadaResource;
 use App\Http\Resources\Partido\PartidoResource;
+use App\Http\Services\GrupoService;
 use App\Http\Services\ModuleService;
 use App\Http\Services\PartidoService;
 use App\Http\Services\UserService;
@@ -18,6 +19,7 @@ class JornadaController extends Controller
     public function __construct(
         private readonly UserService $userService,
         private readonly PartidoService $partidoService,
+        private readonly GrupoService $grupoService,
         private readonly ModuleService $moduleService,
     ) {}
         
@@ -59,28 +61,17 @@ class JornadaController extends Controller
 
     }
 
-    public function calendarioWeb() {
-
-        // Banners
-
-        $banners = $this->moduleService->getBanners(9);
-
-        // User Info
-
-        $user = Auth::user();
-        
-        $user = $this->userService->getUserRank($user);
-
-        $user = $this->userService->getUserPredictionsCount($user);
+    public function partidosWeb() {        
 
         // Jornadas
 
         $jornadas = $this->partidoService->getJornadas();
 
-        return view('modulos.calendario', [
+        $grupos = $this->grupoService->getGrupos();
+
+        return view('modulos.partidos', [
             'jornadas' => $jornadas,
-            'banners'  => $banners,
-            'user'     => $user,
+            'grupos'   => $grupos
         ]);
 
     }

@@ -17,8 +17,8 @@
             'show'  => true,
         ],
         [
-            'route' => 'web.calendario',
-            'match' => 'web.calendario',
+            'route' => 'web.partidos',
+            'match' => 'web.partidos',
             'icon'  => 'icon-[material-symbols--scoreboard-outline]',
             'label' => 'Partidos',
             'show'  => true,

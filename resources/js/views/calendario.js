@@ -2,7 +2,7 @@ import { renderMatchCard } from '../components/match-card.js';
 
 // --- HTTP ---
 const fetchPartidosJornada = async (jornada) =>
-    window.axios.get(`/jornadas/partidos-jornada/${jornada}`);
+    window.axios.get(`/partidos/${jornada}`);
 
 const filtrarMatchCards = (query) => {
     const cards = document.querySelectorAll('#partidos-jornada-general .match-card');

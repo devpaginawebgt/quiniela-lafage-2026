@@ -23,7 +23,7 @@ export const renderMatchCard = (partido) => {
     const equipos = `${partido.equipoUno.nombre} ${partido.equipoDos.nombre}`.toLowerCase();
 
     return `<li
-        class="match-card bg-light border border-complementary-dark rounded-3xl flex flex-col overflow-hidden shadow-md shadow-zinc-400 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ease-in-out"
+        class="match-card bg-light border border-complementary-dark rounded-3xl flex flex-col overflow-hidden min-w-sm max-w-md shadow-md shadow-zinc-400 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ease-in-out"
         data-equipos="${equipos}"
     >
         <div class="flex flex-col flex-1 pt-6 px-6 pb-6 gap-4">
