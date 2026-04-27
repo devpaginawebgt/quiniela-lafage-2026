@@ -37,10 +37,10 @@
         <button
             type="button"
             data-toggle-password="{{ $id }}"
-            class="absolute inset-y-0 inset-e-0 flex items-center pe-3.5 cursor-pointer text-complementary-dark hover:text-dark"
+            class="absolute inset-y-0 inset-e-0 flex items-center pe-3.5 cursor-pointer text-dark"
         >
-            <span class="icon-[fluent--eye-24-filled] w-5 h-5 hidden" data-icon-show></span>
-            <span class="icon-[fluent--eye-off-24-filled] w-5 h-5 block" data-icon-hide></span>
+            <span class="icon-[material-symbols--visibility] w-5 h-5 hidden" data-icon-show></span>
+            <span class="icon-[material-symbols--visibility-off] w-5 h-5 block" data-icon-hide></span>
         </button>
     </div>
 </div>
