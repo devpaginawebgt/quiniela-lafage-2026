@@ -94,19 +94,7 @@ class GrupoController extends Controller
 
     public function gruposWeb()
     {
-        $this->partidoService->actualizarPuntosEquipos();
-
-        // Banners
-
-        $banners = $this->moduleService->getBanners(11);
-
-        // User Info
-
-        $user = Auth::user();
-        
-        $user = $this->userService->getUserRank($user);
-
-        $user = $this->userService->getUserPredictionsCount($user);
+        $this->partidoService->actualizarPuntosEquipos();        
 
         // Obtenemos los grupos disponibles
 
@@ -129,8 +117,6 @@ class GrupoController extends Controller
         $jornada_tres = $jornadas->firstWhere('id', 3);
 
         return view('modulos.grupos', [
-            'banners' => $banners,
-            'user' => $user,
             'grupos' => $grupos,
             'equipos_grupo' => $equipos_grupo,
             'jornada_uno' => $jornada_uno,

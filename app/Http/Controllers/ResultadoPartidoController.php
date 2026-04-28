@@ -186,7 +186,7 @@ class ResultadoPartidoController extends Controller
 
         // Banners
 
-        $banners = $this->moduleService->getBanners(1);
+        $banners = $this->moduleService->getBanners(6);
 
         // Jornadas
 

@@ -12,7 +12,7 @@ class Banner extends Model
         'url',
         'url_web',
         'module_id',
-        'line_id',
+        'brand_id',
         'is_active',
     ];
 
@@ -24,5 +24,10 @@ class Banner extends Model
     public function module(): BelongsTo
     {
         return $this->belongsTo(Module::class, 'module_id');
+    }
+
+    public function brand(): BelongsTo
+    {
+        return $this->belongsTo(Brand::class, 'brand_id');
     }
 }

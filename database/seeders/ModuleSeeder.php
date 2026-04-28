@@ -15,18 +15,16 @@ class ModuleSeeder extends Seeder
     {
         $modules = [
             [ 'name' => 'App - Próximos Partidos', 'code' => 'app-proximos-partidos' ],
-            // [ 'name' => 'App - Mis Pronósticos',   'code' => 'app-mis-pronosticos' ],
-            // [ 'name' => 'App - Calendario',        'code' => 'app-calendario' ],
-            // [ 'name' => 'App - Estadios',          'code' => 'app-estadios' ],
-            // [ 'name' => 'App - Grupos',            'code' => 'app-grupos' ],
-            // [ 'name' => 'App - Equipos',           'code' => 'app-equipos' ],
+            [ 'name' => 'App - Mis Pronósticos',   'code' => 'app-mis-pronosticos' ],
+            [ 'name' => 'App - Calendario',        'code' => 'app-calendario' ],
+            [ 'name' => 'App - Grupos',            'code' => 'app-grupos' ],
+            [ 'name' => 'App - Jornadas',          'code' => 'app-jornadas' ],
 
-            // [ 'name' => 'Web - Próximos Partidos', 'code' => 'web-proximos-partidos' ],
-            // [ 'name' => 'Web - Mis Pronósticos',   'code' => 'web-mis-pronosticos' ],
-            // [ 'name' => 'Web - Calendario',        'code' => 'web-calendario' ],
-            // [ 'name' => 'Web - Estadios',          'code' => 'web-estadios' ],
-            // [ 'name' => 'Web - Grupos',            'code' => 'web-grupos' ],
-            // [ 'name' => 'Web - Equipos',           'code' => 'web-' ],
+            [ 'name' => 'Web - Próximos Partidos', 'code' => 'web-proximos-partidos' ],
+            [ 'name' => 'Web - Mis Pronósticos',   'code' => 'web-mis-pronosticos' ],
+            [ 'name' => 'Web - Calendario',        'code' => 'web-calendario' ],
+            [ 'name' => 'Web - Grupos',            'code' => 'web-grupos' ],
+            [ 'name' => 'Web - Jornadas',          'code' => 'web-jornadas' ],
         ]; 
 
         foreach($modules as $module) {

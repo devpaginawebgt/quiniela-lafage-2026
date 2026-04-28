@@ -11,24 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('banners', function (Blueprint $table) {
-            $table->id();
-            
-            $table->string('name');
-            $table->string('url');
-            $table->string('url_web')->nullable();
-
+        Schema::create('brand_country', function (Blueprint $table) {
+            $table->foreignId('country_id')
+                ->constrained('countries')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');
             $table->foreignId('brand_id')
                 ->constrained('brands')
                 ->onUpdate('cascade')
                 ->onDelete('restrict');
-
-            $table->foreignId('module_id')
-                ->constrained('modules')
-                ->onUpdate('cascade')
-                ->onDelete('restrict');
-
-            $table->boolean('is_active')->default(true);
+            $table->primary(['country_id', 'brand_id']);
             $table->timestamps();
         });
     }
@@ -38,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('banners');
+        Schema::dropIfExists('brand_country');
     }
 };
