@@ -21,6 +21,8 @@ class UserService {
         $ip = request()->ip();
         // $ip = '45.164.150.249'; // GT
         // $ip = '190.181.222.119'; // HN
+        // $ip = '190.62.80.251'; // SV
+        // $ip = '152.231.33.166'; // NI
 
         $country_code = 'GT';
 
