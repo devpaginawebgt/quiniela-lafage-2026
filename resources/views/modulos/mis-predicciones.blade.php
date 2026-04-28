@@ -2,7 +2,7 @@
     <h1 class="text-3xl 2xl:text-4xl text-light text-center font-bold mt-2 mb-8">Mis Pronósticos</h1>
 
     <div class="py-6 sm:px-4 lg:px-8 bg-secondary-light h-full flex-1">
-        <div class="overflow-hidden xl:max-w-5xl 2xl:max-w-440 mx-auto w-full">
+        <div class="overflow-hidden 2xl:max-w-440 mx-auto w-full">
 
             <div class="px-6 pb-6">
                 <div class="w-full max-w-lg mx-auto mb-4">

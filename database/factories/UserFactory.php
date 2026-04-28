@@ -19,10 +19,8 @@ class UserFactory extends Factory
             'nombres'                => $this->faker->firstName(),
             'apellidos'              => $this->faker->lastName() . ' ' . $this->faker->lastName(),
             'numero_documento'       => $this->faker->unique()->numerify('#############'),
-            // 'telefono'               => $this->faker->numerify('########'),
             'email'                  => $this->faker->unique()->safeEmail(),
-            // 'direccion'              => $this->faker->city(),
-            'pais_id'                => 1,
+            'pais_id'                => $this->faker->numberBetween(1, 6),
             'user_type_id'           => 1,
             'line_id'                => 1,
             'puntos'                 => 0,
@@ -41,26 +39,40 @@ class UserFactory extends Factory
 
     /**
      * Tipo 1: Dependiente (con company y branch).
+     * Si $paisId es null, se elige aleatoriamente entre los 6 países.
+     * Solo los países 1 y 2 tienen companies asociadas; el resto recibe null.
      */
-    public function dependiente(int $paisId = 1): static
+    public function dependiente(?int $paisId = null): static
     {
-        $companies = $paisId === 1 ? [1, 2] : [3, 4];
+        return $this->state(function () use ($paisId) {
+            $companyByCountry = [
+                1 => [1, 2],
+                2 => [3, 4],
+            ];
 
-        return $this->state(fn () => [
-            'pais_id'      => $paisId,
-            'user_type_id' => 1,
-            'company_id'   => $this->faker->randomElement($companies),
-            'branch'       => 'Sucursal ' . $this->faker->numberBetween(1, 50),            
-        ]);
+            $pais = $paisId ?? $this->faker->numberBetween(1, 6);
+            $companies = $companyByCountry[$pais] ?? null;
+
+            return [
+                'pais_id'      => $pais,
+                'user_type_id' => 1,
+                'company_id'   => $companies !== null
+                    ? $this->faker->randomElement($companies)
+                    : null,
+                'branch'       => 'Sucursal ' . $this->faker->numberBetween(1, 50),
+                'colegiado'    => null,
+            ];
+        });
     }
 
     /**
-     * Tipo 2: Doctor (con colegiado, region, capital y visitor).
+     * Tipo 2: Doctor (con colegiado, sin company ni branch).
+     * Si $paisId es null, se elige aleatoriamente entre los 6 países.
      */
-    public function doctor(int $paisId = 1): static
+    public function doctor(?int $paisId = null): static
     {
         return $this->state(fn () => [
-            'pais_id'      => $paisId,
+            'pais_id'      => $paisId ?? $this->faker->numberBetween(1, 6),
             'user_type_id' => 2,
             'company_id'   => null,
             'branch'       => null,
