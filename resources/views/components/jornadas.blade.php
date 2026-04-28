@@ -7,7 +7,7 @@
 </h1>
 
 <div class="py-6 sm:px-4 lg:px-8 bg-secondary-light h-full flex-1">
-    <div class="overflow-hidden xl:max-w-5xl 2xl:max-w-440 w-full mx-auto px-4 pb-6">
+    <div class="overflow-hidden 2xl:max-w-440 w-full mx-auto px-4 pb-6">
         {{-- Buscador de partidos --}}
         <div class="w-full max-w-lg mx-auto mb-6">
             <x-search-input id="buscar-partidos-grupo" name="buscar_partidos_grupo" placeholder="Buscar Partidos" />
