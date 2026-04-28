@@ -6,7 +6,7 @@
     Partidos del Grupo {{ $grupoActual->name }}
 </h1>
 
-<div class="py-6 sm:px-4 lg:px-8 bg-secondary-light h-full flex-1">
+<div class="py-6 sm:px-4 lg:px-8 bg-secondary-light rounded-t-4xl h-full flex-1">
     <div class="overflow-hidden 2xl:max-w-440 w-full mx-auto px-4 pb-6">
         {{-- Buscador de partidos --}}
         <div class="w-full max-w-lg mx-auto mb-6">

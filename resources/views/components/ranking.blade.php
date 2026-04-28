@@ -1,7 +1,7 @@
 <h1 class="text-3xl 2xl:text-4xl text-center text-light font-bold mt-2 mb-4">{{ $line->name }}</h1>
 <h2 class="text-lg lg:text-xl text-center text-light font-semibold mb-8">Posiciones del mundial 2026</h2>
 
-<div class="py-6 px-4 lg:px-8 bg-secondary-light h-full flex-1">
+<div class="py-6 px-4 lg:px-8 bg-secondary-light rounded-t-4xl h-full flex-1">
     <div class="overflow-hidden xl:max-w-5xl 2xl:max-w-440 w-full mx-auto">
 
         <x-brands-slider :brands="$brands" />

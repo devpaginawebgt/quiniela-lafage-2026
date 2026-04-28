@@ -1,7 +1,7 @@
 <h1 class="text-3xl 2xl:text-4xl text-center text-light font-bold mt-2 mb-4">{{ $line->name }}</h1>
 <h2 class="text-lg lg:text-xl text-center text-light font-semibold mb-8">Premios Disponibles</h2>
 
-<div class="py-6 sm:px-4 lg:px-8 bg-secondary-light h-full flex-1">
+<div class="py-6 sm:px-4 lg:px-8 bg-secondary-light rounded-t-4xl h-full flex-1">
     <div class="overflow-hidden 2xl:max-w-440 mx-auto w-full px-6 pb-6">
         {{-- Brands Slider --}}
         <div class="w-full max-w-lg mx-auto mb-8">
