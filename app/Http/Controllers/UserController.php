@@ -9,6 +9,7 @@ use App\Http\Resources\User\UserResource;
 use App\Http\Services\BrandService;
 use App\Http\Services\LineService;
 use App\Http\Services\PremioService;
+use App\Http\Services\TermsService;
 use App\Http\Services\UserService;
 use App\Models\Brand;
 use App\Models\BrandPosition;
@@ -25,6 +26,7 @@ class UserController extends Controller
         private readonly UserService $userService,
         private readonly LineService $lineService,
         private readonly PremioService $premioService,
+        private readonly TermsService $termsService,
     ) {}
 
     // API responses
@@ -147,8 +149,11 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
+        $terms = $this->termsService->getTerms();
+
         return view('modulos.perfil', [
             'user' => $user,
+            'terms' => $terms,
         ]);
     }
 

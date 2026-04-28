@@ -14,7 +14,7 @@
                 </div>
 
                 {{-- User Name --}}
-                <p class="text-xl font-bold text-dark text-center mb-2">{{ $user->nombres }} {{ $user->apellidos }}</p>
+                <p class="text-xl font-bold text-dark text-center mb-4">{{ $user->nombres }} {{ $user->apellidos }}</p>
 
                 <p class="text-light mx-auto w-max bg-primary px-3 py-1 rounded-full mb-8">{{ $user->line->name }}</p>
 
@@ -32,6 +32,16 @@
                         </div>
                     </div>
 
+                    {{-- Términos y condiciones --}}
+                    <button
+                        type="button"
+                        id="btn-open-terms"
+                        class="w-full flex items-center gap-3 py-3 text-dark hover:text-complementary-secondary transition-colors duration-150 cursor-pointer">
+                        <span class="icon-[material-symbols--info] w-7 h-7"></span>
+                        <span class="flex-1 text-left">Términos y condiciones</span>
+                        <span class="icon-[material-symbols--chevron-right-rounded] w-6 h-6"></span>
+                    </button>
+
                     {{-- Cerrar sesión --}}
                     <button
                         type="button"
@@ -47,6 +57,9 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal Términos y Condiciones --}}
+    <x-terms-view-modal :terms="$terms" />
 
     {{-- Modal Cerrar Sesión --}}
     <div id="modal-logout" class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -111,6 +124,37 @@
 
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && !modal.classList.contains('pointer-events-none')) close();
+            });
+
+            // Modal Términos y Condiciones (solo lectura)
+            const termsModal    = document.getElementById('modal-terms-view');
+            const termsBackdrop = document.getElementById('modal-terms-view-backdrop');
+            const termsPanel    = document.getElementById('modal-terms-view-panel');
+            const termsTrigger  = document.getElementById('btn-open-terms');
+            const termsClose    = document.getElementById('btn-cerrar-terms-view');
+
+            const openTerms = () => {
+                termsModal.classList.remove('pointer-events-none');
+                termsBackdrop.classList.remove('opacity-0');
+                termsPanel.classList.remove('translate-y-full', 'opacity-0');
+                document.body.style.overflow = 'hidden';
+            };
+
+            const closeTerms = () => {
+                termsBackdrop.classList.add('opacity-0');
+                termsPanel.classList.add('translate-y-full', 'opacity-0');
+                document.body.style.overflow = '';
+                termsPanel.addEventListener('transitionend', () => {
+                    termsModal.classList.add('pointer-events-none');
+                }, { once: true });
+            };
+
+            termsTrigger.addEventListener('click', openTerms);
+            termsClose.addEventListener('click', closeTerms);
+            termsBackdrop.addEventListener('click', closeTerms);
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !termsModal.classList.contains('pointer-events-none')) closeTerms();
             });
         });
     </script>
