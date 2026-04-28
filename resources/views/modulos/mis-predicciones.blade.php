@@ -29,7 +29,7 @@
 
                 @else
 
-                    <p class="text-2xl text-complementary-light w-full text-center py-12">
+                    <p class="text-2xl text-complementary-dark w-full text-center py-12">
                         No hay partidos finalizados en esta jornada
                     </p>
 
