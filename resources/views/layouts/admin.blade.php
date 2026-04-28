@@ -79,7 +79,7 @@
             {{-- Footer: volver al sitio + logout --}}
             <div class="px-3 py-3 border-t border-complementary-dark/30 space-y-1">
                 <a href="{{ route('web.proximos-partidos') }}"
-                    class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-complementary-light hover:bg-complementary-primary/60 hover:text-light transition-colors">
+                    class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-light hover:bg-complementary-primary/40 hover:text-light transition-colors">
                     <span class="icon-[material-symbols--arrow-back-rounded] w-5 h-5"></span>
                     <span>Volver al sitio</span>
                 </a>
@@ -87,7 +87,7 @@
                 <form method="POST" action="{{ route('web.logout') }}">
                     @csrf
                     <button type="submit"
-                        class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-complementary-light hover:bg-complementary-primary/60 hover:text-light transition-colors">
+                        class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-light hover:bg-complementary-primary/40 hover:text-light transition-colors">
                         <span class="icon-[material-symbols--logout-rounded] w-5 h-5"></span>
                         <span>Cerrar sesión</span>
                     </button>
