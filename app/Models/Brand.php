@@ -34,18 +34,21 @@ class Brand extends Model
 
     protected static function booted(): void
     {
-        static::addGlobalScope('visibleByCountry', function (Builder $builder) {
+        static::addGlobalScope('visibleByUserProps', function (Builder $builder) {
             /** @var \App\Models\User|null $user */
             $user = Auth::user();
 
-            if (! $user || ! $user->pais_id) {
-                return;
-            }
+            if (empty($user)) return;
 
-            $builder->whereHas(
-                'countries',
-                fn (Builder $query) => $query->whereKey($user->pais_id)
-            );
+            $builder
+                ->whereHas(
+                    'countries',
+                    fn (Builder $query) => $query->whereKey($user->pais_id)
+                )
+                ->whereHas(
+                    'line',
+                    fn (Builder $query) => $query->whereKey($user->line_id)
+                );  
         });
     }
 }
