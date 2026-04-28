@@ -29,7 +29,7 @@
             {{-- Load more --}}
             <div class="flex justify-center mt-4 mb-6">
                 <button id="btn-cargar-mas"
-                    class="hidden bg-secondary text-dark font-semibold px-6 py-2.5 rounded-full hover:bg-secondary/80 transition-colors">
+                    class="hidden bg-secondary text-light font-semibold px-6 py-2.5 rounded-full hover:bg-secondary/80 transition-colors">
                     Cargar más
                 </button>
             </div>
@@ -62,7 +62,11 @@
 
             const country = (p.pais && p.pais.name) ? p.pais.name : '';
 
-            return '<div class="flex items-center bg-light rounded-2xl shadow-md shadow-zinc-400 w-full max-w-140 pl-2 pr-4 py-3 border-l-8 hover:-translate-y-0.5 transition-all ease-in-out duration-300" style="border-left-color: ' + accentColor + '">'
+            const searchText = ((p.nombres || '') + ' ' + (p.apellidos || '') + ' ' + country)
+                .toLowerCase()
+                .replace(/"/g, '&quot;');
+
+            return '<div class="participante-card flex items-center bg-light rounded-2xl shadow-md shadow-zinc-400 w-full max-w-140 pl-2 pr-4 py-3 border-l-8 hover:-translate-y-0.5 transition-all ease-in-out duration-300" data-search="' + searchText + '" style="border-left-color: ' + accentColor + '">'
                 + '<span class="text-sm lg:text-base font-bold text-dark min-w-9 text-center lg:mr-2">' + p.posicion + '°</span>'
                 + '<div class="w-10 h-10 rounded-full overflow-hidden bg-complementary-primary shrink-0 mr-2 lg:mr-3">'
                 +     '<img src="' + p.image + '" alt="' + p.nombres + '" class="w-full h-full object-cover">'
@@ -81,6 +85,26 @@
         function renderList(participantes) {
             const html = participantes.map(buildCard).join('');
             rankingList.insertAdjacentHTML('beforeend', html);
+        }
+
+        function filtrarParticipantes(query) {
+            const cards = rankingList.querySelectorAll('.participante-card');
+            const term = query.toLowerCase().trim();
+            let visibles = 0;
+
+            cards.forEach(function (card) {
+                const haystack = card.getAttribute('data-search') || '';
+                const match = haystack.includes(term);
+                card.style.display = match ? '' : 'none';
+                if (match) visibles++;
+            });
+
+            if (term && visibles === 0 && cards.length > 0) {
+                emptyState.textContent = 'No se encontraron participantes';
+                emptyState.classList.remove('hidden');
+            } else if (cards.length > 0) {
+                emptyState.classList.add('hidden');
+            }
         }
 
         function fetchRanking(page) {
@@ -109,6 +133,11 @@
                 }
 
                 currentPage = page;
+
+                const buscar = document.getElementById('buscar-participante');
+                if (buscar && buscar.value.trim()) {
+                    filtrarParticipantes(buscar.value);
+                }
             })
             .catch(function (error) {
                 console.error('Error cargando ranking:', error);
@@ -122,6 +151,13 @@
         btnCargarMas.addEventListener('click', function () {
             fetchRanking(currentPage + 1);
         });
+
+        const inputBuscar = document.getElementById('buscar-participante');
+        if (inputBuscar) {
+            inputBuscar.addEventListener('input', function () {
+                filtrarParticipantes(this.value);
+            });
+        }
 
         fetchRanking(1);
     });

@@ -18,7 +18,7 @@
     {{-- Description hidden — used by JS for the modal --}}
     <span class="prize-card-descripcion hidden">{{ $premio->descripcion }}</span>
 
-    <h3 class="text-lg font-semibold text-center pt-2 mb-2">{{ $premio->titulo_posicion }}</h3>
+    <h3 class="font-semibold text-center pt-2 mb-2">{{ $premio->titulo_posicion }}</h3>
 
     <div class="flex items-center gap-4">
         {{-- Position & Trophy --}}
