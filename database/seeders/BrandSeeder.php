@@ -20,37 +20,37 @@ class BrandSeeder extends Seeder
             /* ============================================================ */
             [   
                 'name' => 'Neuro Tazarol', 
-                'image' => '/images/brands/tazarol-neuro.png', 
+                'image' => '/images/brands/dolor/brand5.png', 
                 'line_id' => 1,
                 'countries' => [1, 2, 3, 4, 5, 6],
             ],
             [   
                 'name' => 'Reversal Flex', 
-                'image' => '/images/brands/reversal.png', 
+                'image' => '/images/brands/dolor/brand6.png', 
                 'line_id' => 1,
                 'countries' => [1, 2, 3, 4, 6],
             ],
             [   
                 'name' => 'Movisil Max',
-                'image' => '/images/brands/dolor/Dolor_osteo_Movisil Max.png', 
+                'image' => '/images/brands/dolor/brand4.png', 
                 'line_id' => 1,
                 'countries' => [1, 3],
             ],
             [
                 'name' => 'Movisil Duo',
-                'image' => '/images/brands/Dolor_osteo_Movisil Duo.png', 
+                'image' => '/images/brands/dolor/brand2.png', 
                 'line_id' => 1,
                 'countries' => [2, 4, 5, 6],
             ],
             [   
                 'name' => 'Movisil HMB',
-                'image' => '/images/brands/dolor/Dolor_osteo_Movisil HMB.png', 
+                'image' => '/images/brands/dolor/brand3.png', 
                 'line_id' => 1,
                 'countries' => [1, 2, 3, 4, 5],
             ],
             [   
                 'name' => 'Movisil',
-                'image' => '/images/brands/Dolor_osteo_Movisil.png', 
+                'image' => '/images/brands/dolor/brand1.png', 
                 'line_id' => 1,
                 'countries' => [6],
             ],
@@ -60,13 +60,13 @@ class BrandSeeder extends Seeder
             /* ============================================================ */
             [   
                 'name' => 'Elongal',       
-                'image' => '/images/brands/elongal.png', 
+                'image' => '/images/brands/salud_integral/brand1.png', 
                 'line_id' => 2,
                 'countries' => [1, 2, 3, 4, 5, 6],
             ],
             [   
                 'name' => 'Validal',       
-                'image' => '/images/brands/validal.png', 
+                'image' => '/images/brands/salud_integral/brand2.png', 
                 'line_id' => 2,
                 'countries' => [1, 2, 3, 4],
             ],
@@ -76,13 +76,13 @@ class BrandSeeder extends Seeder
             /* ============================================================ */
             [   
                 'name' => 'Maximum Fam',       
-                'image' => '/images/brands/maximum-fam.png', 
+                'image' => '/images/brands/fem/brand2.png', 
                 'line_id' => 3,
                 'countries' => [1, 2, 3, 4, 5, 6],
             ],
             [   
                 'name' => 'Uroberry Fam',       
-                'image' => '/images/brands/uroberry-fam.png', 
+                'image' => '/images/brands/fem/brand1.png', 
                 'line_id' => 3,
                 'countries' => [1, 2, 3, 4, 5, 6],
             ],
@@ -93,19 +93,19 @@ class BrandSeeder extends Seeder
             /* ============================================================ */
             [   
                 'name' => 'Fam Empiria',
-                'image' => '/images/brands/fam-empiria.png',
+                'image' => '/images/brands/cardio/brand1.png',
                 'line_id' => 4,
                 'countries' => [1, 2, 3, 4, 6],
             ],
             [   
                 'name' => 'Fam Efimax',
-                'image' => '/images/brands/fam-efimax.png',
+                'image' => '/images/brands/cardio/brand3.png',
                 'line_id' => 4,
                 'countries' => [5],
             ],
             [   
                 'name' => 'Fam Diaglipitin',
-                'image' => '/images/brands/fam-diaglipitin.png', 
+                'image' => '/images/brands/cardio/brand2.png',
                 'line_id' => 4,
                 'countries' => [1, 2, 3, 4, 5, 6],
             ],
@@ -116,13 +116,13 @@ class BrandSeeder extends Seeder
             /* ============================================================ */
             [   
                 'name' => 'Momentix Familia',       
-                'image' => '/images/brands/momentix-familia.png', 
+                'image' => '/images/brands/urologica/brand1.png', 
                 'line_id' => 5,
                 'countries' => [1, 2, 3, 4, 5, 6],
             ],
             [   
                 'name' => 'Serecur Familia',       
-                'image' => '/images/brands/serecur-familia.png', 
+                'image' => '/images/brands/urologica/brand2.png', 
                 'line_id' => 5,
                 'countries' => [1, 2, 3, 4, 5, 6],
             ],
@@ -133,25 +133,13 @@ class BrandSeeder extends Seeder
             /* ============================================================ */
             [   
                 'name' => 'Aminoter',
-                'image' => '/images/brands/aminoter.png', 
+                'image' => '/images/brands/derma/brand2.png',
                 'line_id' => 6,
                 'countries' => [1, 2, 3, 4, 5],
             ],
             [   
-                'name' => 'Onitrac',       
-                'image' => '/images/brands/onitrac.png', 
-                'line_id' => 6,
-                'countries' => [1, 2, 3, 4, 6],
-            ],
-            [   
-                'name' => 'Folcres',       
-                'image' => '/images/brands/folcres.png', 
-                'line_id' => 6,
-                'countries' => [5],
-            ],
-            [   
                 'name' => 'Combinater',       
-                'image' => '/images/brands/combinater.png', 
+                'image' => '/images/brands/derma/brand1.png', 
                 'line_id' => 6,
                 'countries' => [6],
             ],
