@@ -33,14 +33,9 @@ class EquipoController extends Controller
 
     public function equiposWeb()
     {
-        // Banners
-
-        // $banners = $this->moduleService->getBanners(12);        
-
         $equipos = $this->equipoService->getEquipos();
 
         return view('modulos.equipos', [
-            // 'banners' => $banners,
             'equipos' => $equipos
         ]);
 

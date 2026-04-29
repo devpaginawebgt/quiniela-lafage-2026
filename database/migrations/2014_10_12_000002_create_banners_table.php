@@ -18,17 +18,13 @@ return new class extends Migration
             $table->string('url');
             $table->string('url_web')->nullable();
 
-            $table->unsignedBigInteger('module_id');
-            $table->foreign('module_id')
-                ->references('id')
-                ->on('modules')
+            $table->foreignId('brand_id')
+                ->constrained('brands')
                 ->onUpdate('cascade')
                 ->onDelete('restrict');
 
-            $table->unsignedBigInteger('line_id');
-            $table->foreign('line_id')
-                ->references('id')
-                ->on('lines')
+            $table->foreignId('module_id')
+                ->constrained('modules')
                 ->onUpdate('cascade')
                 ->onDelete('restrict');
 

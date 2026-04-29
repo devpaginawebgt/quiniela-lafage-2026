@@ -21,6 +21,8 @@ class UserService {
         $ip = request()->ip();
         // $ip = '45.164.150.249'; // GT
         // $ip = '190.181.222.119'; // HN
+        // $ip = '190.62.80.251'; // SV
+        // $ip = '152.231.33.166'; // NI
 
         $country_code = 'GT';
 
@@ -85,17 +87,10 @@ class UserService {
 
     }
 
-    /**
-     * Obtiene el ranking de participantes activos con predicciones, paginado.
-     *
-     * @param  int    $id_pais   ID del país para filtrar participantes.
-     * @param  int    $perPage   Cantidad de registros por página.
-     * @param  array  $columns   Columnas adicionales a seleccionar.
-     * @return \Illuminate\Contracts\Pagination\Paginator
-     */
     public function getRankingWeb($line_id, $perPage = 100)
     {
-        return User::select('id', 'nombres', 'apellidos', 'puntos', 'pais_id', 'numero_documento', 'email', 'telefono', 'created_at')
+        return User::select('id', 'nombres', 'apellidos', 'puntos', 'pais_id', 'numero_documento', 'email', 'created_at')
+            ->with('country')
             ->selectRaw('RANK() OVER (ORDER BY puntos DESC, nombres ASC) as posicion')
             ->where('line_id', $line_id)
             ->has('predictions')

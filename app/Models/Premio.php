@@ -10,8 +10,6 @@ class Premio extends Model
 {
     use HasFactory;
 
-    public $timestamps = true;
-
     protected $fillable = [
         'posicion',
         'titulo_posicion',

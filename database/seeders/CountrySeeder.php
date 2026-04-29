@@ -21,7 +21,19 @@ class CountrySeeder extends Seeder
             'document_name'          => 'DPI',
             'document_regex'         => '^[0-9]{13}$',
             'document_regex_message' => 'El número de DPI debe contener 13 dígitos.',
-            'timezone'               => 'GMT-6',
+            'timezone'               => 'America/Guatemala',
+            'is_active'              => true
+        ]);
+
+        Country::create([
+            'name'                   => 'El Salvador',
+            'image'                  => '/images/countries/flag-sv.png',
+            'country_code'           => 'SV',
+            'area_code'              => '503',
+            'document_name'          => 'DUI',
+            'document_regex'         => '^[0-9]{9}$',
+            'document_regex_message' => 'El DUI debe tener 9 dígitos numéricos.',
+            'timezone'               => 'America/El_Salvador',
             'is_active'              => true
         ]);
 
@@ -33,7 +45,31 @@ class CountrySeeder extends Seeder
             'document_name'          => 'Cédula',
             'document_regex'         => '^[0-9]{13}$',
             'document_regex_message' => 'El número de cédula debe contener 13 dígitos.',
-            'timezone'               => 'GMT-6',
+            'timezone'               => 'America/Tegucigalpa',
+            'is_active'              => true
+        ]);
+
+        Country::create([
+            'name'                   => 'Nicaragua',
+            'image'                  => '/images/countries/flag-ni.png',
+            'country_code'           => 'NI',
+            'area_code'              => '505',
+            'document_name'          => 'Cédula',
+            'document_regex'         => '^[0-9]{13}[A-Z]$',
+            'document_regex_message' => 'La cédula debe contener 13 dígitos y una letra mayúscula al final.',
+            'timezone'               => 'America/Managua',
+            'is_active'              => true
+        ]);
+
+        Country::create([
+            'name'                   => 'Costa Rica',
+            'image'                  => '/images/countries/flag-cr.png',
+            'country_code'           => 'CR',
+            'area_code'              => '506',
+            'document_name'          => 'Cédula',
+            'document_regex'         => '^[0-9]{9}$',
+            'document_regex_message' => 'El número de cédula debe contener 9 dígitos.',
+            'timezone'               => 'America/Costa_Rica',
             'is_active'              => true
         ]);
 
@@ -45,44 +81,20 @@ class CountrySeeder extends Seeder
             'document_name'          => 'CIP',
             'document_regex'         => '^[A-Z0-9]{6,11}$',
             'document_regex_message' => 'El CIP debe contener entre 6 y 11 caracteres alfanuméricos.',
-            'timezone'               => 'GMT-5',
-            'is_active'              => false
+            'timezone'               => 'America/Panama',
+            'is_active'              => true
         ]);
 
-        Country::create([
-            'name'                   => 'Nicaragua',
-            'image'                  => '/images/countries/flag-ni.png',
-            'country_code'           => 'NI',
-            'area_code'              => '505',
-            'document_name'          => 'Cédula',
-            'document_regex'         => '^[0-9]{13}[A-Z]$',
-            'document_regex_message' => 'La cédula debe contener 13 dígitos y una letra mayúscula al final.',
-            'timezone'               => 'GMT-6',
-            'is_active'              => false
-        ]);
-
-        Country::create([
-            'name'                   => 'Costa Rica',
-            'image'                  => '/images/countries/flag-cr.png',
-            'country_code'           => 'CR',
-            'area_code'              => '506',
-            'document_name'          => 'Cédula',
-            'document_regex'         => '^[0-9]{9}$',
-            'document_regex_message' => 'El número de cédula debe contener 9 dígitos.',
-            'timezone'               => 'GMT-6',
-            'is_active'              => false
-        ]);
-
-        Country::create([
-            'name'                   => 'República Dominicana',
-            'image'                  => '/images/countries/flag-do.png',
-            'country_code'           => 'DO',
-            'area_code'              => '1',
-            'document_name'          => 'Cédula',
-            'document_regex'         => '^[0-9]{11}$',
-            'document_regex_message' => 'El número de cédula debe contener 11 dígitos.',
-            'timezone'               => 'GMT-4',
-            'is_active'              => false
-        ]);
+        // Country::create([
+        //     'name'                   => 'República Dominicana',
+        //     'image'                  => '/images/countries/flag-do.png',
+        //     'country_code'           => 'DO',
+        //     'area_code'              => '1',
+        //     'document_name'          => 'Cédula',
+        //     'document_regex'         => '^[0-9]{11}$',
+        //     'document_regex_message' => 'El número de cédula debe contener 11 dígitos.',
+        //     'timezone'               => 'America/Santo_Domingo',
+        //     'is_active'              => false
+        // ]);
     }
 }

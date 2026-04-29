@@ -1,18 +1,98 @@
+/* ============================================================ */
+/* Tailwind, plugins y fuentes de contenido                     */
+/* ============================================================ */
 @import "tailwindcss";
 @import "./styles.css" layer(base);
+
 @plugin "flowbite/plugin";
 @plugin "@tailwindcss/typography";
 @plugin "@iconify/tailwind4";
+
 @source "../views/**/*.blade.php";
 @source "../../public/js/*.js";
 @source "../../node_modules/flowbite/dist/flowbite.js";
 
-/* Backdrop de Flowbite drawer — oscurecer más sobre fondo dark */
+/* ============================================================ */
+/* Fuentes — FuturaLTPro                                         */
+/* ============================================================ */
+@font-face {
+    font-family: "FuturaLTPro";
+    src: url("../fonts/FuturaLTProLight.otf") format("opentype");
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "FuturaLTPro";
+    src: url("../fonts/FuturaLTProBook.otf") format("opentype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "FuturaLTPro";
+    src: url("../fonts/FuturaLTProBookOblique.otf") format("opentype");
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: "FuturaLTPro";
+    src: url("../fonts/FuturaLTProMedium.otf") format("opentype");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "FuturaLTPro";
+    src: url("../fonts/FuturaLTProBold.otf") format("opentype");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "FuturaLTPro";
+    src: url("../fonts/FuturaLTProBoldOblique.otf") format("opentype");
+    font-weight: 700;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: "FuturaLTPro";
+    src: url("../fonts/FuturaLTProXBold.otf") format("opentype");
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ============================================================ */
+/* Theme tokens (Tailwind v4)                                    */
+/* ============================================================ */
+@theme {
+    --font-sans: "FuturaLTPro", ui-sans-serif, system-ui, sans-serif;
+
+    --color-primary: #202453;
+    --color-secondary: #f44236;
+    --color-dark: #1b1c1b;
+    --color-light: #fafafa;
+    --color-secondary-light: #e7e8ec;
+    --color-complementary-primary: #c0d0e0;
+    --color-complementary-secondary: #d13b2d;
+    --color-complementary-dark: #9c9c9c;
+    --color-complementary-light: #cfcfcf;
+}
+
+/* ============================================================ */
+/* Overrides de librerías (unlayered para ganar cascada)         */
+/* ============================================================ */
+
+/* Flowbite drawer — oscurecer más el backdrop sobre fondos dark */
 [drawer-backdrop] {
     background-color: rgba(0, 0, 0, 0.6) !important;
     backdrop-filter: blur(1px);
 }
 
+/* Swiper pagination — colores de marca */
 [class*="brands-swiper-"][class*="-pagination"] .swiper-pagination-bullet,
 .carousel-home-banners .swiper-pagination-bullet,
 .carousel-section-banners .swiper-pagination-bullet {
@@ -23,17 +103,4 @@
 .carousel-home-banners .swiper-pagination-bullet-active,
 .carousel-section-banners .swiper-pagination-bullet-active {
     background: var(--color-primary);
-}
-
-@theme {
-    --font-sans: 'Arial', ui-sans-serif, system-ui, sans-serif;
-    --color-primary: #206EB6;
-    --color-secondary: #F44236;
-    --color-dark: #1B1C1B;
-    --color-light: #FAFAFA;
-    --color-secondary-light: #e7e8ec;
-    --color-complementary-primary: #C0D0E0;
-    --color-complementary-secondary: #D13B2D;
-    --color-complementary-dark: #9c9c9c;
-    --color-complementary-light: #CFCFCF;
 }

@@ -3,9 +3,12 @@
 namespace App\Http\Services;
 
 use App\Models\BracketGame;
+use App\Models\Brand;
+use App\Models\Country;
 use App\Models\EquipoPartido;
 use App\Models\Jornada;
 use App\Models\Partido;
+use App\Models\PartidoBrandAssignment;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -25,6 +28,7 @@ class PartidoService {
 
     public function getPartidosJornada(int $jornada)
     {
+        $user = request()->user();
 
         $partidos = EquipoPartido::select('id', 'equipo_1', 'equipo_2', 'partido_id')
             ->whereHas('partido', function(Builder $query) use($jornada) {
@@ -32,7 +36,9 @@ class PartidoService {
             })
             ->with([
                 'partido:id,fase,jornada_id,fecha_partido,jugado,estado,brand_id',
-                'partido.brand',
+                'partido.brand' => fn ($q) => $q
+                    ->where('partido_brand_assignments.country_id', $user->pais_id)
+                    ->where('partido_brand_assignments.line_id', $user->line_id),
                 'equipoUno:id,nombre,imagen,grupo',
                 'equipoDos:id,nombre,imagen,grupo'
             ])
@@ -48,11 +54,13 @@ class PartidoService {
 
     public function getJornadasGrupo(string $grupo)
     {
+        $user = request()->user();
+
         $jornadas_obtener = collect([1, 2, 3]);
         
         $jornadas = collect([]);
 
-        $jornadas_obtener->each(function($jornada) use($grupo, $jornadas) {
+        $jornadas_obtener->each(function($jornada) use($grupo, $jornadas, $user) {
 
             $jornada_db = $this->getJornada($jornada);
 
@@ -68,7 +76,9 @@ class PartidoService {
                 })
                 ->with([
                     'partido:id,fase,jornada_id,fecha_partido,jugado,estado,brand_id',
-                    'partido.brand',
+                    'partido.brand' => fn ($q) => $q
+                    ->where('partido_brand_assignments.country_id', $user->pais_id)
+                    ->where('partido_brand_assignments.line_id', $user->line_id),
                     'equipoUno:id,nombre,imagen,grupo',
                     'equipoDos:id,nombre,imagen,grupo'
                 ])
@@ -161,57 +171,43 @@ class PartidoService {
         }
     }
 
-    // protected function syncBracketGame(EquipoPartido $equipoPartido, $equipo1, $equipo2, int $goles_e1, int $goles_e2): void
-    // {
-    //     $journeyId = $equipoPartido->partido->jornada_id;
-    //     $e1Id = $equipo1->id;
-    //     $e2Id = $equipo2->id;
+    public function addPartidoBrands(Partido $partido): void
+    {
+        $countryIds = Country::where('is_active', true)->pluck('id');
 
-    //     $bracketGame = BracketGame::where('journey_id', $journeyId)
-    //         ->where(function ($q) use ($e1Id, $e2Id) {
-    //             $q->where(function ($s) use ($e1Id, $e2Id) {
-    //                 $s->where('team_one_id', $e1Id)->where('team_two_id', $e2Id);
-    //             })->orWhere(function ($s) use ($e1Id, $e2Id) {
-    //                 $s->where('team_one_id', $e2Id)->where('team_two_id', $e1Id);
-    //             });
-    //         })
-    //         ->first();
+        if ($countryIds->isEmpty()) {
+            return;
+        }
 
-    //     if (!$bracketGame) {
-    //         return;
-    //     }
+        $brands = Brand::withoutGlobalScopes()
+            ->select('id', 'line_id')
+            ->with(['countries' => fn ($q) => $q
+                ->select('countries.id')
+                ->whereIn('countries.id', $countryIds),
+            ])
+            ->get();
 
-    //     if ($goles_e1 === $goles_e2) {
-    //         return;
-    //     }
+        $now  = now();
+        $rows = [];
 
-    //     $winnerId = $goles_e1 > $goles_e2 ? $e1Id : $e2Id;
-    //     $loserId = $goles_e1 > $goles_e2 ? $e2Id : $e1Id;
+        foreach ($countryIds as $countryId) {
+            $brands
+                ->filter(fn (Brand $brand) => $brand->countries->contains('id', $countryId))
+                ->groupBy('line_id')
+                ->each(function (Collection $group, $lineId) use ($partido, $countryId, $now, &$rows) {
+                    $rows[] = [
+                        'partido_id' => $partido->id,
+                        'country_id' => $countryId,
+                        'line_id'    => $lineId,
+                        'brand_id'   => $group->random()->id,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
+                });
+        }
 
-    //     DB::transaction(function () use ($bracketGame, $equipoPartido, $winnerId, $loserId) {
-    //         $bracketGame->result_id = $equipoPartido->resultado->id;
-    //         $bracketGame->status = 2;
-    //         $bracketGame->save();
-
-    //         $downstream = BracketGame::where('local_game_id', $bracketGame->id)
-    //             ->orWhere('visitor_game_id', $bracketGame->id)
-    //             ->get();
-
-    //         foreach ($downstream as $next) {
-    //             if ($next->local_game_id === $bracketGame->id) {
-    //                 $next->team_one_id = $next->local_source === 'perdedor' ? $loserId : $winnerId;
-    //             }
-    //             if ($next->visitor_game_id === $bracketGame->id) {
-    //                 $next->team_two_id = $next->visitor_source === 'perdedor' ? $loserId : $winnerId;
-    //             }
-
-    //             if ($next->team_one_id && $next->team_two_id && $next->status === 0) {
-    //                 $next->status = 1;
-    //             }
-
-    //             $next->save();
-    //         }
-    //     });
-    // }
-
+        if (! empty($rows)) {
+            PartidoBrandAssignment::insert($rows);
+        }
+    }
 }

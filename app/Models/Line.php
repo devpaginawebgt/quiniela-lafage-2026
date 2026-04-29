@@ -21,4 +21,8 @@ class Line extends Model
         return $this->hasMany(Premio::class, 'line_id');
     }
 
+    public function brands(): HasMany
+    {
+        return $this->hasMany(Brand::class, 'line_id');
+    }
 }

@@ -8,6 +8,8 @@ use App\Http\Resources\User\UserRankResource;
 use App\Http\Resources\User\UserResource;
 use App\Http\Services\BrandService;
 use App\Http\Services\LineService;
+use App\Http\Services\PremioService;
+use App\Http\Services\TermsService;
 use App\Http\Services\UserService;
 use App\Models\Brand;
 use App\Models\BrandPosition;
@@ -23,6 +25,8 @@ class UserController extends Controller
     public function __construct(
         private readonly UserService $userService,
         private readonly LineService $lineService,
+        private readonly PremioService $premioService,
+        private readonly TermsService $termsService,
     ) {}
 
     // API responses
@@ -113,10 +117,14 @@ class UserController extends Controller
 
         $brands = Brand::all();
 
-        $users = $this->userService->getRanking($line->id);
+        $premios = $this->premioService->getPremios($user->line_id);
 
-        return view('modulos.ranking', compact('line', 'brands', 'users'));
+        // $users = $this->userService->getRanking($line->id);
+
+        return view('modulos.ranking', compact('line', 'brands', 'premios'));
     }
+
+
 
     /**
      * Devuelve los datos paginados del ranking vía JSON.
@@ -124,11 +132,10 @@ class UserController extends Controller
     public function getRankingData(Request $request)
     {
         $user = Auth::user();
-        $id_pais = (int) $user->pais_id;
-        $type_id = (int) $user->user_type_id;
+        $line_id = (int) $user->line_id;
         $perPage = (int) $request->query('perPage', 100);
 
-        $result = $this->userService->getRankingWeb($id_pais, $type_id, $perPage);
+        $result = $this->userService->getRankingWeb($line_id, $perPage);
 
         return $this->successResponse([
             'has_more' => $result->hasMorePages(),
@@ -142,8 +149,11 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
+        $terms = $this->termsService->getTerms();
+
         return view('modulos.perfil', [
             'user' => $user,
+            'terms' => $terms,
         ]);
     }
 

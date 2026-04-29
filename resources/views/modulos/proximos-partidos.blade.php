@@ -46,7 +46,7 @@
                         <div class="flex ">
                             <button
                                 type="submit"
-                                class="focus:outline-none hover:brightness-[1.2] focus:ring-3 focus:ring-dark rounded-full fixed bottom-20 right-4 shadow-md shadow-zinc-900 bg-primary text-light text-md lg:text-xl py-2 lg:py-3 px-4 lg:px-6 font-semibold gap-2 flex justify-center items-center z-50"
+                                class="focus:outline-none hover:brightness-[1.2] focus:ring-3 focus:ring-dark rounded-full fixed bottom-20 right-4 shadow-md shadow-zinc-900 bg-primary text-light text-md lg:text-lg py-2 lg:py-3 px-4 lg:px-6 gap-2 flex justify-center items-center z-50 hover:-translate-y-0.5 transition-all ease-in-out duration-300"
                             >
                                 <span>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M21 7v12q0 .825-.587 1.413T19 21H5q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h12zm-2 .85L16.15 5H5v14h14zm-4.875 9.275Q15 16.25 15 15t-.875-2.125T12 12t-2.125.875T9 15t.875 2.125T12 18t2.125-.875M6 10h9V6H6zM5 7.85V19V5z"/></svg>
@@ -68,7 +68,7 @@
 
                     @else
 
-                        <p class="text-2xl text-complementary-light w-full text-center py-12">
+                        <p class="text-2xl text-complementary-dark w-full text-center py-12">
                             No hay predicciones disponibles para esta jornada
                         </p>
 

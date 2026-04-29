@@ -1,39 +1,6 @@
-
-
-html {
-    color: var(--light-color);
-}
-
-* {
-
-    transition-property: all;
-
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-
-    transition-duration: 300ms;
-
-}
-
-
-
-@keyframes spin {
-
-    from {
-
-        transform: rotate(0deg);
-
-    }
-
-
-
-    to {
-
-        transform: rotate(360deg);
-
-    }
-
-}
-
+/* ============================================================ */
+/* Animaciones                                                   */
+/* ============================================================ */
 @keyframes toast-slide-in {
     from {
         transform: translateY(-1rem);
@@ -56,94 +23,48 @@ html {
     }
 }
 
-
-
-.animate-spin {
-
-    content: " ";
-
-    width: 2rem;
-
-    height: 2rem;
-
-    margin: 4px 20px;
-
-    border-radius: 50%;
-
-    border: 2px solid #fff;
-
-    border-color: rgb(134, 0, 0) transparent rgb(134, 0, 0) transparent;
-
-    animation: spin 1s linear infinite;
-
-}
-
-
-
-.bg-auth{
-
-    background-repeat: no-repeat;
-
-    background-position: center center;
-
-    background-size: cover;
-
-    height: 100vh;
-
-    width: 100vw;
-
-}
-.img_ani{
-    width: 10%; position: fixed; z-index: 10000; right: 0px; bottom: 0;
-}
-
-@media only screen and (max-width: 600px) {
-    .img_ani{
-        width: 30%!important; position: fixed; z-index: 10000; right: 0px; bottom: 0;
-    }
-}
-
-/* .formulario-auth input, .formulario-auth select {
-    color: var(--dark-color)
-} */
-
-
+/* ============================================================ */
+/* Inputs y elementos de formulario                              */
+/* ============================================================ */
 .hide-input-arrows::-webkit-outer-spin-button,
 .hide-input-arrows::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 .hide-input-arrows {
-    -moz-appearance: textfield; /* Firefox */
+    -moz-appearance: textfield;
     appearance: none;
 }
 
-/* Scrollbar personalizada */
+/* <option> no es estilizable con utilities de Tailwind */
+select.form-select-custom option {
+    background-color: var(--color-light);
+    color: var(--color-dark);
+}
+
+/* ============================================================ */
+/* Scrollbar                                                     */
+/* ============================================================ */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #1F2A44; /* complementary-primary */
+    background: var(--color-primary);
     border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #D9D9D6;
+    background: var(--color-light);
     border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #FFDD00; /* secondary */
+    background: var(--color-secondary);
 }
 
 * {
     scrollbar-width: thin;
-    scrollbar-color: #D9D9D6 #1F2A44;
-}
-
-select.form-select-custom option {
-    background-color: var(--color-light);
-    color: var(--color-dark);
+    scrollbar-color: var(--color-light) var(--color-primary);
 }

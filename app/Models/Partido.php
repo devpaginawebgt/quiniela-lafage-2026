@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Partido extends Model
 {
@@ -28,9 +30,21 @@ class Partido extends Model
         return [ 'fecha_partido' => 'datetime' ];
     }
 
-    public function brand(): BelongsTo
+    public function brands(): HasMany
     {
-        return $this->belongsTo(Brand::class, 'brand_id');
+        return $this->hasMany(PartidoBrandAssignment::class, 'partido_id');
+    }
+
+    public function brand(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            Brand::class,
+            PartidoBrandAssignment::class,
+            'partido_id',
+            'id',
+            'id',
+            'brand_id',
+        );
     }
 
     public function jornada(): BelongsTo

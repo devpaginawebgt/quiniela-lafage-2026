@@ -10,8 +10,11 @@ use Illuminate\Database\Eloquent\Builder;
 
 class PrediccionService {
 
-    public function getPrediccionesJornada(int $id_jornada, int $user_id)
+    public function getPrediccionesJornada(int $id_jornada)
     {
+        $user    = request()->user();
+        $user_id = (int)$user->id;
+
         $predicciones_usuario = EquipoPartido::select([
             'equipo_partidos.id', 
             'equipo_partidos.equipo_1', 
@@ -19,16 +22,18 @@ class PrediccionService {
             'equipo_partidos.partido_id',
         ])
             ->whereHas('partido', function(Builder $query) use($id_jornada) {
-                $query ->where('jornada_id', $id_jornada)
+                $query->where('jornada_id', $id_jornada)
                     ->whereNot('estado', 1);
             })
             ->with([
                 'partido:id,fase,jornada_id,fecha_partido,jugado,estado,brand_id',
-                'partido.brand',
+                'partido.brand' => fn ($q) => $q
+                    ->where('partido_brand_assignments.country_id', $user->pais_id)
+                    ->where('partido_brand_assignments.line_id', $user->line_id),
                 'equipoUno:id,nombre,imagen,grupo',
                 'equipoDos:id,nombre,imagen,grupo',
-                'prediccion' => function ($query) use ($user_id) {
-                    $query->where('user_id', $user_id)
+                'prediccion' => function ($q) use ($user_id) {
+                    $q->where('user_id', $user_id)
                         ->select('id','partido_id','goles_equipo_1','goles_equipo_2');
                 }
             ])
@@ -41,8 +46,11 @@ class PrediccionService {
         return $predicciones_usuario;
     }
 
-    public function getPrediccionesById(array $id_partidos, int $user_id)
+    public function getPrediccionesById(array $id_partidos)
     {
+        $user    = request()->user();
+        $user_id = (int)$user->id;
+
         $predicciones_usuario = EquipoPartido::select([
             'equipo_partidos.id', 
             'equipo_partidos.equipo_1', 
@@ -54,7 +62,9 @@ class PrediccionService {
             })
             ->with([
                 'partido:id,fase,jornada_id,fecha_partido,jugado,estado,brand_id',
-                'partido.brand',
+                'partido.brand' => fn ($q) => $q
+                    ->where('partido_brand_assignments.country_id', $user->pais_id)
+                    ->where('partido_brand_assignments.line_id', $user->line_id),
                 'equipoUno:id,nombre,imagen,grupo',
                 'equipoDos:id,nombre,imagen,grupo',
                 'prediccion' => function ($query) use ($user_id) {
@@ -159,8 +169,11 @@ class PrediccionService {
 
     }
 
-    public function savePredicciones($predicciones_nuevas, $predicciones_usuario, $user_id)
+    public function savePredicciones($predicciones_nuevas, $predicciones_usuario)
     {
+        $user    = request()->user();
+        $user_id = (int)$user->id;
+
         $predicciones_nuevas->each(function($prediccion_nueva) use(&$predicciones_usuario, $user_id) {
 
             $prediccion_usuario = $predicciones_usuario->firstWhere('partido_id', $prediccion_nueva['id_partido']);
@@ -215,8 +228,11 @@ class PrediccionService {
 
     }
 
-    public function getResultados(int $id_jornada, int $user_id)
+    public function getResultados(int $id_jornada)
     {
+        $user    = request()->user();
+        $user_id = (int)$user->id;
+
         $registros = EquipoPartido::select([
             'equipo_partidos.id', 
             'equipo_partidos.equipo_1', 
@@ -230,7 +246,9 @@ class PrediccionService {
             })
             ->with([
                 'partido:id,fase,jornada_id,fecha_partido,jugado,estado,brand_id',
-                'partido.brand',
+                'partido.brand' => fn ($q) => $q
+                    ->where('partido_brand_assignments.country_id', $user->pais_id)
+                    ->where('partido_brand_assignments.line_id', $user->line_id),
                 'equipoUno:id,nombre,imagen,grupo',
                 'equipoDos:id,nombre,imagen,grupo',
                 'resultado:id,partido_id,goles_equipo_1,goles_equipo_2',
@@ -322,8 +340,11 @@ class PrediccionService {
 
     // Funciones para la web
 
-    public function getResultadosWeb(int $id_jornada, int $user_id)
+    public function getResultadosWeb(int $id_jornada)
     {
+        $user    = request()->user();
+        $user_id = (int)$user->id;
+
         $registros = EquipoPartido::select([
             'equipo_partidos.id', 
             'equipo_partidos.equipo_1', 
@@ -335,7 +356,9 @@ class PrediccionService {
             })
             ->with([
                 'partido:id,fase,jornada_id,fecha_partido,jugado,estado,brand_id',
-                'partido.brand',
+                'partido.brand' => fn ($q) => $q
+                    ->where('partido_brand_assignments.country_id', $user->pais_id)
+                    ->where('partido_brand_assignments.line_id', $user->line_id),
                 'equipoUno:id,nombre,imagen,grupo',
                 'equipoDos:id,nombre,imagen,grupo',
                 'resultado:id,partido_id,goles_equipo_1,goles_equipo_2',

@@ -26,6 +26,7 @@ use App\Http\Controllers\UserController;
 
 /****** RUTAS GET PARA OBTENER VISTAS DE MODULOS */
 
+
 Route::middleware(['auth'])->as('web.')->group(function () {
 
     Route::controller(ResultadoPartidoController::class)->group(function () {
@@ -34,20 +35,9 @@ Route::middleware(['auth'])->as('web.')->group(function () {
         Route::post('predicciones', 'savePrediccionesWeb')->name('save-predicciones');
     });
 
-    Route::controller(JornadaController::class)->group(function () {
-        Route::get('calendario', 'calendarioWeb')->name('calendario');
-    });
-
-    Route::controller(EstadioController::class)->group(function () {
-        Route::get('estadios', 'estadiosWeb')->name('estadios');
-    });
-
-    Route::controller(GrupoController::class)->group(function () {
-        Route::get('grupos', 'gruposWeb')->name('grupos');
-    });
-
-    Route::controller(EquipoController::class)->group(function () {
-        Route::get('equipos', 'equiposWeb')->name('equipos');
+    Route::controller(JornadaController::class)->prefix('partidos')->group(function () {
+        Route::get('/{jornada}', 'partidosJornada');
+        Route::get('/', 'partidosWeb')->name('partidos');
     });    
 
     // Grupos
@@ -55,13 +45,6 @@ Route::middleware(['auth'])->as('web.')->group(function () {
     Route::controller(GrupoController::class)->prefix('grupos')->as('grupos.')->group(function () {
         Route::get('/{grupo_id}/equipos', 'getEquiposWeb')->name('equipos');
         Route::get('/{grupo_id}/jornadas', 'getJornadasWeb')->name('jornadas');
-    });
-
-    // Jornadas
-
-    Route::controller(JornadaController::class)->prefix('jornadas')->group(function () {
-        Route::post('/partidos-grupo', 'partidosGrupo');
-        Route::get('/partidos-jornada/{jornada}', 'partidosJornada');
     });
 
     // Partidos y resultados
@@ -109,6 +92,36 @@ Route::middleware(['auth'])->as('web.')->group(function () {
     Route::get('/', function () {
         return redirect()->route('web.proximos-partidos');
     });
+
+    // Route::controller(EstadioController::class)->group(function () {
+    //     Route::get('estadios', 'estadiosWeb')->name('estadios');
+    // });
+
+    // Route::controller(GrupoController::class)->group(function () {
+    //     Route::get('grupos', 'gruposWeb')->name('grupos');
+    // });
+
+    // Route::controller(EquipoController::class)->group(function () {
+    //     Route::get('equipos', 'equiposWeb')->name('equipos');
+    // });
 });
+
+// TEMPORAL: previsualización de emails — eliminar antes de pasar a producción.
+// Route::get('/_preview/welcome-email', function () {
+//     $user = \App\Models\User::first() ?? new \App\Models\User(['nombres' => 'Dennis']);
+//     return view('emails.welcome', compact('user'));
+// });
+// Route::get('/_preview/reset-password-email', function () {
+//     $user = \App\Models\User::first() ?? new \App\Models\User([
+//         'nombres' => 'Dennis',
+//         'email'   => 'dennis@example.com',
+//     ]);
+//     $resetUrl = route('password.reset', [
+//         'token' => 'preview-token-1234567890',
+//         'email' => $user->email,
+//     ]);
+//     $expiresInMinutes = (int) config('auth.passwords.users.expire', 60);
+//     return view('emails.reset-password', compact('user', 'resetUrl', 'expiresInMinutes'));
+// });
 
 require __DIR__ . '/auth.php';

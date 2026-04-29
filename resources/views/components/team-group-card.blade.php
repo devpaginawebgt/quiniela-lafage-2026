@@ -1,4 +1,4 @@
-@props(['equipo'])
+ @props(['equipo'])
 
 <div
     class="team-group-card bg-complementary-primary border border-secondary rounded-3xl overflow-hidden cursor-pointer"

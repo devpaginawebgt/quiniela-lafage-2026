@@ -16,7 +16,7 @@ class UsuariosExport implements FromQuery, WithHeadings, WithMapping, WithChunkR
 
     public function query()
     {
-        return User::with(['country', 'type', 'company', 'visitor', 'pushTokens'])
+        return User::with(['country', 'type', 'company', 'pushTokens'])
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('nombres', 'like', "%{$this->search}%")
@@ -25,8 +25,7 @@ class UsuariosExport implements FromQuery, WithHeadings, WithMapping, WithChunkR
                         ->orWhereRaw("CONCAT(nombres, ' ', apellidos) LIKE ?", ["%{$this->search}%"])
                         ->orWhereHas('country', fn($country) => $country->where('name', 'like', "%{$this->search}%"))
                         ->orWhereHas('type', fn($type) => $type->where('name', 'like', "%{$this->search}%"))
-                        ->orWhereHas('company', fn($company) => $company->where('name', 'like', "%{$this->search}%"))
-                        ->orWhereHas('visitor', fn($visitor) => $visitor->whereRaw("CONCAT(name, ' ', lastname) LIKE ?", ["%{$this->search}%"]));
+                        ->orWhereHas('company', fn($company) => $company->where('name', 'like', "%{$this->search}%"));
                 });
             })
             ->orderBy('puntos', 'desc');
@@ -47,19 +46,11 @@ class UsuariosExport implements FromQuery, WithHeadings, WithMapping, WithChunkR
             'Apellidos',
             'No. Documento',
             'Correo Electrónico',
-            'Teléfono',
-            'Dirección',
             'Colegiado',
             'País',
             'Tipo',
             'Cadena',
-            'Visitador',
-            'Región',
-            'Capital',
             'Farmacia',
-            'Puntos Trivias',
-            'Puntos Predicciones',
-            'Puntos Bonus',
             'Puntos Total',
             'Fecha Registro',
             'Estado',
@@ -75,19 +66,11 @@ class UsuariosExport implements FromQuery, WithHeadings, WithMapping, WithChunkR
             $user->apellidos,
             $user->numero_documento ?? 'N/A',
             $user->email,
-            $user->telefono ?? 'N/A',
-            $user->direccion ?? 'N/A',
             $user->colegiado ?? 'N/A',
             $user->country?->name ?? 'N/A',
             $user->type?->name ?? 'N/A',
             $user->company?->name ?? 'N/A',
-            $user->visitor ? $user->visitor->name . ' ' . $user->visitor->lastname : 'N/A',
-            $user->region ?? 'N/A',
-            $user->capital ?? 'N/A',
             $user->branch ?? 'N/A',
-            $user->puntos_trivias,
-            $user->puntos_predicciones,
-            $user->puntos_bonus,
             $user->puntos,
             $user->created_at->timezone('America/Guatemala')->format('d/m/Y H:i'),
             $user->status_user ? 'Activo' : 'Inactivo',

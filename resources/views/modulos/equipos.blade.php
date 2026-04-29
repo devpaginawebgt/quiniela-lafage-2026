@@ -1,15 +1,9 @@
 <x-app-layout>
-    <x-inicio-header :activeTab="'equipos'" />
-
-    <x-carousel-section-banners :banners="$banners" />
-
     <div class="max-w-screen-2xl my-6 mx-auto sm:px-6 lg:px-8">
         <div class="overflow-hidden">
             <div class="px-6 pb-6">
 
-                <h5 class="text-3xl 2xl:text-4xl text-center font-bold mt-8 mb-4">Selecciones Clasificadas</h5>
-
-                <x-user-stats :user="$user" />
+                <h1 class="text-3xl 2xl:text-4xl text-center font-bold mt-8 mb-4">Selecciones Clasificadas</h1>
 
                 <div class="w-full max-w-lg mx-auto mb-6">
                     <x-search-input id="buscar-selecciones" name="buscar_selecciones" placeholder="Buscar Selecciones" />

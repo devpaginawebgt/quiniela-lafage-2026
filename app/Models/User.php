@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Mail\ResetPasswordMail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -38,7 +40,7 @@ class User extends Authenticatable
         'colegiado',
         'company_id',
         'branch',
-        
+
         'status_user',
         'accepted_terms_version',
         'password',
@@ -109,5 +111,14 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Line::class);
     }
-    
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class, 'company_id');
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        Mail::to($this->email)->queue(new ResetPasswordMail($this, $token));
+    }
 }

@@ -32,10 +32,6 @@ class EstadioController extends Controller
 
     public function estadiosWeb()
     {
-        // Banners
-
-        $banners = $this->moduleService->getBanners(10);        
-
         // User Info
 
         $user = Auth::user();
@@ -47,7 +43,6 @@ class EstadioController extends Controller
         $estadios = Estadio::all();
 
         return view('modulos.estadios', [
-            'banners'  => $banners,
             'user'     => $user,
             'estadios' => $estadios
         ]);

@@ -30,7 +30,7 @@
 <body class="font-sans antialiased text-light bg-complementary-primary">
 
     {{-- Topbar móvil (botón para abrir sidebar) --}}
-    <header class="lg:hidden fixed top-0 left-0 right-0 z-50 bg-complementary-primary border-b border-zinc-400">
+    <header class="lg:hidden fixed top-0 left-0 right-0 z-50 bg-primary border-b border-zinc-400">
         <div class="flex items-center justify-between px-4 h-14">
             {{-- Branding --}}
             <div class="flex items-center gap-2">
@@ -58,7 +58,7 @@
         class="fixed top-14 left-0 z-40 w-full max-h-[calc(100vh-3.5rem)] overflow-y-auto
                   lg:top-0 lg:max-h-none lg:min-h-screen lg:w-64
                   transition-transform -translate-y-full lg:translate-y-0
-                  bg-complementary-primary border-r border-zinc-400"
+                  bg-primary border-r border-zinc-400"
         aria-label="Sidebar admin">
 
         <div class="flex flex-col h-full">
@@ -79,7 +79,7 @@
             {{-- Footer: volver al sitio + logout --}}
             <div class="px-3 py-3 border-t border-complementary-dark/30 space-y-1">
                 <a href="{{ route('web.proximos-partidos') }}"
-                    class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-complementary-light hover:bg-complementary-primary/60 hover:text-light transition-colors">
+                    class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-light hover:bg-complementary-primary/40 hover:text-light transition-colors">
                     <span class="icon-[material-symbols--arrow-back-rounded] w-5 h-5"></span>
                     <span>Volver al sitio</span>
                 </a>
@@ -87,7 +87,7 @@
                 <form method="POST" action="{{ route('web.logout') }}">
                     @csrf
                     <button type="submit"
-                        class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-complementary-light hover:bg-complementary-primary/60 hover:text-light transition-colors">
+                        class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-light hover:bg-complementary-primary/40 hover:text-light transition-colors">
                         <span class="icon-[material-symbols--logout-rounded] w-5 h-5"></span>
                         <span>Cerrar sesión</span>
                     </button>
