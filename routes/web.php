@@ -26,11 +26,6 @@ use App\Http\Controllers\UserController;
 
 /****** RUTAS GET PARA OBTENER VISTAS DE MODULOS */
 
-// TEMPORAL: previsualización del email de bienvenida — eliminar antes de pasar a producción.
-// Route::get('/_preview/welcome-email', function () {
-//     $user = \App\Models\User::first() ?? new \App\Models\User(['nombres' => 'Dennis']);
-//     return view('emails.welcome', compact('user'));
-// });
 
 Route::middleware(['auth'])->as('web.')->group(function () {
 
@@ -110,5 +105,23 @@ Route::middleware(['auth'])->as('web.')->group(function () {
     //     Route::get('equipos', 'equiposWeb')->name('equipos');
     // });
 });
+
+// TEMPORAL: previsualización de emails — eliminar antes de pasar a producción.
+// Route::get('/_preview/welcome-email', function () {
+//     $user = \App\Models\User::first() ?? new \App\Models\User(['nombres' => 'Dennis']);
+//     return view('emails.welcome', compact('user'));
+// });
+// Route::get('/_preview/reset-password-email', function () {
+//     $user = \App\Models\User::first() ?? new \App\Models\User([
+//         'nombres' => 'Dennis',
+//         'email'   => 'dennis@example.com',
+//     ]);
+//     $resetUrl = route('password.reset', [
+//         'token' => 'preview-token-1234567890',
+//         'email' => $user->email,
+//     ]);
+//     $expiresInMinutes = (int) config('auth.passwords.users.expire', 60);
+//     return view('emails.reset-password', compact('user', 'resetUrl', 'expiresInMinutes'));
+// });
 
 require __DIR__ . '/auth.php';

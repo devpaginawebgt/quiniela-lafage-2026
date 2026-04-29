@@ -175,7 +175,7 @@
 
                                 <button
                                     type="submit"
-                                    class="w-full bg-primary text-light rounded-full px-6 py-3 hover:brightness-110 focus:ring-3 focus:ring-dark flex items-center justify-center gap-2"
+                                    class="w-full bg-primary text-light rounded-full px-6 py-3 hover:brightness-120 focus:ring-3 focus:ring-dark flex items-center justify-center gap-2"
                                 >
                                     <span class="icon-[material-symbols--login] w-5 h-5"></span>
                                     Iniciar Sesión
@@ -184,10 +184,19 @@
                         </div>
                     </div>
 
+                    <div class="mt-6 text-center">
+                        <a
+                            href="{{ route('password.request') }}"
+                            class="text-primary text-sm font-semibold hover:text-secondary transition-color duration-300 ease-in-out"
+                        >
+                            Olvidé mi contraseña
+                        </a>
+                    </div>
+
                     {{-- Register link --}}
-                    <div class="text-center mt-8">
+                    <div class="text-center mt-4">
                         <p class="text-dark text-sm mb-2">¿No tienes cuenta?</p>
-                        <a href="{{ route('register') }}" class="text-primary/80 font-semibold text-base hover:text-primary">
+                        <a href="{{ route('register') }}" class="text-primary font-semibold text-base hover:text-secondary transition-color duration-300 ease-in-out">
                             Regístrate
                         </a>
                     </div>
