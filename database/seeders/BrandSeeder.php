@@ -131,15 +131,29 @@ class BrandSeeder extends Seeder
             /* ============================================================ */
             /* LINEA DERMATOLOGICA */
             /* ============================================================ */
-            [   
+            [
                 'name' => 'Aminoter',
                 'image' => '/images/brands/derma/brand2.png',
                 'line_id' => 6,
                 'countries' => [1, 2, 3, 4, 5],
             ],
-            [   
-                'name' => 'Combinater',       
-                'image' => '/images/brands/derma/brand1.png', 
+            [
+                'name' => 'Onitrac',
+                // 'image' => '/images/brands/derma/brand1.png', // TODO: reemplazar con imagen real
+                'image' => '/images/brands/brand-placeholder.png',
+                'line_id' => 6,
+                'countries' => [1, 2, 3, 4, 5, 6],
+            ],
+            [
+                'name' => 'Folcres',
+                // 'image' => '/images/brands/derma/brand2.png', // TODO: reemplazar con imagen real
+                'image' => '/images/brands/brand-placeholder.png',
+                'line_id' => 6,
+                'countries' => [1, 2, 3, 4, 5, 6],
+            ],
+            [
+                'name' => 'Combinater',
+                'image' => '/images/brands/derma/brand1.png',
                 'line_id' => 6,
                 'countries' => [6],
             ],
