@@ -44,7 +44,8 @@
                     <tr>
                         <td align="center" style="padding:8px 30px 8px 30px;">
                             <a href="https://placeholder.com"
-                                style="display:inline-block; background:#f44236; color:#fafafa; text-decoration:none; padding:14px 32px; border-radius:8px; font-weight:bold; font-size:15px; letter-spacing:0.3px;">
+                                style="display:inline-block; background:#f44236; color:#fafafa; text-decoration:none; padding:14px 32px; border-radius:8px; font-weight:bold; font-size:15px; letter-spacing:0.3px;"
+                                target="_blank">
                                 Accede a la plataforma web
                             </a>
                         </td>
@@ -59,14 +60,14 @@
                             <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
                                 <tr>
                                     <td style="padding:0 8px;" align="center" valign="middle">
-                                        <a href="https://placeholder.com" style="text-decoration:none;">
+                                        <a href="https://placeholder.com" style="text-decoration:none;" target="_blank">
                                             <img src="{{ rtrim(config('app.url'), '/') . '/images/decoracion/play_store.png' }}"
                                                 alt="Descargar en Google Play" width="147" height="46"
                                                 style="display:block; border:0; outline:none; width:147px; height:46px;">
                                         </a>
                                     </td>
                                     <td style="padding:0 8px;" align="center" valign="middle">
-                                        <a href="https://placeholder.com" style="text-decoration:none;">
+                                        <a href="https://placeholder.com" style="text-decoration:none;" target="_blank">
                                             <img src="{{ rtrim(config('app.url'), '/') . '/images/decoracion/app_store.png' }}"
                                                 alt="Descargar en App Store" width="133" height="46"
                                                 style="display:block; border:0; outline:none; width:133px; height:46px;">
