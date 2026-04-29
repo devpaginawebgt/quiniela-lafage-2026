@@ -26,6 +26,12 @@ use App\Http\Controllers\UserController;
 
 /****** RUTAS GET PARA OBTENER VISTAS DE MODULOS */
 
+// TEMPORAL: previsualización del email de bienvenida — eliminar antes de pasar a producción.
+// Route::get('/_preview/welcome-email', function () {
+//     $user = \App\Models\User::first() ?? new \App\Models\User(['nombres' => 'Dennis']);
+//     return view('emails.welcome', compact('user'));
+// });
+
 Route::middleware(['auth'])->as('web.')->group(function () {
 
     Route::controller(ResultadoPartidoController::class)->group(function () {

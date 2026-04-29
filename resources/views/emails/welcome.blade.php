@@ -31,7 +31,7 @@
                         <td align="center" style="padding:36px 30px 8px 30px;">
                             <h1
                                 style="margin:0 0 12px 0; font-size:26px; line-height:1.25; color:#202453; font-weight:bold;">
-                                ¡Bienvenido a la {{ config('app.name') }} 2026!
+                                ¡Bienvenido {{ $user->nombres }}!
                             </h1>
                             <p style="margin:0; color:#1b1c1b; font-size:15px; line-height:1.6;">
                                 Pronostica los marcadores, sigue el torneo jornada a jornada y disfrútalo junto al

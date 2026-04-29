@@ -27,7 +27,7 @@ class WelcomeMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Te damos la bienvenida al Mundial Lafage',
+            subject: "Hola {$this->user->nombres}, te damos la bienvenida al Mundial Lafage",
         );
     }
 
