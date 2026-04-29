@@ -114,18 +114,18 @@ class BrandSeeder extends Seeder
             /* ============================================================ */
             /* LINEA UROLOGICA */
             /* ============================================================ */
-            // [   
-            //     'name' => 'Momentix Familia',       
-            //     'image' => '/images/brands/momentix-familia.png', 
-            //     'line_id' => 5,
-            //     'countries' => [1, 2, 3, 4, 5, 6],
-            // ],
-            // [   
-            //     'name' => 'Serecur Familia',       
-            //     'image' => '/images/brands/serecur-familia.png', 
-            //     'line_id' => 5,
-            //     'countries' => [1, 2, 3, 4, 5, 6],
-            // ],
+            [   
+                'name' => 'Momentix Familia',       
+                'image' => '/images/brands/urologica/brand1.png', 
+                'line_id' => 5,
+                'countries' => [1, 2, 3, 4, 5, 6],
+            ],
+            [   
+                'name' => 'Serecur Familia',       
+                'image' => '/images/brands/urologica/brand2.png', 
+                'line_id' => 5,
+                'countries' => [1, 2, 3, 4, 5, 6],
+            ],
 
 
             /* ============================================================ */
@@ -133,13 +133,13 @@ class BrandSeeder extends Seeder
             /* ============================================================ */
             [   
                 'name' => 'Aminoter',
-                'image' => '/images/brands/cardio/brand2.png',
+                'image' => '/images/brands/derma/brand2.png',
                 'line_id' => 6,
                 'countries' => [1, 2, 3, 4, 5],
             ],
             [   
                 'name' => 'Combinater',       
-                'image' => '/images/brands/cardio/brand1.png', 
+                'image' => '/images/brands/derma/brand1.png', 
                 'line_id' => 6,
                 'countries' => [6],
             ],
