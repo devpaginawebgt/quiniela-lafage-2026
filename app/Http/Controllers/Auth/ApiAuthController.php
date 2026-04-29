@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ApiLoginRequest;
 use App\Http\Requests\Auth\ApiRegisterRequest;
 use App\Http\Resources\User\UserRankResource;
+use App\Http\Services\CodigoService;
 use App\Http\Services\UserService;
 use App\Models\User;
 use App\Traits\ApiResponse;
@@ -13,13 +14,15 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Validation\ValidationException;
 
 class ApiAuthController extends Controller
 {
     use ApiResponse;
 
     public function __construct(
-        private readonly UserService $userService
+        private readonly UserService $userService,
+        private readonly CodigoService $codigoService,
     ) {}
 
     public function login(ApiLoginRequest $request)
@@ -94,9 +97,25 @@ class ApiAuthController extends Controller
     {   
         $data = $request->validated();
 
-        $data['password'] = Hash::make($data['password']);
+        $codigo = null;
+
+        if ((int)$data['user_type_id'] === 1) {
+            $result = $this->codigoService->validate($data['code']);
+    
+            if (!$result['success']) {
+                throw ValidationException::withMessages(['codigo' => $result['message']]);
+            }
+    
+            $codigo = $result['codigo'];
+
+            $data['codigo_id'] = $codigo->id;
+
+            $data['line_id'] = $codigo->line_id;
+        }
 
         $data['puntos'] = 0;
+
+        $data['password'] = Hash::make($data['password']);
 
         $user = User::create($data);
 
@@ -107,8 +126,6 @@ class ApiAuthController extends Controller
         $token = $user->createToken('mobile-app')->plainTextToken;
 
         $user = $this->userService->getUserRank($user);
-
-        // $user = $this->userService->getUserPredictionsCount($user);
 
         $user = new UserRankResource($user);
 

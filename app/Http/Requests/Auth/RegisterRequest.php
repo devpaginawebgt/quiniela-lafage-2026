@@ -29,8 +29,8 @@ class RegisterRequest extends FormRequest
             'numero_documento' => ['required', 'string', 'min:6', 'max:20', 'unique:users,numero_documento'],
             'email'            => ['required', 'email',  'min:5', 'max:255', 'unique:users'],
             'pais_id'          => ['required', 'integer', 'exists:countries,id'],
-            'user_type_id'     => ['required', 'integer', 'exists:user_types,id'],
             'password'         => ['required', 'confirmed', Password::defaults()],
+            'user_type_id'     => ['required', 'integer', 'exists:user_types,id'],
 
             'company_id' => [
                 'nullable',
@@ -116,23 +116,12 @@ class RegisterRequest extends FormRequest
             'numero_documento.max'      => 'El número de documento no puede tener más de 20 caracteres.',
             'numero_documento.unique'   => 'Ya existe un usuario registrado con este número de documento.',
 
-            // TELEFONO
-            'telefono.required' => 'Por favor, ingrese su número de teléfono.',
-            'telefono.integer'  => 'El campo teléfono debe ser un número válido.',
-            'telefono.digits'   => 'El campo teléfono debe tener 8 dígitos.',
-
             // EMAIL
             'email.required' => 'Por favor, ingrese su correo electrónico.',
             'email.email'    => 'Por favor ingrese un correo electrónico válido.',
             'email.min'      => 'El correo electrónico debe contener al menos 5 caracteres.',
             'email.max'      => 'El correo electrónico no debe superar los 255 caracteres.',
             'email.unique'   => 'Ya existe un usuario registrado con este correo electrónico.',
-
-            // DIRECCION
-            'direccion.required' => 'Por favor, ingrese su dirección.',
-            'direccion.string'   => 'El campo dirección debe contener texto.',
-            'direccion.min'      => 'El campo dirección debe contener al menos 5 caracteres.',
-            'direccion.max'      => 'El campo dirección no debe superar los 255 caracteres.',
 
             // PAIS
             'pais_id.required' => 'Por favor seleccione su país.',
