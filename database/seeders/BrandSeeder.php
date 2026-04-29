@@ -142,14 +142,14 @@ class BrandSeeder extends Seeder
                 // 'image' => '/images/brands/derma/brand1.png', // TODO: reemplazar con imagen real
                 'image' => '/images/brands/brand-placeholder.png',
                 'line_id' => 6,
-                'countries' => [1, 2, 3, 4, 5, 6],
+                'countries' => [1, 2, 3, 4, 6],
             ],
             [
                 'name' => 'Folcres',
                 // 'image' => '/images/brands/derma/brand2.png', // TODO: reemplazar con imagen real
                 'image' => '/images/brands/brand-placeholder.png',
                 'line_id' => 6,
-                'countries' => [1, 2, 3, 4, 5, 6],
+                'countries' => [5],
             ],
             [
                 'name' => 'Combinater',

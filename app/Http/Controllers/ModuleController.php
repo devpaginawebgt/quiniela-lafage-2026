@@ -27,7 +27,7 @@ class ModuleController extends Controller
             return $this->errorResponse('No se encontró el módulo', 422);
         }
 
-        $banners = $module->banners->where('is_active', true);
+        $banners = $this->moduleService->getBanners($module->id);
 
         $banners = BannerResource::collection($banners);
 

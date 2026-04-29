@@ -19,8 +19,6 @@ class ModuleService {
         
         if (empty($user)) return [];
 
-        
-
         return Banner::whereHas('brand', fn ($q) => $q->where('line_id', $user->line_id))
             ->where('module_id', $module_id)
             ->where('is_active', true)
