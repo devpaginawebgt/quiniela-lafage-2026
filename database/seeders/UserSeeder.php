@@ -93,7 +93,7 @@ class UserSeeder extends Seeder
         User::whereIn('id', [3, 4])->each(fn (User $user) => $user->assignRole('participant'));
 
         // Datos de prueba: 300 dependientes y 300 doctores con países aleatorios.
-        User::factory()->count(300)->dependiente()->create();
-        User::factory()->count(300)->doctor()->create();
+        // User::factory()->count(200)->dependiente()->create();
+        // User::factory()->count(200)->doctor()->create();
     }
 }

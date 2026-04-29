@@ -4,17 +4,13 @@ namespace App\Providers;
 
 use App\Events\MatchCreated;
 use App\Events\ResultCreated;
-use App\Listeners\AddBracketGame;
-use App\Listeners\AddBracketGameResult;
+use App\Listeners\AddMatchBrands;
 use App\Listeners\DeactivateInvalidFcmToken;
-use App\Listeners\ScheduleMatchPushNotification;
 use App\Listeners\SendWelcomeEmail;
 use App\Listeners\UpdatePredictionPoints;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Notifications\Events\NotificationFailed;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -30,6 +26,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         MatchCreated::class => [            
             // ScheduleMatchPushNotification::class,
+            AddMatchBrands::class,
         ],
         ResultCreated::class => [
             UpdatePredictionPoints::class,

@@ -61,7 +61,7 @@ class ResultadoPartidoController extends Controller
 
         // Obtener los partidos de jornada
 
-        $predicciones = $this->prediccionService->getPrediccionesJornada($id_jornada, $user_id);
+        $predicciones = $this->prediccionService->getPrediccionesJornada($id_jornada);
 
         $predicciones = PrediccionResource::collection($predicciones);
 
@@ -87,7 +87,7 @@ class ResultadoPartidoController extends Controller
 
         // Obtener los partidos disponibles a predecir
 
-        $predicciones_usuario = $this->prediccionService->getPrediccionesById($id_partidos, $user_id);  
+        $predicciones_usuario = $this->prediccionService->getPrediccionesById($id_partidos);  
 
         $validacion_predicciones = $this->prediccionService->validatePrediccionesUsuario($predicciones_nuevas, $predicciones_usuario);
 
@@ -110,7 +110,7 @@ class ResultadoPartidoController extends Controller
             return in_array($prediccion['id_partido'], $ids_permitidos);
         });
 
-        $predicciones_guardadas = $this->prediccionService->savePredicciones($predicciones_a_guardar, $predicciones_permitidas, $user_id);
+        $predicciones_guardadas = $this->prediccionService->savePredicciones($predicciones_a_guardar, $predicciones_permitidas);
 
         $predicciones_guardadas = PrediccionSolicitudResource::collection($predicciones_guardadas);
 
@@ -151,7 +151,7 @@ class ResultadoPartidoController extends Controller
 
         // Obtener los partidos de jornada
 
-        $resultados = $this->prediccionService->getResultados($id_jornada, $user_id);
+        $resultados = $this->prediccionService->getResultados($id_jornada);
 
         $resultados = ResultadoResource::collection($resultados);
 
@@ -198,7 +198,7 @@ class ResultadoPartidoController extends Controller
 
         // Partidos con predicciones del usuario
 
-        $partidosJornada = $this->prediccionService->getPrediccionesJornada($jornada_filtrada, $user->id);
+        $partidosJornada = $this->prediccionService->getPrediccionesJornada($jornada_filtrada);
 
         return view('modulos.proximos-partidos', [
             'jornadas'        => $jornadas,
@@ -224,7 +224,7 @@ class ResultadoPartidoController extends Controller
 
         // Partidos con predicciones del usuario
 
-        $resultados = $this->prediccionService->getResultados($jornada_filtrada, $user->id);
+        $resultados = $this->prediccionService->getResultados($jornada_filtrada);
 
         return view('modulos.mis-predicciones', [
             'jornadas'        => $jornadas,
@@ -253,7 +253,7 @@ class ResultadoPartidoController extends Controller
 
         // Obtener los partidos disponibles a predecir
 
-        $predicciones_usuario = $this->prediccionService->getPrediccionesById($id_partidos, $user_id);  
+        $predicciones_usuario = $this->prediccionService->getPrediccionesById($id_partidos);  
 
         $validacion_predicciones = $this->prediccionService->validatePrediccionesUsuario($predicciones_nuevas, $predicciones_usuario);
 
@@ -276,7 +276,7 @@ class ResultadoPartidoController extends Controller
             return in_array($prediccion['id_partido'], $ids_permitidos);
         });
 
-        $predicciones_guardadas = $this->prediccionService->savePredicciones($predicciones_a_guardar, $predicciones_permitidas, $user_id);
+        $predicciones_guardadas = $this->prediccionService->savePredicciones($predicciones_a_guardar, $predicciones_permitidas);
 
         $predicciones_guardadas = PrediccionSolicitudResource::collection($predicciones_guardadas);
 
