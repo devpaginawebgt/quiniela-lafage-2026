@@ -221,6 +221,7 @@ class PartidoSeeder extends Seeder
                 'fase' => 'GRUPOS',
                 'jornada_id' => 2,
                 'fecha_partido' => Carbon::create(2026, 6, 19, 20, 30, 0, 'America/New_York')
+                    ->setTimezone('UTC')
                     ->toDateTimeString(), // 01:00 UTC (20 junio)
                 'estadio_id' => 14, // Philadelphia Stadium
                 'equipo_1' => 9,  // Brasil
