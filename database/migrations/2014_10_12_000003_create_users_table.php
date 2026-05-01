@@ -61,6 +61,7 @@ class CreateUsersTable extends Migration
             $table->string('accepted_terms_version');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

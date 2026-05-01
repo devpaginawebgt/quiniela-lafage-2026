@@ -85,6 +85,17 @@ class UserController extends Controller
         return $this->successResponse($line);
     }
 
+    public function delete(Request $request)
+    {
+        $user = request()->user();
+
+        $user->tokens()->delete();
+
+        $user->delete();
+
+        return $this->successResponse(['message' => 'Usuario eliminado correctamente.']);
+    }
+
     // public function getRanking(Request $request)
     // {
     //     $user = $request->user();
