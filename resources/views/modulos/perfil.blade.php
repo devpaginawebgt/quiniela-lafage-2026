@@ -42,6 +42,15 @@
                         <span class="icon-[material-symbols--chevron-right-rounded] w-6 h-6"></span>
                     </button>
 
+                     {{-- Eliminar cuenta --}}
+                    <button
+                        type="button"
+                        id="btn-delete-account"
+                        class="w-full flex items-center gap-3 py-3 text-red-600 hover:text-red-500 transition-colors duration-150 cursor-pointer">
+                        <span class="icon-[material-symbols--delete-outline] w-7 h-7"></span>
+                        <span class="flex-1 text-left">Eliminar cuenta</span>
+                    </button>
+
                     {{-- Cerrar sesión --}}
                     <button
                         type="button"
@@ -60,6 +69,39 @@
 
     {{-- Modal Términos y Condiciones --}}
     <x-terms-view-modal :terms="$terms" />
+
+    {{-- Modal Eliminar Cuenta --}}
+    <div id="modal-delete-account" class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4">
+
+        {{-- Backdrop --}}
+        <div id="modal-delete-account-backdrop" class="absolute inset-0 bg-black/70 opacity-0 transition-opacity duration-200"></div>
+
+        {{-- Panel --}}
+        <div id="modal-delete-account-panel" class="relative bg-light rounded-2xl shadow-xl w-full max-w-md scale-90 opacity-0 transition-[transform,opacity] duration-200 ease-out">
+            <div class="p-6">
+                <h3 class="text-2xl text-dark text-left mb-4">Eliminar cuenta</h3>
+                <p class="text-dark text-left text-sm mb-6">
+                    ¿Estás seguro de eliminar tu cuenta? Esta acción cerrará tu sesión y no podrás recuperar tu información.
+                </p>
+
+                <div class="flex items-center justify-end gap-4">
+                    <button
+                        type="button"
+                        id="modal-delete-account-cancel"
+                        class="text-blue-600 hover:text-blue-500 transition-colors cursor-pointer">
+                        Cancelar
+                    </button>
+
+                    <button
+                        type="button"
+                        id="modal-delete-account-confirm"
+                        class="text-red-600 hover:text-red-500 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                        Eliminar cuenta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     {{-- Modal Cerrar Sesión --}}
     <div id="modal-logout" class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -155,6 +197,52 @@
 
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && !termsModal.classList.contains('pointer-events-none')) closeTerms();
+            });
+
+            // Modal Eliminar Cuenta
+            const deleteModal    = document.getElementById('modal-delete-account');
+            const deleteBackdrop = document.getElementById('modal-delete-account-backdrop');
+            const deletePanel    = document.getElementById('modal-delete-account-panel');
+            const deleteTrigger  = document.getElementById('btn-delete-account');
+            const deleteCancel   = document.getElementById('modal-delete-account-cancel');
+            const deleteConfirm  = document.getElementById('modal-delete-account-confirm');
+
+            const openDelete = () => {
+                deleteModal.classList.remove('pointer-events-none');
+                deleteBackdrop.classList.remove('opacity-0');
+                deletePanel.classList.remove('scale-90', 'opacity-0');
+                document.body.style.overflow = 'hidden';
+            };
+
+            const closeDelete = () => {
+                deleteBackdrop.classList.add('opacity-0');
+                deletePanel.classList.add('scale-90', 'opacity-0');
+                document.body.style.overflow = '';
+                deletePanel.addEventListener('transitionend', () => {
+                    deleteModal.classList.add('pointer-events-none');
+                }, { once: true });
+            };
+
+            deleteTrigger.addEventListener('click', openDelete);
+            deleteCancel.addEventListener('click', closeDelete);
+            deleteBackdrop.addEventListener('click', closeDelete);
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !deleteModal.classList.contains('pointer-events-none') && !deleteConfirm.disabled) closeDelete();
+            });
+
+            deleteConfirm.addEventListener('click', async () => {
+                deleteConfirm.disabled = true;
+                deleteCancel.disabled  = true;
+
+                try {
+                    await window.axios.delete('{{ route('web.users.perfil.delete') }}');
+                    window.location.href = '{{ route('ingresa') }}';
+                } catch (error) {
+                    deleteConfirm.disabled = false;
+                    deleteCancel.disabled  = false;
+                    alert('No se pudo eliminar la cuenta. Inténtalo nuevamente.');
+                }
             });
         });
     </script>

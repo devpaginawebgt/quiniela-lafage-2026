@@ -178,4 +178,22 @@ class UserController extends Controller
         ]);
 
     }
+
+    public function deleteWeb(Request $request)
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        $user->tokens()->delete();
+
+        $user->delete();
+
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return $this->successResponse(['message' => 'Usuario eliminado correctamente.']);
+    }
 }

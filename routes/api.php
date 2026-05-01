@@ -109,7 +109,7 @@ Route::middleware(['auth:sanctum'])->group(function() {
         Route::get('user', 'getUser');
         Route::get('user/rank', 'getUserRank');
         Route::get('ranking', 'getRanking');
-        Route::post('user/delete', 'delete');
+        Route::delete('user/delete', 'delete');
     });
 
     Route::controller(UserPushTokenController::class)->group(function() {
