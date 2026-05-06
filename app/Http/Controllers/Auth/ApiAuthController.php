@@ -13,7 +13,6 @@ use App\Traits\ApiResponse;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 
 class ApiAuthController extends Controller
@@ -31,65 +30,25 @@ class ApiAuthController extends Controller
 
         $data = $request->validated();
 
-        $user = null;
+        $user = User::where('email', $data['email'])->first();
 
-        if ($data['user_type_id'] === 1) {
-
-            $user = $this->userService->getLoginDependiente($request);
-
-        } elseif ($data['user_type_id'] === 2) {
-
-            $user = $this->userService->getLoginDoctor($request);
-
-        }
-
-        if (empty($user)) {
-
+        if (empty($user) || !Hash::check($data['password'], $user->password)) {
             $request->hitRateLimiter();
 
-            $error_message = '';
-
-            switch($data['user_type_id']) {
-                case 1:
-                    $error_message = 'No se encontró un dependiente registrado con este número de documento.';
-                    break;
-                case 2:
-                    $error_message = 'No se encontró un doctor registrado con este número de colegiado.';
-                    break;
-                default:
-                    $error_message = 'No se encontró un usuario con este número de documento o colegiado.';
-                    break;
-            }
-
-            return $this->errorResponse($error_message, 401);
-
+            return $this->errorResponse('Credenciales incorrectas, revisa la información ingresada.', 401);
         }
 
         if ($user->status_user == 0) {
-
             return $this->errorResponse('No es posible ingresar con este usuario, para más información contacte a Soporte.', 401);
-
-        }
-
-        if ( !Hash::check($request['password'], $user->password) ) { 
-
-            RateLimiter::hit($request->throttleKey());
-
-            return $this->errorResponse('Credenciales incorrectas, revisa la información ingresada.', 401);
-
         }
 
         $token = $user->createToken('mobile-app')->plainTextToken;
-        
+
         $user = $this->userService->getUserRank($user);
-
-        $user = $this->userService->getUserPredictionsCount($user);
-
-        $user = new UserRankResource($user);
 
         return $this->successResponse([
             'token' => $token,
-            'user' => $user,
+            'user'  => new UserRankResource($user),
         ]);
     }
 

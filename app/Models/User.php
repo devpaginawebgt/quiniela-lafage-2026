@@ -46,6 +46,7 @@ class User extends Authenticatable
         'accepted_terms_version',
         'password',
         'email_verified_at',
+        'completed_info',
     ];
 
     /**
@@ -63,9 +64,13 @@ class User extends Authenticatable
      *
      * @var array<string, string>
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'completed_info'    => 'boolean',
+        ];
+    }
 
     public function type(): BelongsTo
     {

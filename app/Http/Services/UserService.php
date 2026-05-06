@@ -5,6 +5,8 @@ namespace App\Http\Services;
 use App\Models\Country;
 use App\Models\EquipoPartido;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
@@ -58,56 +60,55 @@ class UserService {
         return User::find($userId);
     }
 
-    public function getLoginDependiente($request)
+    public function getLoginDependiente(Request $request)
     {
-        return User::select('id', 'email', 'password', 'nombres', 'apellidos', 'pais_id', 'numero_documento', 'line_id', 'puntos', 'status_user', 'created_at')
+        return User::select('id', 'email', 'password', 'nombres', 'apellidos', 'pais_id', 'numero_documento', 'line_id', 'puntos', 'completed_info', 'status_user', 'created_at')
             ->where('numero_documento', $request->input('identity'))
             ->where('user_type_id', $request->input('user_type_id'))
             ->first();
     }
 
-    public function getLoginDoctor($request)
+    public function getLoginDoctor(Request $request)
     {
-        return User::select('id', 'email', 'password', 'nombres', 'apellidos', 'pais_id', 'numero_documento', 'line_id', 'puntos', 'status_user', 'created_at')
+        return User::select('id', 'email', 'password', 'nombres', 'apellidos', 'pais_id', 'numero_documento', 'line_id', 'puntos', 'completed_info', 'status_user', 'created_at')
             ->where('colegiado', $request->input('identity'))
             ->where('user_type_id', $request->input('user_type_id'))
             ->first();
     }
 
-    public function getRanking($line_id)
+    private function rankingQuery(int|string $line_id, array $columns = ['id', 'nombres', 'apellidos', 'pais_id', 'numero_documento', 'email', 'puntos', 'created_at']): Builder
     {
-        $participantes = User::select('id', 'nombres', 'apellidos', 'pais_id', 'numero_documento', 'email', 'puntos', 'created_at')
+        return User::select($columns)
             ->selectRaw('RANK() OVER (ORDER BY puntos DESC, nombres ASC) as posicion')
             ->where('line_id', $line_id)
-            ->has('predictions')
+            ->where('completed_info', true)
             ->where('status_user', 1)
-            ->get();
-
-        return $participantes;
-
+            ->has('predictions');
     }
 
-    public function getRankingWeb($line_id, $perPage = 100)
+    public function getRanking(int|string $line_id)
     {
-        return User::select('id', 'nombres', 'apellidos', 'puntos', 'pais_id', 'numero_documento', 'email', 'created_at')
+        return $this->rankingQuery($line_id)
             ->with('country')
-            ->selectRaw('RANK() OVER (ORDER BY puntos DESC, nombres ASC) as posicion')
-            ->where('line_id', $line_id)
-            ->has('predictions')
-            ->where('status_user', 1)
+            ->get();
+    }
+
+    public function getRankingWeb(int|string $line_id, $perPage = 100)
+    {
+        return $this->rankingQuery($line_id)
+            ->with('country')
             ->simplePaginate($perPage);
     }
 
-    public function getUserRank($user)
+    public function getUserRank(User $user)
     {
-        $rankingQuery = User::select('id', 'nombres', 'apellidos', 'pais_id', 'line_id', 'puntos', 'created_at')
-            ->selectRaw('RANK() OVER (ORDER BY puntos DESC, nombres ASC) as posicion')
-            ->where('line_id', $user->line_id)
-            ->has('predictions')
-            ->where('status_user', 1);
-        
+        if (empty($user->line_id)) {
+            $user->posicion = null;
+            return $user;
+        }
+
         $rank = DB::query()
-            ->fromSub($rankingQuery, 'ranking')
+            ->fromSub($this->rankingQuery($user->line_id, ['id']), 'ranking')
             ->where('id', $user->id)
             ->value('posicion');
 
@@ -116,7 +117,7 @@ class UserService {
         return $user;
     }
 
-    public function getUserPredictionsCount($user)
+    public function getUserPredictionsCount(User $user)
     {
         $partidos_existentes = EquipoPartido::whereHas('partido')->count();
 

@@ -25,7 +25,7 @@ class CreateUsersTable extends Migration
             $table->string('nombres');
             $table->string('apellidos');
             $table->string('image')->nullable();
-            $table->string('numero_documento');
+            $table->string('numero_documento')->nullable();
             $table->string('email')->unique();
 
             $table->foreignId('pais_id')
@@ -41,6 +41,7 @@ class CreateUsersTable extends Migration
                 ->onDelete('restrict');
 
             $table->foreignId('line_id')
+                ->nullable()
                 ->constrained('lines')
                 ->onUpdate('cascade')
                 ->onDelete('restrict');
@@ -59,6 +60,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('accepted_terms_version');
+            $table->boolean('completed_info')->default(false);
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

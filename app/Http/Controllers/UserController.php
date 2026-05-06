@@ -46,9 +46,7 @@ class UserController extends Controller
     {
         $user = $request->user();
         
-        $user = $this->userService->getUserRank($user);
-
-        $user = $this->userService->getUserPredictionsCount($user);
+        $user = $this->userService->getUserRank($user);        
 
         $user = new UserRankResource($user);
 
@@ -60,9 +58,7 @@ class UserController extends Controller
     {
         $user = $request->user();
 
-        $user = $this->userService->getUserRank($user);
-
-        $user = $this->userService->getUserPredictionsCount($user);
+        $user = $this->userService->getUserRank($user);    
 
         $user = new UserRankResource($user);
 
@@ -72,6 +68,12 @@ class UserController extends Controller
 
     public function getRanking(Request $request)
     {
+        $user = request()->user();
+
+        if (!$user->completed_info) {
+            return $this->errorResponse("Por favor, completa tu información en la sección 'Perfil' para acceder al ranking");
+        }
+
         $user = $request->user();
 
         $line_id = (int) $user->line_id;

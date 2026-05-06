@@ -27,29 +27,21 @@ class ApiLoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_type_id' => ['required', 'integer', 'exists:user_types,id'],
-            'identity'     => ['required', 'string', 'min:2', 'max:20'],
-            'password'     => ['required', 'string'],
+            'email'    => ['required', 'email', 'max:255'],
+            'password' => ['required', 'string'],
         ];
     }
 
     public function messages()
     {
-
         return [
-            'user_type_id.required' => 'El tipo de usuario es incorrecto.',
-            'user_type_id.integer'  => 'El tipo de usuario es incorrecto.',
-            'user_type_id.exists'   => 'No se encontró el tipo de usuario.',
-        
-            'identity.required' => 'Ingrese su número de documento o colegiado.',
-            'identity.string'   => 'El número de documento o colegiado no es válido.',
-            'identity.min'      => 'El número de documento o colegiado debe contener como mínimo 2 caracteres.',
-            'identity.max'      => 'El número de documento o colegiado debe contener como máximo 20 caracteres.',
+            'email.required' => 'Por favor, ingrese su correo electrónico.',
+            'email.email'    => 'Por favor ingrese un correo electrónico válido.',
+            'email.max'      => 'El correo electrónico no debe superar los 255 caracteres.',
 
             'password.required' => 'Por favor llene el campo contraseña.',
             'password.string'   => 'El campo contraseña debe contener texto.',
         ];
-
     }
 
     /**
@@ -68,7 +60,7 @@ class ApiLoginRequest extends FormRequest
             $minutes = ceil($seconds / 60);
 
             throw ValidationException::withMessages([
-                'numero_documento' => trans('auth.throttle', [
+                'email' => trans('auth.throttle', [
                     'seconds' => $seconds,
                     'minutes' => $minutes,
                 ]),
@@ -94,6 +86,6 @@ class ApiLoginRequest extends FormRequest
      */
     public function throttleKey()
     {
-        return Str::lower($this->input('numero_documento')).'|'.$this->ip();
+        return Str::lower($this->input('email')).'|'.$this->ip();
     }
 }

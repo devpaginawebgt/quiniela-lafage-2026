@@ -27,6 +27,7 @@ class UserFactory extends Factory
             'status_user'            => 1,
             'password'               => Hash::make('FScomunica2'),
             'accepted_terms_version' => '0.1.0',
+            'completed_info'         =>  true,
         ];
     }
 

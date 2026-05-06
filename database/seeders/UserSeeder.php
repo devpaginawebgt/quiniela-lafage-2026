@@ -33,6 +33,7 @@ class UserSeeder extends Seeder
                 'password'         =>  Hash::make('FScomunica2'),
                 'accepted_terms_version' => '0.1.0',
                 'created_at'       =>  (Carbon::now())->toDateTimeString(),
+                'completed_info'   =>  true,
             ],
             [
                 'codigo_id'        =>  2,
@@ -49,6 +50,7 @@ class UserSeeder extends Seeder
                 'password'         =>  Hash::make('FScomunica2'),
                 'accepted_terms_version' => '0.1.0',
                 'created_at'       =>  (Carbon::now())->toDateTimeString(),
+                'completed_info'   =>  true,
             ],
             [
                 'codigo_id'        =>  3,
@@ -65,6 +67,7 @@ class UserSeeder extends Seeder
                 'password'         =>  Hash::make('FScomunica2'),
                 'accepted_terms_version' => '0.1.0',
                 'created_at'       =>  (Carbon::now())->toDateTimeString(),
+                'completed_info'   =>  true,
             ],
             [
                 'codigo_id'        =>  4,
@@ -84,6 +87,7 @@ class UserSeeder extends Seeder
                 'password'         =>  Hash::make('FScomunica2'),
                 'accepted_terms_version' => '0.1.0',
                 'created_at'       =>  (Carbon::now())->toDateTimeString(),
+                'completed_info'   =>  true,
             ],
         ];
 

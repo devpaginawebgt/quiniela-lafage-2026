@@ -51,6 +51,7 @@ class UserRankResource extends JsonResource
             'pais'          => new CountryUserResource($this->country),
             'linea'         => new LineResource($this->line),
             'fechaRegistro' => $fecha_registro->format('Y-m-d H:i:s'),
+            'completedInfo' => $this->completed_info,
             // 'partidos'      => $this->partidos,
         ];
     }
