@@ -71,9 +71,15 @@ class ResultadoPartidoController extends Controller
 
     public function savePredicciones(PrediccionRequest $request)
     {
+        $user = request()->user();
+
+        if (!$user->completed_info) {
+            return $this->errorResponse("Por favor, completa tu información en la sección 'Perfil' para acceder a la sección de premios", 403, [], 'PROFILE_INCOMPLETE');
+        }
+
         // Actualizar información general
 
-        $user_id = $request->user()->id;
+        $user_id = $user->id;
 
         $this->actualizacionDataGeneral($user_id);
 
