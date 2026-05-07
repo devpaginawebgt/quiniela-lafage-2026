@@ -78,6 +78,8 @@ class RegisteredUserController extends Controller
         
         $data['password'] = Hash::make($data['password']);        
 
+        $data['completed_info'] = true;
+
         $user = User::create($data);
 
         $user->assignRole('participant');
