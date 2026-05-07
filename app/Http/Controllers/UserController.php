@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\UpdateUserRequest;
 use App\Http\Resources\Line\LineRankingResource;
 use App\Http\Resources\User\UserRankingResource;
 use App\Http\Resources\User\UserRankResource;
@@ -47,6 +48,26 @@ class UserController extends Controller
         $user = $request->user();
         
         $user = $this->userService->getUserRank($user);        
+
+        $user = new UserRankResource($user);
+
+        return $this->successResponse($user);
+
+    }
+
+    public function update(UpdateUserRequest $request)
+    {
+        $user = $request->user();
+
+        $data = $request->validated();
+
+        $data['completed_info'] = true;
+
+        $user->update($data);
+
+        $user->refresh();
+        
+        $user = $this->userService->getUserRank($user);
 
         $user = new UserRankResource($user);
 

@@ -107,6 +107,7 @@ Route::middleware(['auth:sanctum'])->group(function() {
 
     Route::controller(UserController::class)->group(function() {
         Route::get('user', 'getUser');
+        Route::patch('user', 'update');
         Route::get('user/rank', 'getUserRank');
         Route::get('ranking', 'getRanking');
         Route::delete('user/delete', 'delete');

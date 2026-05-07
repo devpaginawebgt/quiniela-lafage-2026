@@ -17,7 +17,7 @@ class UpdateUserRequest extends FormRequest
 
     protected function failedAuthorization()
     {
-        throw new AuthorizationException('Tu información ya está completa.');
+        throw new AuthorizationException('Tu información ya está completa.', 'PROFILE_COMPLETE');
     }
 
     /**

@@ -3,9 +3,11 @@
 namespace App\Exceptions;
 
 use App\Traits\ApiResponse;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -43,14 +45,30 @@ class Handler extends ExceptionHandler
             //
         });
 
-        $this->renderable(function (ValidationException $e, $request) 
+        $this->renderable(function (ValidationException $e, $request)
         {
 
             if ($request->expectsJson()) {
 
                 $error = $e->validator->errors()->first();
 
-                return $this->errorResponse($error, 422, $e->errors());
+                return $this->errorResponse($error, 422, $e->errors(), 'INVALID_PAYLOAD');
+
+            }
+
+        });
+
+        $this->renderable(function (AccessDeniedHttpException $e, $request)
+        {
+
+            if ($request->expectsJson()) {
+
+                $previous   = $e->getPrevious();
+                $error_code = $previous instanceof AuthorizationException && $previous->getCode() !== 0
+                    ? (string) $previous->getCode()
+                    : null;
+
+                return $this->errorResponse($e->getMessage() ?: 'Acceso denegado.', 403, [], $error_code);
 
             }
 
