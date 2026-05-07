@@ -70,13 +70,13 @@ class ApiAuthController extends Controller
             $data['codigo_id'] = $codigo->id;
 
             $data['line_id'] = $codigo->line_id;
-        }
-
-        $data['puntos'] = 0;
+        }        
 
         $data['password'] = Hash::make($data['password']);
 
         $user = User::create($data);
+
+        $user->refresh();
 
         $user->assignRole('participant');
 
