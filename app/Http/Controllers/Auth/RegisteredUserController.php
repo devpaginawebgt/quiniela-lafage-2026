@@ -80,6 +80,8 @@ class RegisteredUserController extends Controller
 
         $data['completed_info'] = true;
 
+        $data['completed_info_at'] = now();
+
         $user = User::create($data);
 
         $user->assignRole('participant');

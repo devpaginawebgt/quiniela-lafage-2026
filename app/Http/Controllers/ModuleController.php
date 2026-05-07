@@ -27,6 +27,10 @@ class ModuleController extends Controller
             return $this->errorResponse('No se encontró el módulo', 422);
         }
 
+        $user = $request->user();
+
+        if (!$user->completed_info) return $this->successResponse([]);
+
         $banners = $this->moduleService->getBanners($module->id);
 
         $banners = BannerResource::collection($banners);

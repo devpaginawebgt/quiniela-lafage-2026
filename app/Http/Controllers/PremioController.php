@@ -27,7 +27,7 @@ class PremioController extends Controller
         $line_id = (int) $user->line_id;
 
         if (!$user->completed_info) {
-            return $this->errorResponse("Por favor, completa tu información en la sección 'Perfil' para acceder a la sección de premios");
+            return $this->errorResponse("Por favor, completa tu información en la sección 'Perfil' para acceder a la sección de premios", 403, [], 'PROFILE_INCOMPLETE');
         }
 
         $line = $this->lineService->getLine($line_id);

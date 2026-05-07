@@ -58,6 +58,13 @@ class UpdateUserRequest extends FormRequest
         ];
     }
 
+    public function validated($key = null, $default = null): array
+    {
+        $data = parent::validated($key, $default);
+
+        return array_filter($data, fn ($value) => $value !== null);
+    }
+
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator) {

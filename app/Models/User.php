@@ -47,6 +47,7 @@ class User extends Authenticatable
         'password',
         'email_verified_at',
         'completed_info',
+        'completed_info_at',
     ];
 
     /**
@@ -69,6 +70,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'completed_info'    => 'boolean',
+            'completed_info_at' => 'datetime',
         ];
     }
 
