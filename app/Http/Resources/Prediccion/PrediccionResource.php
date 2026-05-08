@@ -32,7 +32,6 @@ class PrediccionResource extends JsonResource
 
         $pronosticado = boolval(!empty($this->prediccion?->goles_equipo_1) && !empty($this->prediccion?->goles_equipo_2));
 
-        $prediccionStatus = $pronosticado ? 2 : 1;
         $message = $pronosticado
                 ? 'Pronóstico registrado.'
                 : 'Aún no has ingresado un pronóstico.';
@@ -57,7 +56,7 @@ class PrediccionResource extends JsonResource
 
             'prediccionEquipoUno' => $this->prediccion?->goles_equipo_1,
             'prediccionEquipoDos' => $this->prediccion?->goles_equipo_2,
-            'prediccionStatus'    => $prediccionStatus,
+            'prediccionHecha'     => $pronosticado,
             'message'             => $message,
         ];
     }
