@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\Avatar;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
@@ -75,12 +76,14 @@ class RegisteredUserController extends Controller
         }
 
         $data['puntos'] = 0;
-        
-        $data['password'] = Hash::make($data['password']);        
+
+        $data['password'] = Hash::make($data['password']);
 
         $data['completed_info'] = true;
 
         $data['completed_info_at'] = now();
+
+        $data['avatar_id'] = Avatar::where('is_default', true)->value('id');
 
         $user = User::create($data);
 

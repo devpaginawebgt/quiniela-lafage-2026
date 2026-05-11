@@ -8,6 +8,7 @@ use App\Http\Requests\Auth\ApiRegisterRequest;
 use App\Http\Resources\User\UserRankResource;
 use App\Http\Services\CodigoService;
 use App\Http\Services\UserService;
+use App\Models\Avatar;
 use App\Models\User;
 use App\Traits\ApiResponse;
 use Illuminate\Auth\Events\Registered;
@@ -73,6 +74,8 @@ class ApiAuthController extends Controller
         }        
 
         $data['password'] = Hash::make($data['password']);
+
+        $data['avatar_id'] = Avatar::where('is_default', true)->value('id');
 
         $user = User::create($data);
 
