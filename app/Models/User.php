@@ -30,7 +30,7 @@ class User extends Authenticatable
         'codigo_id',
         'nombres',
         'apellidos',
-        'image',
+        'avatar_id',
         'numero_documento',
         'email',
         'pais_id',
@@ -77,6 +77,11 @@ class User extends Authenticatable
     public function type(): BelongsTo
     {
         return $this->belongsTo(UserType::class, 'user_type_id');
+    }
+
+    public function avatar(): BelongsTo
+    {
+        return $this->belongsTo(Avatar::class, 'avatar_id');
     }
 
     // public function codigo() : BelongsTo

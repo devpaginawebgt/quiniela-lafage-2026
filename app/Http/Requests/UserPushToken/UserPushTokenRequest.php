@@ -45,5 +45,4 @@ class UserPushTokenRequest extends FormRequest
             'is_active.boolean' => 'El valor del campo activo debe ser verdadero o falso.',
         ];
     }
-
 }

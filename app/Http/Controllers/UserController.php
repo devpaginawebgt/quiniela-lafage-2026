@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\UpdateUserAvatarRequest;
 use App\Http\Requests\Auth\UpdateUserRequest;
 use App\Http\Resources\Line\LineRankingResource;
 use App\Http\Resources\User\UserRankingResource;
@@ -74,7 +75,23 @@ class UserController extends Controller
         $user = new UserRankResource($user);
 
         return $this->successResponse($user);
+    }
 
+    public function updateAvatar(UpdateUserAvatarRequest $request)
+    {
+        $user = $request->user();
+
+        $data = $request->validated();
+
+        if ((int) $data['avatar_id'] !== (int) $user->avatar_id) {
+            $user->update($data);
+
+            $user->refresh();
+        }
+
+        $user = $this->userService->getUserRank($user);
+
+        return $this->successResponse(new UserRankResource($user));
     }
 
     public function getUserRank(Request $request)

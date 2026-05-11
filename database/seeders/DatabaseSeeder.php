@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             ModuleSeeder::class,
             CountrySeeder::class,
             LineSeeder::class,
+            AvatarSeeder::class,
             BrandSeeder::class,
             BannerSeeder::class,
             CompanySeeder::class,

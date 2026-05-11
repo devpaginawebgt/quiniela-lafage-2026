@@ -24,7 +24,11 @@ class CreateUsersTable extends Migration
 
             $table->string('nombres');
             $table->string('apellidos');
-            $table->string('image')->nullable();
+            $table->foreignId('avatar_id')
+                ->constrained('avatars')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');
+
             $table->string('numero_documento')->nullable();
             $table->string('email')->unique();
 

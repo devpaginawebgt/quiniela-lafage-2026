@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\User;
 
+use App\Http\Resources\Avatar\AvatarResource;
 use App\Http\Resources\Country\CountryUserResource;
 use App\Http\Resources\Line\LineResource;
 use App\Http\Resources\UserType\UserTypeResource;
@@ -45,13 +46,14 @@ class UserRankResource extends JsonResource
             'id'            => $this->id,
             'nombres'       => $this->nombres,
             'apellidos'     => $this->apellidos,
-            'image'         => empty($this->image) ? HelperService::DefaultUserImagePath() : HelperService::ImagePath($this->image),
+            'image'         => HelperService::ImagePath($this->avatar->url),
             'puntos'        => $this->puntos,
             'posicion'      => $this->posicion,
             'color'         => $color,
             'pais'          => new CountryUserResource($this->country),
             'user_type'     => new UserTypeResource($this->type),
             'linea'         => new LineResource($this->line),
+            'avatar'        => new AvatarResource($this->avatar),
             'fechaRegistro' => $fecha_registro->format('Y-m-d H:i:s'),
             'completedInfo' => $this->completed_info,
             // 'partidos'      => $this->partidos,

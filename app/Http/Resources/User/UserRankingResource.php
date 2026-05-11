@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\User;
 
+use App\Http\Resources\Avatar\AvatarResource;
 use App\Http\Resources\Country\CountryUserResource;
 use App\Http\Services\HelperService;
 use Illuminate\Http\Request;
@@ -43,7 +44,7 @@ class UserRankingResource extends JsonResource
             'id'            => $this->id,
             'nombres'       => $this->nombres,
             'apellidos'     => $this->apellidos,
-            'image'         => empty($this->image) ? HelperService::DefaultUserImagePath() : HelperService::ImagePath($this->image),
+            'image'         => HelperService::ImagePath($this->avatar->url),
             'puntos'        => $this->puntos,
             'posicion'      => $this->posicion,
             'pais'          => new CountryUserResource($this->country),

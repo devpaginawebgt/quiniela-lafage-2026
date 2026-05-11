@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\ApiAuthController;
+use App\Http\Controllers\AvatarController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CountryController;
@@ -68,6 +69,10 @@ Route::middleware(['auth:sanctum'])->group(function() {
         Route::delete('logout-all', 'logoutAll');
     });
 
+    Route::controller(AvatarController::class)->prefix('avatars')->group(function() {
+        Route::get('', 'index');
+    });
+
     Route::controller(ModuleController::class)->prefix('modulos')->group(function() {
         Route::get('{module_code}/banners', 'banners');
     });
@@ -108,6 +113,7 @@ Route::middleware(['auth:sanctum'])->group(function() {
     Route::controller(UserController::class)->group(function() {
         Route::get('user', 'getUser');
         Route::patch('user', 'update');
+        Route::patch('user/avatar', 'updateAvatar');
         Route::get('user/rank', 'getUserRank');
         Route::get('ranking', 'getRanking');
         Route::delete('user/delete', 'delete');
