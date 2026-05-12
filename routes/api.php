@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\ApiAuthController;
+use App\Http\Controllers\Auth\ApiPasswordResetController;
 use App\Http\Controllers\AvatarController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CompanyController;
@@ -40,6 +41,12 @@ Route::middleware('api.key')->group(function() {
         Route::post('login', 'login');
 
         Route::post('registro', 'register');
+    });
+
+    Route::controller(ApiPasswordResetController::class)->prefix('password')->group(function() {
+        Route::post('forgot', 'forgot');
+        Route::post('verify-code', 'verifyCode');
+        Route::post('reset', 'reset');
     });
 
     Route::controller(CountryController::class)->prefix('paises')->group(function() {
