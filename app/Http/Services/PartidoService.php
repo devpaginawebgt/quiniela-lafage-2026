@@ -19,7 +19,7 @@ class PartidoService {
     public function getJornadas()
     {
         // return Jornada::whereHas('partidos')->get();
-        return Jornada::all();
+        return Jornada::with('phase')->get();
     }
 
     public function getJornada(int $jornada)

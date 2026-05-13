@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             GrupoSeeder::class,
             EquipoSeeder::class,
             EstadioSeeder::class,
+            PhaseSeeder::class,
             JornadaSeeder::class,
 
             // Scaffolding requerido por los listeners de MatchCreated.

@@ -17,6 +17,7 @@ class JornadaResource extends JsonResource
         return [
             'name' => $this->name,
             'value' => $this->id,
+            'phase' => $this->phase->name,
             'is_current' => $this->is_current,
         ];
     }
