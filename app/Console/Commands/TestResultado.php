@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Events\ResultCreated;
 use App\Models\Partido;
 use App\Models\ResultadoPartido;
 use Illuminate\Console\Command;
@@ -62,6 +63,8 @@ class TestResultado extends Command
             'goles_equipo_1' => fake()->numberBetween(0, 4),
             'goles_equipo_2' => fake()->numberBetween(0, 4)
         ]);
+
+        ResultCreated::dispatch($resultado_creado);
 
         if (empty($resultado_creado)) {
 

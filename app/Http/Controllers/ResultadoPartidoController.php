@@ -174,11 +174,11 @@ class ResultadoPartidoController extends Controller
         
         // Actualizar los puntos de los equipos cuyo estado partido no es 1 (Actualizado)
 
-        $this->partidoService->actualizarPuntosEquipos();
+        // $this->partidoService->actualizarPuntosEquipos();
 
         // Actualizar puntos de usuario
 
-        $this->prediccionService->actualizarPuntosParticipante($user_id);
+        // $this->prediccionService->actualizarPuntosParticipante($user_id);
 
     }
 

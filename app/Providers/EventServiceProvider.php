@@ -2,12 +2,17 @@
 
 namespace App\Providers;
 
+use App\Events\JourneyCompleted;
 use App\Events\MatchCreated;
 use App\Events\ResultCreated;
 use App\Listeners\AddMatchBrands;
 use App\Listeners\DeactivateInvalidFcmToken;
 use App\Listeners\SendWelcomeEmail;
+use App\Listeners\UpdateCurrentJourney;
+use App\Listeners\UpdateGroupPoints;
 use App\Listeners\UpdatePredictionPoints;
+use App\Listeners\UpdateUserBonusCombo;
+use App\Listeners\VerifyJourneyStatus;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Notifications\Events\NotificationFailed;
@@ -21,15 +26,18 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         Registered::class => [
-            // SendEmailVerificationNotification::class,
             SendWelcomeEmail::class,
         ],
         MatchCreated::class => [            
-            // ScheduleMatchPushNotification::class,
             AddMatchBrands::class,
         ],
         ResultCreated::class => [
             UpdatePredictionPoints::class,
+            UpdateGroupPoints::class,
+            VerifyJourneyStatus::class,
+        ],
+        JourneyCompleted::class => [
+            UpdateCurrentJourney::class,
         ],
         NotificationFailed::class => [
             DeactivateInvalidFcmToken::class,

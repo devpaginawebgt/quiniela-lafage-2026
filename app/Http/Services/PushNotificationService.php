@@ -62,43 +62,6 @@ class PushNotificationService
         );
     }
 
-    /**
-     * Envía la notificación de partido a los usuarios que YA hicieron
-     * predicción para ese partido. Ignora filtros de audiencia.
-     *
-     * @return array{success: bool, total: int, failed: int, error: ?string}
-     */
-    public function sendMatchWithPredictionNotification(PushNotification $pushNotification): array
-    {
-        $recipients = $this->baseRecipientsQuery()
-            ->whereHas('predictions', fn ($q) => $q->where('partido_id', $pushNotification->partido_id))
-            ->get();
-
-        return $this->dispatch(
-            $pushNotification,
-            $recipients,
-            new MatchWithPredictionNotification($pushNotification),
-        );
-    }
-
-    /**
-     * Envía la notificación de partido a los usuarios que NO hicieron
-     * predicción para ese partido. Ignora filtros de audiencia.
-     *
-     * @return array{success: bool, total: int, failed: int, error: ?string}
-     */
-    public function sendMatchWithoutPredictionNotification(PushNotification $pushNotification): array
-    {
-        $recipients = $this->baseRecipientsQuery()
-            ->whereDoesntHave('predictions', fn ($q) => $q->where('partido_id', $pushNotification->partido_id))
-            ->get();
-
-        return $this->dispatch(
-            $pushNotification,
-            $recipients,
-            new MatchWithoutPredictionNotification($pushNotification),
-        );
-    }
 
     /**
      * Lógica común de despacho: captura fallos por token, maneja excepciones
