@@ -146,17 +146,17 @@ class PrediccionService {
 
             }
 
-            $fecha_limite = $fecha_partido->subMinutes(10);
+            // $fecha_limite = $fecha_partido->subMinutes(10);
 
-            if ($fecha_actual->greaterThan($fecha_limite)) {
+            // if ($fecha_actual->greaterThan($fecha_limite)) {
 
-                $prediccion_usuario->message = 'No se puede guardar la predicción: el partido está por comenzar (menos de 10 minutos).';
+            //     $prediccion_usuario->message = 'No se puede guardar la predicción: el partido está por comenzar (menos de 10 minutos).';
 
-                $predicciones_rechazadas->push($prediccion_usuario);
+            //     $predicciones_rechazadas->push($prediccion_usuario);
 
-                return;
+            //     return;
 
-            }
+            // }
 
             $predicciones_permitidas->push($prediccion_usuario);
 
