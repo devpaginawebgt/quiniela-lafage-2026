@@ -326,15 +326,15 @@ class PrediccionService {
 
         if ($acerto_marcadores) return 5;
 
-        if ($acerto_equipo_ganador && $acerto_un_marcador) return 4; 
+        if ($acerto_equipo_ganador) return 3;
 
-        if ($acerto_equipo_ganador) return 2;
-
-        if ($predijo_empate) return 2;
-
-        if ($acerto_un_marcador) return 1;
+        if ($predijo_empate) return 1;
 
         return 0;
+
+        // if ($acerto_equipo_ganador && $acerto_un_marcador) return 4; 
+
+        // if ($acerto_un_marcador) return 1;
     
     }
 
