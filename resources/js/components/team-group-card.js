@@ -26,13 +26,11 @@ export const initTeamGroupCardAccordion = (container = document) => {
  * Genera el HTML de una team-group-card para renders AJAX.
  */
 export const buildTeamGroupCard = (equipo) => {
-    const statLabels = ['PJ', 'PG', 'PE', 'PP', 'GF', 'GC'];
-    const statsRows = statLabels.map(label => {
-        const val = equipo.stats.find(s => s.name === label)?.value ?? 0;
+    const statsRows = equipo.stats.map(s => {
         return `
             <div class="flex justify-between items-center py-2 border-b border-white/10">
-                <span class="font-semibold text-sm">${label}</span>
-                <span class="text-sm">${val}</span>
+                <span class="font-semibold text-sm">${s.name}</span>
+                <span class="text-sm">${s.value}</span>
             </div>`;
     }).join('');
 
