@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Resources\Jornada;
+namespace App\Http\Resources\Phase;
 
+use App\Http\Resources\Jornada\JornadaResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class JornadaResource extends JsonResource
+class PhaseResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,9 +16,9 @@ class JornadaResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'name' => $this->name,
-            'value' => $this->id,            
-            'is_current' => $this->is_current,
+            'rounds' => empty($this->jornadas) ? [] : JornadaResource::collection($this->jornadas),
         ];
     }
 }

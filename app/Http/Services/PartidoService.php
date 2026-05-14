@@ -10,6 +10,7 @@ use App\Models\EquipoPartido;
 use App\Models\Jornada;
 use App\Models\Partido;
 use App\Models\PartidoBrandAssignment;
+use App\Models\Phase;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -17,10 +18,19 @@ use Illuminate\Support\Facades\DB;
 
 class PartidoService {
 
+    public function getPhases()
+    {
+        return Phase::whereHas('jornadas', function ($query) {
+            $query->whereHas('partidos');
+        })
+        ->with(['jornadas' => fn($q) => $q->whereHas('partidos')])
+        ->orderBy('id')
+        ->get();
+    }
+
     public function getJornadas()
     {
-        // return Jornada::whereHas('partidos')->get();
-        return Jornada::with('phase')->get();
+        return Jornada::whereHas('partidos')->get();
     }
 
     public function getJornada(int $jornada)

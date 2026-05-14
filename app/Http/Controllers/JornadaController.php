@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\Jornada\JornadaResource;
 use App\Http\Resources\Partido\PartidoResource;
+use App\Http\Resources\Phase\PhaseResource;
 use App\Http\Services\GrupoService;
 use App\Http\Services\ModuleService;
 use App\Http\Services\PartidoService;
@@ -25,13 +26,9 @@ class JornadaController extends Controller
         
     public function getJornadas() 
     {
+        $phases = $this->partidoService->getPhases();
 
-        $jornadas = $this->partidoService->getJornadas();
-
-        $jornadas = JornadaResource::collection($jornadas);
-
-        return $this->successResponse($jornadas);
-
+        return $this->successResponse(PhaseResource::collection($phases));
     }
 
     public function getPartidosJornada(Request $request, string $get_jornada)
