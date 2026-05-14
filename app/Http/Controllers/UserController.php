@@ -9,13 +9,14 @@ use App\Http\Resources\User\UserRankingResource;
 use App\Http\Resources\User\UserRankResource;
 use App\Http\Resources\User\UserResource;
 use App\Http\Services\BrandService;
+use App\Http\Services\LegalDocumentService;
 use App\Http\Services\LineService;
 use App\Http\Services\PremioService;
-use App\Http\Services\TermsService;
 use App\Http\Services\UserService;
 use App\Models\Brand;
 use App\Models\BrandPosition;
 use App\Models\Country;
+use App\Models\LegalDocument;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +29,7 @@ class UserController extends Controller
         private readonly UserService $userService,
         private readonly LineService $lineService,
         private readonly PremioService $premioService,
-        private readonly TermsService $termsService,
+        private readonly LegalDocumentService $legalDocumentService,
     ) {}
 
     // API responses
@@ -202,7 +203,7 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        $terms = $this->termsService->getTerms();
+        $terms = $this->legalDocumentService->getByType(LegalDocument::TYPE_TERMS);
 
         return view('modulos.perfil', [
             'user' => $user,

@@ -13,12 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('terms', function (Blueprint $table) {
+        Schema::create('legal_documents', function (Blueprint $table) {
             $table->id();
+            $table->string('type', 20);
             $table->string('version');
             $table->mediumText('content');
             $table->boolean('is_active')->default(false);
             $table->timestamps();
+
+            $table->index(['type', 'is_active']);
         });
     }
 
@@ -29,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('terms');
+        Schema::dropIfExists('legal_documents');
     }
 };

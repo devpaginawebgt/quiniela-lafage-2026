@@ -8,9 +8,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Services\CodigoService;
 use App\Http\Services\CompanyService;
+use App\Http\Services\LegalDocumentService;
 use App\Http\Services\LineService;
-use App\Http\Services\TermsService;
 use App\Http\Services\UserService;
+use App\Models\LegalDocument;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -24,7 +25,7 @@ class RegisteredUserController extends Controller
     public function __construct(
         private readonly LineService $lineService,
         private readonly CompanyService $companyService,
-        private readonly TermsService $termsService,
+        private readonly LegalDocumentService $legalDocumentService,
         private readonly UserService $userService,
         private readonly CodigoService $codigoService,
     ) {}
@@ -42,7 +43,7 @@ class RegisteredUserController extends Controller
 
         $companies = $this->companyService->getCompaniesByCountry($country->id);
 
-        $terms = $this->termsService->getTerms();
+        $terms = $this->legalDocumentService->getByType(LegalDocument::TYPE_TERMS);
 
         return view('modulos.register', compact('country', 'lines', 'companies', 'terms'));
     }    

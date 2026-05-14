@@ -15,8 +15,7 @@ use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\PremioController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ResultadoPartidoController;
-use App\Http\Controllers\PrivacyPolicyController;
-use App\Http\Controllers\TermsController;
+use App\Http\Controllers\LegalDocumentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPushTokenController;
 use App\Http\Controllers\VisitorController;
@@ -62,12 +61,9 @@ Route::middleware('api.key')->group(function() {
         Route::get('', 'index');
     });
 
-    Route::controller(TermsController::class)->prefix('terminos-y-condiciones')->group(function() {
-        Route::get('', 'index');
-    });
-
-    Route::controller(PrivacyPolicyController::class)->prefix('politica-de-privacidad')->group(function() {
-        Route::get('', 'index');
+    Route::controller(LegalDocumentController::class)->group(function() {
+        Route::get('legal-documents/{type}', 'show')
+            ->whereIn('type', ['terms', 'privacy']);
     });
 
 });
