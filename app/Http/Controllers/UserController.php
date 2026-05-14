@@ -111,7 +111,7 @@ class UserController extends Controller
         $user = request()->user();
 
         if (!$user->completed_info) {
-            return $this->errorResponse("Por favor, completa tu información en la sección 'Perfil' para acceder a la sección de premios", 403, [], 'PROFILE_INCOMPLETE');
+            return $this->errorResponse("Por favor, completa tu información en la sección 'Perfil' para acceder al ranking", 403, [], 'PROFILE_INCOMPLETE');
         }
 
         $user = $request->user();
