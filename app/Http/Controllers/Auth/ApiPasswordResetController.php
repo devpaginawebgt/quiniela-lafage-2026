@@ -46,7 +46,7 @@ class ApiPasswordResetController extends Controller
             $request->userAgent(),
         );
 
-        Mail::to($user->email)->queue(new PasswordResetCodeMail(
+        Mail::to($user->email)->send(new PasswordResetCodeMail(
             user: $user,
             code: $otp,
             expiresInMinutes: PasswordResetService::OTP_EXPIRATION_MINUTES,
