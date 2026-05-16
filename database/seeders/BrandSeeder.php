@@ -139,15 +139,13 @@ class BrandSeeder extends Seeder
             ],
             [
                 'name' => 'Onitrac',
-                // 'image' => '/images/brands/derma/brand1.png', // TODO: reemplazar con imagen real
-                'image' => '/images/brands/brand-placeholder.png',
+                'image' => '/images/brands/derma/brand4.png',
                 'line_id' => 6,
                 'countries' => [1, 2, 3, 4, 6],
             ],
             [
                 'name' => 'Folcres',
-                // 'image' => '/images/brands/derma/brand2.png', // TODO: reemplazar con imagen real
-                'image' => '/images/brands/brand-placeholder.png',
+                'image' => '/images/brands/derma/brand3.png',
                 'line_id' => 6,
                 'countries' => [5],
             ],
