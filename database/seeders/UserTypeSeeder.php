@@ -16,6 +16,7 @@ class UserTypeSeeder extends Seeder
         $user_types = [
             ['name' => 'Dependiente', 'plural_name' => 'Dependientes'],
             ['name' => 'Doctor',      'plural_name' => 'Doctores'],
+            ['name' => 'Colaborador', 'plural_name' => 'Colaboradores'],
         ];
 
         foreach($user_types as $type) {
