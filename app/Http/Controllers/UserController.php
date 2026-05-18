@@ -123,6 +123,12 @@ class UserController extends Controller
 
         $line->participantes = $this->userService->getRanking($line_id, (int)$user->user_type_id);
 
+        if ((int)$user->user_type_id === 2) {
+            $line->name = 'Ranking Dependientes';
+        } elseif ((int)$user->user_type_id === 3) {
+            $line->name = 'Ranking Colaboradores';
+        }
+
         $line = new LineRankingResource($line);
 
         return $this->successResponse($line);
