@@ -121,7 +121,7 @@ class UserController extends Controller
 
         $line = $this->lineService->getLine($line_id);
 
-        $line->participantes = $this->userService->getRanking($line_id);
+        $line->participantes = $this->userService->getRanking($line_id, (int)$user->user_type_id);
 
         $line = new LineRankingResource($line);
 
@@ -189,7 +189,7 @@ class UserController extends Controller
         $line_id = (int) $user->line_id;
         $perPage = (int) $request->query('perPage', 100);
 
-        $result = $this->userService->getRankingWeb($line_id, $perPage);
+        $result = $this->userService->getRankingWeb($line_id, (int)$user->user_type_id, $perPage);
 
         return $this->successResponse([
             'has_more' => $result->hasMorePages(),

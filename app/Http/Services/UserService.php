@@ -76,26 +76,28 @@ class UserService {
             ->first();
     }
 
-    private function rankingQuery(int|string $line_id, array $columns = ['id', 'nombres', 'apellidos', 'avatar_id', 'pais_id', 'numero_documento', 'email', 'puntos', 'created_at']): Builder
+    private function rankingQuery(int|string $line_id, int|string $user_type_id, array $columns = ['id', 'nombres', 'apellidos', 'avatar_id', 'pais_id', 'numero_documento', 'email', 'puntos', 'created_at']): Builder
     {
         return User::select($columns)
             ->selectRaw('RANK() OVER (ORDER BY puntos DESC, created_at ASC, nombres ASC) as posicion')
-            ->where('line_id', $line_id)
+            ->when(in_array((int)$user_type_id, [1, 2]), function($query) use($line_id) {
+                $query->where('line_id', $line_id);
+            })
             ->where('completed_info', true)
             ->where('status_user', 1)
             ->has('predictions');
     }
 
-    public function getRanking(int|string $line_id)
+    public function getRanking(int|string $line_id, int|string $user_type_id)
     {
-        return $this->rankingQuery($line_id)
+        return $this->rankingQuery($line_id, $user_type_id)
             ->with(['country', 'avatar'])
             ->get();
     }
 
-    public function getRankingWeb(int|string $line_id, $perPage = 100)
+    public function getRankingWeb(int|string $line_id, int|string $user_type_id, $perPage = 100)
     {
-        return $this->rankingQuery($line_id)
+        return $this->rankingQuery($line_id, $user_type_id)
             ->with(['country', 'avatar'])
             ->simplePaginate($perPage);
     }
@@ -108,7 +110,7 @@ class UserService {
         }
 
         $rank = DB::query()
-            ->fromSub($this->rankingQuery($user->line_id, ['id']), 'ranking')
+            ->fromSub($this->rankingQuery($user->line_id, $user->user_type_id, ['id']), 'ranking')
             ->where('id', $user->id)
             ->value('posicion');
 
