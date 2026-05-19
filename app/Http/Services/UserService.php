@@ -6,7 +6,6 @@ use App\Models\Country;
 use App\Models\EquipoPartido;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
@@ -58,22 +57,6 @@ class UserService {
     public function getUser(int $userId)
     {
         return User::find($userId);
-    }
-
-    public function getLoginDependiente(Request $request)
-    {
-        return User::select('id', 'email', 'password', 'nombres', 'apellidos', 'pais_id', 'numero_documento', 'line_id', 'puntos', 'completed_info', 'status_user', 'avatar_id',  'created_at')
-            ->where('numero_documento', $request->input('identity'))
-            ->where('user_type_id', $request->input('user_type_id'))
-            ->first();
-    }
-
-    public function getLoginDoctor(Request $request)
-    {
-        return User::select('id', 'email', 'password', 'nombres', 'apellidos', 'pais_id', 'numero_documento', 'line_id', 'puntos', 'completed_info', 'status_user', 'avatar_id',  'created_at')
-            ->where('colegiado', $request->input('identity'))
-            ->where('user_type_id', $request->input('user_type_id'))
-            ->first();
     }
 
     private function rankingQuery(int|string $line_id, int|string $user_type_id, array $columns = ['id', 'nombres', 'apellidos', 'avatar_id', 'pais_id', 'numero_documento', 'email', 'puntos', 'created_at']): Builder

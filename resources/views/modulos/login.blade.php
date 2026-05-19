@@ -12,17 +12,12 @@
         @vite(['resources/css/app.css', 'resources/css/styles.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-dark antialiased bg-light">
-        {{-- Full screen background --}}
         <div class="relative min-h-screen w-full">
-            {{-- Background: main-bg hasta lg, bg-main-web desde lg --}}
             <div class="absolute inset-0 bg-cover bg-center lg:hidden"
                  style="background-image: url({{ asset('images/decoracion/background-sm.png') }});"></div>
             <div class="absolute inset-0 bg-cover bg-center hidden lg:block"
                  style="background-image: url({{ asset('images/decoracion/background.png') }});"></div>
-            {{-- Overlay oscuro --}}
-            {{-- <div class="absolute inset-0 bg-black"></div> --}}
 
-            {{-- Mobile: bottom drawer / lg+: centered modal --}}
             <div
                 class="
                     relative z-10 min-h-screen flex flex-col justify-end items-center
@@ -30,179 +25,84 @@
                 "
             >
                 <div>
-                    {{-- Logo --}}
-                    <div>
-                        <img
-                            src="/images/logos/logo-white.png"
-                            class="w-full max-w-40 2xl:max-w-72 mx-auto mb-12"
-                            alt="{{ config('app.name', 'Quiniela') }}"
-                        >
-                    </div>
-
-                    {{-- Title --}}
-                    <h1 class="text-3xl text-center font-bold text-light mb-8">Inicia Sesión</h1>
+                    <img
+                        src="/images/logos/logo-white.png"
+                        class="w-full max-w-40 2xl:max-w-72 mx-auto mb-12"
+                        alt="{{ config('app.name', 'Quiniela') }}"
+                    >
                 </div>
 
-                {{-- Drawer / Modal panel --}}
                 <div
                     class="
                         w-full rounded-t-3xl bg-secondary-light p-8
                         lg:max-w-lg lg:rounded-3xl lg:shadow-2xl lg:w-full
                     "
                 >
-                    {{-- Session Status --}}
                     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-                    {{-- Toast Errors --}}
                     <x-toast-errors :errors="$errors" />
 
-                    {{-- Tabs pills --}}
-                    <ul
-                        class="flex text-base font-medium text-center bg-complementary-primary rounded-full mb-8"
-                        id="login-tab"
-                        data-tabs-toggle="#login-tab-content"
-                        data-tabs-type="pills"
-                        data-tabs-active-classes="bg-primary text-light"
-                        data-tabs-inactive-classes="text-dark"
-                        role="tablist"
+                    <h1 class="text-3xl text-center font-bold text-dark mb-8">Inicia Sesión</h1>
+
+                    <form
+                        method="POST"
+                        action="{{ route('login') }}"
+                        class="formulario-auth w-full max-w-108 lg:max-w-108 mx-auto"
                     >
-                        <li class="flex-1" role="presentation">
-                            <button
-                                class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full"
-                                id="login-doctor-tab"
-                                data-tabs-target="#login-doctor-panel"
-                                type="button"
-                                role="tab"
-                                aria-controls="login-doctor-panel"
-                                aria-selected="true"
+                        @csrf
+
+                        <x-login-input
+                            label="Correo electrónico"
+                            id="email"
+                            name="email"
+                            type="email"
+                            icon="icon-[material-symbols--mail]"
+                            placeholder="correo@ejemplo.com"
+                            maxlength="255"
+                            autocomplete="username"
+                            required
+                        />
+
+                        <x-login-password-input
+                            label="Contraseña"
+                            id="password"
+                            name="password"
+                            icon="icon-[material-symbols--lock]"
+                            placeholder="Ingrese su contraseña"
+                            autocomplete="current-password"
+                            maxlength="255"
+                            required
+                        />
+
+                        <div class="text-right mb-6">
+                            <a
+                                href="{{ route('password.request') }}"
+                                class="text-primary text-sm font-bold hover:text-secondary transition-color duration-300 ease-in-out"
                             >
-                                <span class="icon-[material-symbols--medical-services-outline] w-5 h-5"></span>
-                                Doctor
-                            </button>
-                        </li>
-                        <li class="flex-1" role="presentation">
-                            <button
-                                class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full"
-                                id="login-dependiente-tab"
-                                data-tabs-target="#login-dependiente-panel"
-                                type="button"
-                                role="tab"
-                                aria-controls="login-dependiente-panel"
-                                aria-selected="false"
-                            >
-                                <span class="icon-[material-symbols--person-outline] w-5 h-5"></span>
-                                Dependiente
-                            </button>
-                        </li>
-                    </ul>
-
-                    {{-- Tab Content --}}
-                    <div id="login-tab-content">
-                        {{-- Doctor panel --}}
-                        <div id="login-doctor-panel" role="tabpanel" aria-labelledby="login-doctor-tab">
-                            <form
-                                method="POST"
-                                action="{{ route('login') }}"
-                                class="formulario-auth w-full max-w-108 lg:max-w-108 mx-auto"
-                            >
-                                @csrf
-
-                                <input type="hidden" name="user_type_id" value="2">
-
-                                <x-login-input
-                                    label="Número de colegiado"
-                                    id="colegiado"
-                                    name="identity"
-                                    icon="icon-[material-symbols--medical-information]"
-                                    placeholder="Ingrese su colegiado"
-                                    maxlength="20"
-                                    required
-                                />
-
-                                <x-login-password-input
-                                    label="Contraseña"
-                                    id="doctor-password"
-                                    name="password"
-                                    icon="icon-[material-symbols--lock]"
-                                    placeholder="Ingrese su contraseña"
-                                    autocomplete="current-password"
-                                    maxlength="255"
-                                    required
-                                />
-
-                                <button
-                                    type="submit"
-                                    class="w-full bg-primary text-light rounded-full px-6 py-3 hover:brightness-110 focus:ring-3 focus:ring-dark flex items-center justify-center gap-2"
-                                >
-                                    <span class="icon-[material-symbols--login] w-5 h-5"></span>
-                                    Iniciar Sesión
-                                </button>
-                            </form>
+                                ¿Olvidaste tu contraseña?
+                            </a>
                         </div>
 
-                        {{-- Dependiente panel --}}
-                        <div class="hidden" id="login-dependiente-panel" role="tabpanel" aria-labelledby="login-dependiente-tab">
-                            <form
-                                method="POST"
-                                action="{{ route('login') }}"
-                                class="formulario-auth w-full max-w-108 lg:max-w-108 mx-auto"
-                            >
-                                @csrf
-
-                                <input type="hidden" name="user_type_id" value="1">
-
-                                <x-login-input
-                                    label="{{ $country->document_name ?? 'Número de documento' }}"
-                                    id="numero_documento"
-                                    name="identity"
-                                    icon="icon-[material-symbols--badge]"
-                                    placeholder="Ingrese su {{ $country->document_name ?? 'Número de documento' }}"
-                                    pattern="{{ $country->document_regex }}"
-                                    title="{{ $country->document_regex_message }}"
-                                    required
-                                />
-
-                                <x-login-password-input
-                                    label="Contraseña"
-                                    id="dependiente-password"
-                                    name="password"
-                                    icon="icon-[material-symbols--lock]"
-                                    placeholder="Ingrese su contraseña"
-                                    autocomplete="current-password"
-                                    maxlength="255"
-                                    required
-                                />
-
-                                <button
-                                    type="submit"
-                                    class="w-full bg-primary text-light rounded-full px-6 py-3 hover:brightness-120 focus:ring-3 focus:ring-dark flex items-center justify-center gap-2"
-                                >
-                                    <span class="icon-[material-symbols--login] w-5 h-5"></span>
-                                    Iniciar Sesión
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 text-center">
-                        <a
-                            href="{{ route('password.request') }}"
-                            class="text-primary text-sm font-semibold hover:text-secondary transition-color duration-300 ease-in-out"
+                        <button
+                            type="submit"
+                            class="w-full bg-primary text-light rounded-full px-6 py-3 hover:brightness-110 focus:ring-3 focus:ring-dark flex items-center justify-center gap-2"
                         >
-                            Olvidé mi contraseña
-                        </a>
-                    </div>
+                            <span class="icon-[material-symbols--login] w-5 h-5"></span>
+                            Iniciar Sesión
+                        </button>
+                    </form>
 
-                    {{-- Register link --}}
-                    <div class="text-center mt-4">
-                        <p class="text-dark text-sm mb-2">¿No tienes cuenta?</p>
-                        <a href="{{ route('register') }}" class="text-primary font-semibold text-base hover:text-secondary transition-color duration-300 ease-in-out">
-                            Regístrate
+                    <div class="text-center mt-6">
+                        <p class="text-zinc-600 text-sm mb-3">¿Aún no tienes cuenta?</p>
+                        <a
+                            href="{{ route('register') }}"
+                            class="w-full inline-flex items-center justify-center border border-primary text-primary font-bold rounded-full px-6 py-2 hover:bg-white transition-colors duration-300 ease-in-out"
+                        >
+                            Crear cuenta
                         </a>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
     </body>
 </html>
