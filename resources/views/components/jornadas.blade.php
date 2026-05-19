@@ -1,12 +1,12 @@
 @php $grupoActual = $grupos->firstWhere('is_current', true); @endphp
 
-<h1
-    class="text-3xl 2xl:text-4xl text-center text-light font-bold mt-2 mb-8"
-    id="titulo-jornadas-grupo">
-    Partidos del Grupo {{ $grupoActual->name }}
-</h1>
-
 <div class="py-6 sm:px-4 lg:px-8 bg-secondary-light rounded-t-4xl h-full flex-1">
+    <h1
+        class="text-3xl 2xl:text-4xl text-center text-dark font-bold mt-2 mb-8"
+        id="titulo-jornadas-grupo">
+        Partidos del Grupo {{ $grupoActual->name }}
+    </h1>
+
     <div class="overflow-hidden 2xl:max-w-440 w-full mx-auto px-4 pb-6">
         {{-- Buscador de partidos --}}
         <div class="w-full max-w-lg mx-auto mb-6">

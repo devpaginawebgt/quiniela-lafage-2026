@@ -16,8 +16,12 @@ const filtrarMatchCards = (query) => {
 const renderPartidosCalendario = (partidos) => {
     const espacioJornada = document.querySelector('#partidos-jornada-general');
 
+    if (!espacioJornada) {
+        return;
+    }
+
     if (!partidos.length) {
-        espacioJornada.innerHTML = `<p class="text-2xl text-complementary-light w-full text-center py-12 col-span-2">No hay partidos en esta jornada</p>`;
+        espacioJornada.innerHTML = `<p class="text-2xl text-complementary-light w-full text-center py-12 col-span-3">No hay partidos en esta jornada</p>`;
         return;
     }
 
