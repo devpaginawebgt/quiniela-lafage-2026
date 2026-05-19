@@ -21,7 +21,7 @@ class BrandController extends Controller
     {
         $user = $request->user();
 
-        if (!$user->completed_info) return $this->successResponse([]);
+        if (!$user->line_id) return $this->successResponse([]);
 
         $line_id = (int)$user->line_id;
 

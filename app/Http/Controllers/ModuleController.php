@@ -29,7 +29,7 @@ class ModuleController extends Controller
 
         $user = $request->user();
 
-        if (!$user->completed_info) return $this->successResponse([]);
+        if (!$user->line_id) return $this->successResponse([]);
 
         $banners = $this->moduleService->getBanners($module->id);
 
