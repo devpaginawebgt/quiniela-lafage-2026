@@ -17,7 +17,7 @@ class ModuleService {
     {
         $user = request()->user();
         
-        if (empty($user) || empty($user->line_id)) return [];
+        if (empty($user) || empty($user->line_id)) return collect([]);
 
         return Banner::whereHas('brand', fn ($q) => $q->where('line_id', $user->line_id))
             ->where('module_id', $module_id)
