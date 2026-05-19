@@ -2,48 +2,48 @@
 
 @php
 $items = [
-[
-'route' => 'web.proximos-partidos',
-'match' => 'web.proximos-partidos',
-'icon' => 'icon-[material-symbols--sports-soccer]',
-'label' => 'Próximos',
-'show' => true,
-],
-[
-'route' => 'web.mis-predicciones',
-'match' => 'web.mis-predicciones',
-'icon' => 'icon-[material-symbols--fact-check-outline]',
-'label' => 'Resultados',
-'show' => true,
-],
-[
-'route' => 'web.partidos',
-'match' => 'web.partidos',
-'icon' => 'icon-[material-symbols--scoreboard-outline]',
-'label' => 'Partidos',
-'show' => true,
-],
-[
-'route' => 'web.users.ranking',
-'match' => 'web.users.ranking',
-'icon' => 'icon-[material-symbols--leaderboard-outline]',
-'label' => 'Ranking',
-'show' => true,
-],
-[
-'route' => 'web.admin.reports.users.index',
-'match' => 'web.admin.*',
-'icon' => 'icon-[material-symbols--admin-panel-settings-outline]',
-'label' => 'Admin',
-'show' => Auth::user()->hasRole('admin'),
-],
-[
-'route' => 'web.users.perfil',
-'match' => 'web.users.perfil',
-'icon' => 'icon-[material-symbols--person-outline]',
-'label' => 'Perfil',
-'show' => true,
-],
+    [
+        'route' => 'web.proximos-partidos',
+        'match' => 'web.proximos-partidos',
+        'icon' => 'icon-[material-symbols--sports-soccer]',
+        'label' => 'Próximos',
+        'show' => true,
+    ],
+    [
+        'route' => 'web.mis-predicciones',
+        'match' => 'web.mis-predicciones',
+        'icon' => 'icon-[material-symbols--fact-check-outline]',
+        'label' => 'Resultados',
+        'show' => true,
+    ],
+    [
+        'route' => 'web.partidos',
+        'match' => 'web.partidos',
+        'icon' => 'icon-[material-symbols--scoreboard-outline]',
+        'label' => 'Partidos',
+        'show' => true,
+    ],
+    [
+        'route' => 'web.users.ranking',
+        'match' => 'web.users.ranking',
+        'icon' => 'icon-[material-symbols--leaderboard-outline]',
+        'label' => 'Ranking',
+        'show' => true,
+    ],
+    [
+        'route' => 'web.admin.reports.users.index',
+        'match' => 'web.admin.*',
+        'icon' => 'icon-[material-symbols--admin-panel-settings-outline]',
+        'label' => 'Admin',
+        'show' => Auth::user()->hasRole('admin'),
+    ],
+    [
+        'route' => 'web.users.perfil',
+        'match' => 'web.users.perfil',
+        'icon' => 'icon-[material-symbols--person-outline]',
+        'label' => 'Perfil',
+        'show' => true,
+    ],
 ];
 @endphp
 

@@ -21,13 +21,13 @@
             <div
                 class="
                     relative z-10 min-h-screen flex flex-col justify-end items-center
-                    lg:justify-center lg:items-center lg:p-6
+                    lg:justify-center lg:items-center pt-4 lg:p-6
                 "
             >
                 <div>
                     <img
                         src="/images/logos/logo-white.png"
-                        class="w-full max-w-40 2xl:max-w-72 mx-auto mb-12"
+                        class="w-full max-w-32 2xl:max-w-72 mx-auto mb-4"
                         alt="{{ config('app.name', 'Quiniela') }}"
                     >
                 </div>

@@ -58,6 +58,8 @@ Route::middleware(['auth'])->as('web.')->group(function () {
         Route::get('ranking/data', 'getRankingData')->name('.ranking.data');
         Route::get('/perfil', 'perfil')->name('.perfil');
         Route::delete('/perfil', 'deleteWeb')->name('.perfil.delete');
+        Route::get('/perfil/completar', 'completarPerfil')->name('.perfil.completar');
+        Route::post('/perfil/completar', 'completarPerfilStore')->name('.perfil.completar.store');
     });
 
     // Premios

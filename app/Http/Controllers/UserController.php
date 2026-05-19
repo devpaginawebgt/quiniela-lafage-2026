@@ -9,6 +9,7 @@ use App\Http\Resources\User\UserRankingResource;
 use App\Http\Resources\User\UserRankResource;
 use App\Http\Resources\User\UserResource;
 use App\Http\Services\BrandService;
+use App\Http\Services\CompanyService;
 use App\Http\Services\LegalDocumentService;
 use App\Http\Services\LineService;
 use App\Http\Services\PremioService;
@@ -30,6 +31,7 @@ class UserController extends Controller
         private readonly LineService $lineService,
         private readonly PremioService $premioService,
         private readonly LegalDocumentService $legalDocumentService,
+        private readonly CompanyService $companyService,
     ) {}
 
     // API responses
@@ -175,6 +177,12 @@ class UserController extends Controller
 
         $line = $user->line;
 
+        if ((int)$user->user_type_id === 1) {
+            $line->name = 'Ranking Dependientes';
+        } elseif ((int)$user->user_type_id === 3) {
+            $line->name = 'Ranking Colaboradores';
+        }
+
         $brands = Brand::all();
 
         $premios = $this->premioService->getPremios($user->line_id, (int) $user->user_type_id);
@@ -215,6 +223,37 @@ class UserController extends Controller
             'user' => $user,
             'terms' => $terms,
         ]);
+    }
+
+    public function completarPerfil()
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if ($user->completed_info) {
+            return redirect()->route('web.proximos-partidos');
+        }
+
+        $user->loadMissing('country');
+
+        $lines     = (int) $user->user_type_id === 2 ? $this->lineService->getLines() : collect();
+        $companies = (int) $user->user_type_id === 1 ? $this->companyService->getCompaniesByCountry($user->pais_id) : collect();
+
+        return view('modulos.completar-perfil', compact('user', 'lines', 'companies'));
+    }
+
+    public function completarPerfilStore(UpdateUserRequest $request)
+    {
+        $user = $request->user();
+
+        $data = $request->validated();
+
+        $data['completed_info']    = true;
+        $data['completed_info_at'] = now();
+
+        $user->update($data);
+
+        return redirect()->route('web.proximos-partidos');
     }
 
     public function verParticipantes()

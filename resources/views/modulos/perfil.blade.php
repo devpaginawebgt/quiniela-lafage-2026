@@ -1,7 +1,8 @@
 <x-app-layout>
-    <h1 class="text-3xl 2xl:text-4xl text-center text-light font-bold mt-2 mb-8">Mi Cuenta</h1>
-
     <div class="py-6 sm:px-4 lg:px-8 bg-secondary-light rounded-t-4xl h-full flex-1">
+
+        <h1 class="text-3xl 2xl:text-4xl text-center text-dark font-bold mt-2 mb-8">Mi Cuenta</h1>
+
         <div class="overflow-hidden xl:max-w-5xl 2xl:max-w-440 w-full mx-auto">
             <div class="px-6 pb-6">
                 {{-- Avatar --}}
@@ -16,7 +17,9 @@
                 {{-- User Name --}}
                 <p class="text-xl font-bold text-dark text-center mb-4">{{ $user->nombres }} {{ $user->apellidos }}</p>
 
-                <p class="text-light mx-auto w-max bg-primary px-3 py-1 rounded-full mb-8">{{ $user->line->name }}</p>
+                @if (!empty($user->line))
+                    <p class="text-light mx-auto w-max bg-primary px-3 py-1 rounded-full mb-8">{{ $user->line->name }}</p>
+                @endif
 
                 {{-- Preferencias --}}
                 <div class="w-full max-w-lg mx-auto">

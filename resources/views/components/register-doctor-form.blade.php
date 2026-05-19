@@ -1,7 +1,7 @@
 <form
     method="POST"
     action="{{ route('register') }}"
-    class="formulario-auth grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-2xl mx-auto"
+    class="formulario-auth flex flex-col gap-6 w-full max-w-xl mx-auto"
 >
     @csrf
 
@@ -37,21 +37,6 @@
     </x-auth-input>
 
     <x-auth-input
-        label="{{ $country->document_name ?? 'Número de documento' }}"
-        id="doc_numero_documento"
-        name="numero_documento"
-        placeholder="Ingrese su {{ $country->document_name ?? 'Número de documento' }}"
-        maxlength="20"
-        pattern="{{ $country->document_regex }}"
-        title="{{ $country->document_regex_message }}"
-        :required="true"
-    >
-        <x-slot name="prefix">
-            <span class="icon-[material-symbols--badge-rounded] w-5 h-5"></span>
-        </x-slot>
-    </x-auth-input>
-
-    <x-auth-input
         label="Correo electrónico"
         id="doc_email"
         name="email"
@@ -66,53 +51,26 @@
         </x-slot>
     </x-auth-input>
 
-    <x-auth-select label="País" id="doc_pais_id" name="pais_id" :required="true">
+    <x-auth-password-input
+        id="doc_password"
+        label="Contraseña"
+        name="password"
+        placeholder="Mínimo 8 caracteres"
+        minlength="8"
+        maxlength="50"
+        required
+    >
         <x-slot name="prefix">
-            <span class="icon-[material-symbols--flag] w-5 h-5"></span>
+            <span class="icon-[material-symbols--lock] w-5 h-5"></span>
         </x-slot>
-        <option value="{{ $country->id }}" {{ old('pais_id') === $country->id ? 'selected' : '' }}>
-            {{ $country->name }}
-        </option>
-    </x-auth-select>
+    </x-auth-password-input>
 
-    <x-auth-select label="Línea" id="doc_line_id" name="line_id" :required="true">
-        <x-slot name="prefix">
-            <span class="icon-[material-symbols--medication] w-5 h-5"></span>
-        </x-slot>
-        @foreach($lines ?? [] as $line)
-            <option value="{{ $line->id }}" {{ old('line_id') === $line->id ? 'selected' : '' }}>
-                {{ $line->name }}
-            </option>
-        @endforeach
-    </x-auth-select>
-
-    <div class="flex flex-col gap-2 -mb-2">
-        {{-- Contraseña --}}
-        <x-auth-password-input
-            id="doc_password"
-            label="Contraseña"
-            name="password"
-            placeholder="Contraseña"
-            minlength="4"
-            maxlength="50"
-            required
-        >
-            <x-slot name="prefix">
-                <span class="icon-[material-symbols--lock] w-5 h-5"></span>
-            </x-slot>
-        </x-auth-password-input>
-        <p class="text-xs text-zinc-500 px-1">
-            Debe contener mínimo 4 caracteres
-        </p>
-    </div>
-
-    {{-- Contraseña --}}
     <x-auth-password-input
         id="doc_password_confirmation"
         label="Confirmar contraseña"
         name="password_confirmation"
-        placeholder="Contraseña"
-        minlength="4"
+        placeholder="Repita su contraseña"
+        minlength="8"
         maxlength="50"
         required
     >
@@ -121,22 +79,7 @@
         </x-slot>
     </x-auth-password-input>
 
-    <x-auth-input
-        label="Número de colegiado"
-        id="doc_numero_colegiado"
-        name="colegiado"
-        placeholder="Ingrese su colegiado"
-        minlength="2"
-        maxlength="20"
-        :required="true"
-    >
-        <x-slot name="prefix">
-            <span class="icon-[material-symbols--medical-information] w-5 h-5"></span>
-        </x-slot>
-    </x-auth-input>
-
-    {{-- Submit --}}
-    <div class="mt-2 md:col-span-2">
+    <div class="mt-2">
         <button
             type="button"
             class="btn-crear-cuenta w-full bg-primary text-light rounded-full px-6 py-3 hover:brightness-110 focus:ring-3 focus:ring-dark flex items-center justify-center gap-2"

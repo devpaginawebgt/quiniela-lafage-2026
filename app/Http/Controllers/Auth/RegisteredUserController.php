@@ -7,9 +7,7 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Services\CodigoService;
-use App\Http\Services\CompanyService;
 use App\Http\Services\LegalDocumentService;
-use App\Http\Services\LineService;
 use App\Http\Services\UserService;
 use App\Models\LegalDocument;
 use Illuminate\Support\Facades\Auth;
@@ -17,14 +15,11 @@ use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Auth\Events\Registered;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class RegisteredUserController extends Controller
 {
     public function __construct(
-        private readonly LineService $lineService,
-        private readonly CompanyService $companyService,
         private readonly LegalDocumentService $legalDocumentService,
         private readonly UserService $userService,
         private readonly CodigoService $codigoService,
@@ -35,18 +30,12 @@ class RegisteredUserController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function create(Request $request)
+    public function create()
     {
-        $country = $this->userService->getGuestCountry();
-
-        $lines = $this->lineService->getLines();
-
-        $companies = $this->companyService->getCompaniesByCountry($country->id);
-
         $terms = $this->legalDocumentService->getByType(LegalDocument::TYPE_TERMS);
 
-        return view('modulos.register', compact('country', 'lines', 'companies', 'terms'));
-    }    
+        return view('modulos.register', compact('terms'));
+    }
 
     /**
      * Handle an incoming registration request.
@@ -76,15 +65,14 @@ class RegisteredUserController extends Controller
             $data['line_id'] = 7;
         }
 
-        $data['puntos'] = 0;
+        unset($data['code']);
 
-        $data['password'] = Hash::make($data['password']);
-
-        $data['completed_info'] = true;
-
-        $data['completed_info_at'] = now();
-
-        $data['avatar_id'] = Avatar::where('is_default', true)->value('id');
+        $data['pais_id']           = $this->userService->getGuestCountry()->id;
+        $data['puntos']            = 0;
+        $data['password']          = Hash::make($data['password']);
+        $data['completed_info']    = false;
+        $data['completed_info_at'] = null;
+        $data['avatar_id']         = Avatar::where('is_default', true)->value('id');
 
         $user = User::create($data);
 
@@ -99,6 +87,5 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         return redirect(RouteServiceProvider::home());
-        
     }
 }
