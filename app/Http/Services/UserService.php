@@ -80,7 +80,7 @@ class UserService {
     {
         return User::select($columns)
             ->selectRaw('RANK() OVER (ORDER BY puntos DESC, created_at ASC, nombres ASC) as posicion')
-            ->when(in_array((int)$user_type_id, [1, 2]), function($query) use($line_id) {
+            ->when(in_array((int)$user_type_id, [ 2 ]), function($query) use($line_id) {
                 $query->where('line_id', $line_id);
             })
             ->where('completed_info', true)

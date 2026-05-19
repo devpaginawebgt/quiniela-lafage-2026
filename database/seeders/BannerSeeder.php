@@ -308,6 +308,19 @@ class BannerSeeder extends Seeder
             ],
         ];
 
+        /* ============================================================ */
+        /* LINEA DEPENDIENTES                                           */
+        /* Duplica todos los banners anteriores reasignando brand_id    */
+        /* desde el rango 1–19 (Doctor) al rango 20–38 (Dependiente).   */
+        /* ============================================================ */
+        $dependent_banners = array_map(function ($banner) {
+            $banner['name']     = $banner['name'] . '-dep';
+            $banner['brand_id'] = $banner['brand_id'] + 19;
+            return $banner;
+        }, $banners);
+
+        $banners = array_merge($banners, $dependent_banners);
+
         foreach($banners as $banner) {
             Banner::create($banner);
         }

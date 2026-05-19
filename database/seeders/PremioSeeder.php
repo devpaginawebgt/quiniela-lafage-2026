@@ -12,158 +12,56 @@ class PremioSeeder extends Seeder
      */
     public function run(): void
     {
-        $premios = [
+        $base_premios = [
             [
-                'posicion' => 1,
+                'posicion'        => 1,
                 'titulo_posicion' => 'Primeros 3 lugares',
-                'nombre' => 'Televisión 55" 4K UHD',
-                'descripcion' => 'Televisor de alta definición con conectividad inteligente y control por voz.',
-                'imagen' => '/images/premios/tv.png',
-                'line_id' => 1,
+                'nombre'          => 'Televisión 55" 4K UHD',
+                'descripcion'     => 'Televisor de alta definición con conectividad inteligente y control por voz.',
+                'imagen'          => '/images/premios/tv.png',
             ],
             [
-                'posicion' => 2,
+                'posicion'        => 2,
                 'titulo_posicion' => 'Siguientes 3 lugares',
-                'nombre' => 'Teléfono Xiaomi 5G',
-                'descripcion' => 'Smartphone Xiaomi con conectividad 5G, pantalla AMOLED y cámara de alta resolución.',
-                'imagen' => '/images/premios/phone.png',
-                'line_id' => 1,
+                'nombre'          => 'Teléfono Xiaomi 5G',
+                'descripcion'     => 'Smartphone Xiaomi con conectividad 5G, pantalla AMOLED y cámara de alta resolución.',
+                'imagen'          => '/images/premios/phone.png',
             ],
             [
-                'posicion' => 3,
+                'posicion'        => 3,
                 'titulo_posicion' => 'Siguientes 2 lugares',
-                'nombre' => 'Smartwatch deportivo',
-                'descripcion' => 'Reloj inteligente con monitor de ritmo cardíaco y seguimiento de actividad física.',
-                'imagen' => '/images/premios/smartwatch.png',
-                'line_id' => 1,
-            ],
-
-            [
-                'posicion' => 1,
-                'titulo_posicion' => 'Primeros 3 lugares',
-                'nombre' => 'Consola PlayStation 5',
-                'descripcion' => 'Consola de videojuegos de última generación con gráficos 4K, almacenamiento SSD ultrarrápido y experiencia de juego inmersiva.',
-                'imagen' => '/images/premios/ps5.png',
-                'line_id' => 2,
-            ],
-            [
-                'posicion' => 2,
-                'titulo_posicion' => 'Siguientes 3 lugares',
-                'nombre' => 'Apple AirPods inalámbricos',
-                'descripcion' => 'Audífonos inalámbricos con sonido de alta calidad, conexión automática y estuche de carga portátil.',
-                'imagen' => '/images/premios/airpods.png',
-                'line_id' => 2,
-            ],
-            [
-                'posicion' => 3,
-                'titulo_posicion' => 'Siguientes 2 lugares',
-                'nombre' => 'Audífonos Bluetooth con cancelación de ruido',
-                'descripcion' => 'Auriculares inalámbricos con tecnología de cancelación de ruido, batería de larga duración y sonido envolvente de alta fidelidad.',
-                'imagen' => '/images/premios/headphones.png',
-                'line_id' => 2,
-            ],
-            [
-                'posicion' => 1,
-                'titulo_posicion' => 'Primeros 3 lugares',
-                'nombre' => 'Televisión 55" 4K UHD',
-                'descripcion' => 'Televisor de alta definición con conectividad inteligente y control por voz.',
-                'imagen' => '/images/premios/tv.png',
-                'line_id' => 3,
-            ],
-            [
-                'posicion' => 2,
-                'titulo_posicion' => 'Siguientes 3 lugares',
-                'nombre' => 'Teléfono Xiaomi 5G',
-                'descripcion' => 'Smartphone Xiaomi con conectividad 5G, pantalla AMOLED y cámara de alta resolución.',
-                'imagen' => '/images/premios/phone.png',
-                'line_id' => 3,
-            ],
-            [
-                'posicion' => 3,
-                'titulo_posicion' => 'Siguientes 2 lugares',
-                'nombre' => 'Smartwatch deportivo',
-                'descripcion' => 'Reloj inteligente con monitor de ritmo cardíaco y seguimiento de actividad física.',
-                'imagen' => '/images/premios/smartwatch.png',
-                'line_id' => 3,
-            ],
-
-            [
-                'posicion' => 1,
-                'titulo_posicion' => 'Primeros 3 lugares',
-                'nombre' => 'Consola PlayStation 5',
-                'descripcion' => 'Consola de videojuegos de última generación con gráficos 4K, almacenamiento SSD ultrarrápido y experiencia de juego inmersiva.',
-                'imagen' => '/images/premios/ps5.png',
-                'line_id' => 4,
-            ],
-            [
-                'posicion' => 2,
-                'titulo_posicion' => 'Siguientes 3 lugares',
-                'nombre' => 'Apple AirPods inalámbricos',
-                'descripcion' => 'Audífonos inalámbricos con sonido de alta calidad, conexión automática y estuche de carga portátil.',
-                'imagen' => '/images/premios/airpods.png',
-                'line_id' => 4,
-            ],
-            [
-                'posicion' => 3,
-                'titulo_posicion' => 'Siguientes 2 lugares',
-                'nombre' => 'Audífonos Bluetooth con cancelación de ruido',
-                'descripcion' => 'Auriculares inalámbricos con tecnología de cancelación de ruido, batería de larga duración y sonido envolvente de alta fidelidad.',
-                'imagen' => '/images/premios/headphones.png',
-                'line_id' => 4,
-            ],
-            [
-                'posicion' => 1,
-                'titulo_posicion' => 'Primeros 3 lugares',
-                'nombre' => 'Televisión 55" 4K UHD',
-                'descripcion' => 'Televisor de alta definición con conectividad inteligente y control por voz.',
-                'imagen' => '/images/premios/tv.png',
-                'line_id' => 5,
-            ],
-            [
-                'posicion' => 2,
-                'titulo_posicion' => 'Siguientes 3 lugares',
-                'nombre' => 'Teléfono Xiaomi 5G',
-                'descripcion' => 'Smartphone Xiaomi con conectividad 5G, pantalla AMOLED y cámara de alta resolución.',
-                'imagen' => '/images/premios/phone.png',
-                'line_id' => 5,
-            ],
-            [
-                'posicion' => 3,
-                'titulo_posicion' => 'Siguientes 2 lugares',
-                'nombre' => 'Smartwatch deportivo',
-                'descripcion' => 'Reloj inteligente con monitor de ritmo cardíaco y seguimiento de actividad física.',
-                'imagen' => '/images/premios/smartwatch.png',
-                'line_id' => 5,
-            ],
-
-            [
-                'posicion' => 1,
-                'titulo_posicion' => 'Primeros 3 lugares',
-                'nombre' => 'Consola PlayStation 5',
-                'descripcion' => 'Consola de videojuegos de última generación con gráficos 4K, almacenamiento SSD ultrarrápido y experiencia de juego inmersiva.',
-                'imagen' => '/images/premios/ps5.png',
-                'line_id' => 6,
-            ],
-            [
-                'posicion' => 2,
-                'titulo_posicion' => 'Siguientes 3 lugares',
-                'nombre' => 'Apple AirPods inalámbricos',
-                'descripcion' => 'Audífonos inalámbricos con sonido de alta calidad, conexión automática y estuche de carga portátil.',
-                'imagen' => '/images/premios/airpods.png',
-                'line_id' => 6,
-            ],
-            [
-                'posicion' => 3,
-                'titulo_posicion' => 'Siguientes 2 lugares',
-                'nombre' => 'Audífonos Bluetooth con cancelación de ruido',
-                'descripcion' => 'Auriculares inalámbricos con tecnología de cancelación de ruido, batería de larga duración y sonido envolvente de alta fidelidad.',
-                'imagen' => '/images/premios/headphones.png',
-                'line_id' => 6,
+                'nombre'          => 'Smartwatch deportivo',
+                'descripcion'     => 'Reloj inteligente con monitor de ritmo cardíaco y seguimiento de actividad física.',
+                'imagen'          => '/images/premios/smartwatch.png',
             ],
         ];
 
-        foreach($premios as $premio) {
-            Premio::create($premio);
+        // Líneas de Doctor (1-6) → user_type_id = 2 (Doctor)
+        // Línea de Dependientes (7) → user_type_id = 1 (Dependiente)
+        $line_user_type_map = [
+            1 => 2,
+            2 => 2,
+            3 => 2,
+            4 => 2,
+            5 => 2,
+            6 => 2,
+            7 => 1,
+        ];
+
+        foreach ($line_user_type_map as $line_id => $user_type_id) {
+            foreach ($base_premios as $premio) {
+                Premio::create(array_merge($premio, [
+                    'line_id'      => $line_id,
+                    'user_type_id' => $user_type_id,
+                ]));
+            }
+        }
+
+        foreach ($base_premios as $premio) {
+            Premio::create(array_merge($premio, [
+                'line_id'      => 1,
+                'user_type_id' => 3,
+            ]));
         }
     }
 }

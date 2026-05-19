@@ -123,7 +123,7 @@ class UserController extends Controller
 
         $line->participantes = $this->userService->getRanking($line_id, (int)$user->user_type_id);
 
-        if ((int)$user->user_type_id === 2) {
+        if ((int)$user->user_type_id === 1) {
             $line->name = 'Ranking Dependientes';
         } elseif ((int)$user->user_type_id === 3) {
             $line->name = 'Ranking Colaboradores';
@@ -177,7 +177,7 @@ class UserController extends Controller
 
         $brands = Brand::all();
 
-        $premios = $this->premioService->getPremios($user->line_id);
+        $premios = $this->premioService->getPremios($user->line_id, (int) $user->user_type_id);
 
         // $users = $this->userService->getRanking($line->id);
 

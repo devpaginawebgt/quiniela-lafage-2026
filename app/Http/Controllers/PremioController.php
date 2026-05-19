@@ -32,7 +32,13 @@ class PremioController extends Controller
 
         $line = $this->lineService->getLine($line_id);
 
-        $line->premios = $this->premioService->getPremios($line_id);
+        if ((int)$user->user_type_id === 1) {
+            $line->name = 'Premios Dependientes';
+        } elseif ((int)$user->user_type_id === 3) {
+            $line->name = 'Premios Colaboradores';
+        }
+
+        $line->premios = $this->premioService->getPremios($line_id, (int) $user->user_type_id);
 
         $line = new LinePremiosResource($line);
 

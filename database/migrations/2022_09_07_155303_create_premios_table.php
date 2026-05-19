@@ -20,8 +20,12 @@ class CreatePremiosTable extends Migration
             $table->string('nombre');
             $table->string('imagen');
             $table->string('descripcion');
-            $table->foreignId('line_id')                
+            $table->foreignId('line_id')
                 ->constrained('lines')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');
+            $table->foreignId('user_type_id')
+                ->constrained('user_types')
                 ->onUpdate('cascade')
                 ->onDelete('restrict');
             $table->timestamps();
