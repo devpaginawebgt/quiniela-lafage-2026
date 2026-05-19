@@ -62,6 +62,8 @@ Route::middleware(['auth'])->as('web.')->group(function () {
         Route::post('/perfil/completar', 'completarPerfilStore')->name('.perfil.completar.store');
     });
 
+    Route::view('/reglas', 'modulos.reglas')->name('reglas');
+
     // Premios
 
     Route::controller(PremioController::class)->group(function () {

@@ -48,15 +48,14 @@
                     {{-- Sección: Juego --}}
                     <h2 class="text-base font-bold text-dark text-center mt-6 mb-2">Juego</h2>
 
-                    <button
-                        type="button"
-                        id="btn-open-rules"
+                    <a
+                        href="{{ route('web.reglas') }}"
                         class="w-full flex items-center gap-3 py-3 text-dark hover:text-complementary-secondary transition-colors duration-150 cursor-pointer"
                     >
                         <span class="icon-[material-symbols--menu-book] w-7 h-7"></span>
                         <span class="flex-1 text-left">Reglas del juego</span>
                         <span class="icon-[material-symbols--chevron-right-rounded] w-6 h-6"></span>
-                    </button>
+                    </a>
 
                     {{-- Sección: Legal --}}
                     <h2 class="text-base font-bold text-dark text-center mt-6 mb-2">Legal</h2>
