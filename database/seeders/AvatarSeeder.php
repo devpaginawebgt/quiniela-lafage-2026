@@ -15,21 +15,21 @@ class AvatarSeeder extends Seeder
     {
         $avatars = [
             [
-                'name'       => 'default',
+                'name'       => 'Por defecto',
                 'url'        => '/images/avatars/avatar.png',
                 'is_default' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name'       => 'male',
+                'name'       => 'Doctor',
                 'url'        => '/images/avatars/avatar-m.png',
                 'is_default' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name'       => 'female',
+                'name'       => 'Doctora',
                 'url'        => '/images/avatars/avatar-f.png',
                 'is_default' => false,
                 'created_at' => now(),

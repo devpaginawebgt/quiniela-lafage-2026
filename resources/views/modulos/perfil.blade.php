@@ -8,10 +8,14 @@
 
                 {{-- Avatar --}}
                 <div class="relative w-24 h-24 mx-auto mb-3">
-                    <div class="w-24 h-24 rounded-full bg-dark border-4 border-primary flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 text-light" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                        </svg>
+                    <div id="user-avatar-display" class="w-24 h-24 rounded-full border-4 border-primary flex items-center justify-center overflow-hidden">
+                        @if(!empty($user->avatar))
+                            <img src="{{ asset($user->avatar->url) }}" alt="Avatar" class="w-full h-full object-cover">
+                        @else
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 text-light" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                        @endif
                     </div>
                     <button
                         type="button"
@@ -125,6 +129,9 @@
 
     {{-- Modal Política de Privacidad --}}
     <x-privacy-view-modal :privacy="$privacy" />
+
+    {{-- Modal Editar Avatar --}}
+    <x-avatar-edit-modal :avatars="$avatars" :user="$user" />
 
     {{-- Modal Eliminar Cuenta --}}
     <div id="modal-delete-account" class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -303,6 +310,91 @@
                     deleteConfirm.disabled = false;
                     deleteCancel.disabled  = false;
                     alert('No se pudo eliminar la cuenta. Inténtalo nuevamente.');
+                }
+            });
+
+            // Editar avatar
+            const avatarModal    = document.getElementById('modal-avatar-edit');
+            const avatarBackdrop = document.getElementById('modal-avatar-edit-backdrop');
+            const avatarPanel    = document.getElementById('modal-avatar-edit-panel');
+            const avatarTrigger  = document.getElementById('btn-edit-avatar');
+            const avatarCancel   = document.getElementById('modal-avatar-edit-cancel');
+            const avatarConfirm  = document.getElementById('modal-avatar-edit-confirm');
+            const avatarOptions  = avatarPanel.querySelectorAll('.avatar-option');
+            const avatarDisplay  = document.getElementById('user-avatar-display');
+
+            let currentAvatarId  = parseInt(avatarPanel.dataset.currentAvatarId, 10) || null;
+            let selectedAvatarId = currentAvatarId;
+            let selectedAvatarUrl = null;
+
+            new Swiper('.avatar-edit-swiper', {
+                slidesPerView: 'auto',
+                spaceBetween: 16,
+                centerInsufficientSlides: true,
+            });
+
+            const openAvatar = () => {
+                avatarModal.classList.remove('pointer-events-none');
+                avatarBackdrop.classList.remove('opacity-0');
+                avatarPanel.classList.remove('translate-y-full', 'opacity-0');
+                document.body.style.overflow = 'hidden';
+            };
+
+            const closeAvatar = () => {
+                avatarBackdrop.classList.add('opacity-0');
+                avatarPanel.classList.add('translate-y-full', 'opacity-0');
+                document.body.style.overflow = '';
+                avatarPanel.addEventListener('transitionend', () => {
+                    avatarModal.classList.add('pointer-events-none');
+                }, { once: true });
+            };
+
+            const refreshConfirm = () => {
+                avatarConfirm.disabled = !selectedAvatarId || selectedAvatarId === currentAvatarId;
+            };
+
+            avatarOptions.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    avatarOptions.forEach(b => b.querySelector('.avatar-option-img').classList.replace('border-primary', 'border-transparent'));
+                    btn.querySelector('.avatar-option-img').classList.replace('border-transparent', 'border-primary');
+                    selectedAvatarId  = parseInt(btn.dataset.avatarId, 10);
+                    selectedAvatarUrl = btn.dataset.avatarUrl;
+                    refreshConfirm();
+                });
+            });
+
+            avatarTrigger.addEventListener('click', openAvatar);
+            avatarCancel.addEventListener('click', closeAvatar);
+            avatarBackdrop.addEventListener('click', closeAvatar);
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !avatarModal.classList.contains('pointer-events-none')) closeAvatar();
+            });
+
+            avatarConfirm.addEventListener('click', async () => {
+                if (avatarConfirm.disabled) return;
+
+                avatarConfirm.disabled = true;
+
+                try {
+                    const { data } = await window.axios.post(
+                        '{{ route('web.users.perfil.avatar.update') }}',
+                        { avatar_id: selectedAvatarId }
+                    );
+
+                    const newUrl = data?.data?.avatar?.url ?? selectedAvatarUrl;
+
+                    if (newUrl && avatarDisplay) {
+                        avatarDisplay.innerHTML = `<img src="${newUrl}" alt="Avatar" class="w-full h-full object-cover">`;
+                    }
+
+                    currentAvatarId = selectedAvatarId;
+                    avatarPanel.dataset.currentAvatarId = String(currentAvatarId);
+                    refreshConfirm();
+                    closeAvatar();
+                } catch (error) {
+                    avatarConfirm.disabled = false;
+                    alert('No se pudo actualizar el avatar. Inténtalo nuevamente.');
                 }
             });
         });

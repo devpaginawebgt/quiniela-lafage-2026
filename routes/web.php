@@ -60,6 +60,7 @@ Route::middleware(['auth'])->as('web.')->group(function () {
         Route::delete('/perfil', 'deleteWeb')->name('.perfil.delete');
         Route::get('/perfil/completar', 'completarPerfil')->name('.perfil.completar');
         Route::post('/perfil/completar', 'completarPerfilStore')->name('.perfil.completar.store');
+        Route::post('/perfil/avatar', 'updateAvatarWeb')->name('.perfil.avatar.update');
     });
 
     Route::view('/reglas', 'modulos.reglas')->name('reglas');

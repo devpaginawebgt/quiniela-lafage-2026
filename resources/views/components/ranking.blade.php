@@ -11,7 +11,58 @@
 
         <x-brands-slider :brands="$brands" />
 
-        <div class="w-full max-w-lg mx-auto my-8">
+        @php
+            $avatarUrl = $userRank->avatar
+                ? \App\Http\Services\HelperService::ImagePath($userRank->avatar->url)
+                : \App\Http\Services\HelperService::DefaultUserImagePath();
+            $posicion = $userRank->posicion ? '#' . $userRank->posicion : '-';
+            $puntos   = $userRank->puntos ?? 0;
+        @endphp
+
+        <div class="w-full max-w-lg mx-auto mt-8 mb-6 relative">
+            {{-- Header pill --}}
+            <div class="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                <div class="inline-flex items-center gap-2 bg-emerald-500 text-light text-sm font-semibold px-5 py-2 rounded-full shadow">
+                    <span class="icon-[material-symbols--trophy] w-5 h-5"></span>
+                    Tu posición en el ranking
+                </div>
+            </div>
+
+            {{-- Card --}}
+            <div class="bg-light rounded-2xl border-2 border-emerald-500 shadow-md shadow-zinc-400 pt-6 pb-3 px-4">
+                <div class="flex items-center gap-4">
+                    {{-- Avatar --}}
+                    <div class="w-20 h-20 rounded-full overflow-hidden bg-complementary-primary border-2 border-emerald-500 shrink-0">
+                        <img src="{{ $avatarUrl }}" alt="{{ $userRank->nombres }}" class="w-full h-full object-cover">
+                    </div>
+
+                    {{-- Posición --}}
+                    <div class="flex-1 text-center">
+                        <p class="text-xs lg:text-sm font-semibold text-complementary-dark tracking-wide">POSICIÓN</p>
+                        <p class="text-2xl lg:text-3xl font-bold text-dark mt-1">{{ $posicion }}</p>
+                    </div>
+
+                    {{-- Divider --}}
+                    <div class="w-px h-14 bg-complementary-light"></div>
+
+                    {{-- Puntos --}}
+                    <div class="flex-1 text-center">
+                        <p class="text-xs lg:text-sm font-semibold text-complementary-dark tracking-wide">PUNTOS</p>
+                        <p class="text-2xl lg:text-3xl font-bold text-dark mt-1">{{ $puntos }}</p>
+                    </div>
+                </div>
+
+                {{-- País --}}
+                <div class="border-t border-complementary-light/70 mt-3 pt-3 flex items-center justify-center gap-2">
+                    @if ($userRank->country?->image)
+                        <img src="{{ \App\Http\Services\HelperService::ImagePath($userRank->country->image) }}" alt="{{ $userRank->country->name }}" class="w-6 aspect-6/3 object-cover">
+                    @endif
+                    <span class="text-sm lg:text-base text-dark font-medium">{{ $userRank->country?->name ?? '-' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full max-w-lg mx-auto mb-8">
             <x-search-input id="buscar-participante" name="buscar_participante" placeholder="Buscar participante" />
         </div>
 

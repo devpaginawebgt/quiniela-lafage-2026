@@ -14,6 +14,7 @@ use App\Http\Services\LegalDocumentService;
 use App\Http\Services\LineService;
 use App\Http\Services\PremioService;
 use App\Http\Services\UserService;
+use App\Models\Avatar;
 use App\Models\Brand;
 use App\Models\BrandPosition;
 use App\Models\Country;
@@ -187,9 +188,10 @@ class UserController extends Controller
 
         $premios = $this->premioService->getPremios($user->line_id, (int) $user->user_type_id);
 
-        // $users = $this->userService->getRanking($line->id);
+        $userRank = $this->userService->getUserRank($user);
+        $userRank->loadMissing(['country', 'avatar']);
 
-        return view('modulos.ranking', compact('line', 'brands', 'premios'));
+        return view('modulos.ranking', compact('line', 'brands', 'premios', 'userRank'));
     }
 
 
@@ -217,13 +219,40 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
+        $user->loadMissing('avatar');
+
         $terms   = $this->legalDocumentService->getByType(LegalDocument::TYPE_TERMS);
         $privacy = $this->legalDocumentService->getByType(LegalDocument::TYPE_PRIVACY);
+        $avatars = Avatar::orderBy('id')->get();
 
         return view('modulos.perfil', [
             'user'    => $user,
             'terms'   => $terms,
             'privacy' => $privacy,
+            'avatars' => $avatars,
+        ]);
+    }
+
+    public function updateAvatarWeb(UpdateUserAvatarRequest $request)
+    {
+        /** @var \App\Models\User $user */
+        $user = $request->user();
+
+        $data = $request->validated();
+
+        if ((int) $data['avatar_id'] !== (int) $user->avatar_id) {
+            $user->update($data);
+            $user->refresh();
+        }
+
+        $user->loadMissing('avatar');
+
+        return $this->successResponse([
+            'avatar' => [
+                'id'   => $user->avatar?->id,
+                'name' => $user->avatar?->name,
+                'url'  => $user->avatar ? asset($user->avatar->url) : null,
+            ],
         ]);
     }
 
