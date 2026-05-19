@@ -17,9 +17,13 @@
 
         {{-- Prize Cards --}}
         <div class="w-full max-w-lg mx-auto flex flex-col gap-3 pb-4" id="premios-list">
-            @foreach($premios as $premio)
+            @forelse($premios as $premio)
                 <x-prize-card :premio="$premio" />
-            @endforeach
+            @empty
+                <p class="text-complementary-dark w-full text-center py-8">
+                    No hay premios disponibles
+                </p>
+            @endforelse
         </div>
     </div>
 </div>

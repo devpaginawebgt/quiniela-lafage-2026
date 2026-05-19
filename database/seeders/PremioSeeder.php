@@ -57,11 +57,11 @@ class PremioSeeder extends Seeder
             }
         }
 
-        foreach ($base_premios as $premio) {
-            Premio::create(array_merge($premio, [
-                'line_id'      => 1,
-                'user_type_id' => 3,
-            ]));
-        }
+        // foreach ($base_premios as $premio) {
+        //     Premio::create(array_merge($premio, [
+        //         'line_id'      => 1,
+        //         'user_type_id' => 3,
+        //     ]));
+        // }
     }
 }
