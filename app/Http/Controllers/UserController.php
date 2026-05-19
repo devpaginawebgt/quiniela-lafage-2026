@@ -217,11 +217,13 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        $terms = $this->legalDocumentService->getByType(LegalDocument::TYPE_TERMS);
+        $terms   = $this->legalDocumentService->getByType(LegalDocument::TYPE_TERMS);
+        $privacy = $this->legalDocumentService->getByType(LegalDocument::TYPE_PRIVACY);
 
         return view('modulos.perfil', [
-            'user' => $user,
-            'terms' => $terms,
+            'user'    => $user,
+            'terms'   => $terms,
+            'privacy' => $privacy,
         ]);
     }
 

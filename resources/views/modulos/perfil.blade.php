@@ -1,69 +1,120 @@
 <x-app-layout>
     <div class="py-6 sm:px-4 lg:px-8 bg-secondary-light rounded-t-4xl h-full flex-1">
 
-        <h1 class="text-3xl 2xl:text-4xl text-center text-dark font-bold mt-2 mb-8">Mi Cuenta</h1>
+        <h1 class="text-3xl 2xl:text-4xl text-center text-dark font-bold mt-2 mb-6">Mi Cuenta</h1>
 
-        <div class="overflow-hidden xl:max-w-5xl 2xl:max-w-440 w-full mx-auto">
+        <div class="overflow-hidden xl:max-w-2xl 2xl:max-w-3xl w-full mx-auto">
             <div class="px-6 pb-6">
+
                 {{-- Avatar --}}
-                <div class="flex justify-center mb-3">
-                    <div class="w-20 h-20 rounded-full bg-dark flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-light" viewBox="0 0 24 24" fill="currentColor">
+                <div class="relative w-24 h-24 mx-auto mb-3">
+                    <div class="w-24 h-24 rounded-full bg-dark border-4 border-primary flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 text-light" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                         </svg>
                     </div>
+                    <button
+                        type="button"
+                        id="btn-edit-avatar"
+                        class="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-primary text-light flex items-center justify-center shadow-md hover:brightness-110 transition-all cursor-pointer"
+                        aria-label="Editar avatar"
+                    >
+                        <span class="icon-[material-symbols--edit] w-4 h-4"></span>
+                    </button>
                 </div>
 
                 {{-- User Name --}}
-                <p class="text-xl font-bold text-dark text-center mb-4">{{ $user->nombres }} {{ $user->apellidos }}</p>
+                <p class="text-xl font-bold text-dark text-center mb-3">{{ $user->nombres }} {{ $user->apellidos }}</p>
 
                 @if (!empty($user->line))
-                    <p class="text-light mx-auto w-max bg-primary px-3 py-1 rounded-full mb-8">{{ $user->line->name }}</p>
+                    <p class="text-light mx-auto w-max bg-primary px-4 py-1.5 rounded-full mb-8 font-semibold text-sm">{{ $user->line->name }}</p>
                 @endif
 
                 {{-- Preferencias --}}
                 <div class="w-full max-w-lg mx-auto">
+
                     {{-- País --}}
-                    <div class="w-full flex items-center justify-between pb-2 mb-2 pointer-events-none">
-                        <div class="flex items-center gap-3">
+                    @if (!empty($user->country))
+                        <div class="w-full flex items-center gap-3 py-3 mb-2 pointer-events-none">
                             <img
                                 src="{{ asset($user->country->image) }}"
                                 alt="{{ $user->country->name }}"
-                                class="w-full max-w-10 aspect-6/3 object-cover"
+                                class="w-10 aspect-6/3 object-cover"
                             >
-                            <span class="tracking-wide">{{ $user->country->name }}</span>
+                            <span class="tracking-wide text-dark">{{ $user->country->name }}</span>
                         </div>
-                    </div>
+                    @endif
 
-                    {{-- Términos y condiciones --}}
+                    {{-- Sección: Juego --}}
+                    <h2 class="text-base font-bold text-dark text-center mt-6 mb-2">Juego</h2>
+
+                    <button
+                        type="button"
+                        id="btn-open-rules"
+                        class="w-full flex items-center gap-3 py-3 text-dark hover:text-complementary-secondary transition-colors duration-150 cursor-pointer"
+                    >
+                        <span class="icon-[material-symbols--menu-book] w-7 h-7"></span>
+                        <span class="flex-1 text-left">Reglas del juego</span>
+                        <span class="icon-[material-symbols--chevron-right-rounded] w-6 h-6"></span>
+                    </button>
+
+                    {{-- Sección: Legal --}}
+                    <h2 class="text-base font-bold text-dark text-center mt-6 mb-2">Legal</h2>
+
                     <button
                         type="button"
                         id="btn-open-terms"
-                        class="w-full flex items-center gap-3 py-3 text-dark hover:text-complementary-secondary transition-colors duration-150 cursor-pointer">
-                        <span class="icon-[material-symbols--info] w-7 h-7"></span>
+                        class="w-full flex items-center gap-3 py-3 text-dark hover:text-complementary-secondary transition-colors duration-150 cursor-pointer"
+                    >
+                        <span class="icon-[material-symbols--gavel] w-7 h-7"></span>
                         <span class="flex-1 text-left">Términos y condiciones</span>
                         <span class="icon-[material-symbols--chevron-right-rounded] w-6 h-6"></span>
                     </button>
 
-                     {{-- Eliminar cuenta --}}
                     <button
                         type="button"
-                        id="btn-delete-account"
-                        class="w-full flex items-center gap-3 py-3 text-red-600 hover:text-red-500 transition-colors duration-150 cursor-pointer">
-                        <span class="icon-[material-symbols--delete-outline] w-7 h-7"></span>
-                        <span class="flex-1 text-left">Eliminar cuenta</span>
+                        id="btn-open-privacy"
+                        class="w-full flex items-center gap-3 py-3 text-dark hover:text-complementary-secondary transition-colors duration-150 cursor-pointer"
+                    >
+                        <span class="icon-[material-symbols--shield] w-7 h-7"></span>
+                        <span class="flex-1 text-left">Política de privacidad</span>
+                        <span class="icon-[material-symbols--chevron-right-rounded] w-6 h-6"></span>
                     </button>
 
                     {{-- Cerrar sesión --}}
                     <button
                         type="button"
                         id="btn-logout"
-                        class="w-full flex items-center gap-2 py-3 text-dark hover:text-red-400 transition-colors duration-150 cursor-pointer">
-                        <span class="text-red-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 24 24"><path fill="currentColor" d="m17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5M4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4z"/></svg>
-                        </span>
-                        Salir
+                        class="w-full flex items-center gap-3 py-3 mt-4 text-dark hover:text-red-500 transition-colors duration-150 cursor-pointer"
+                    >
+                        <span class="icon-[material-symbols--logout] w-7 h-7 text-red-500"></span>
+                        <span class="flex-1 text-left">Salir</span>
                     </button>
+
+                    {{-- Separador --}}
+                    <hr class="border-complementary-dark/30 my-6">
+
+                    {{-- Zona de peligro --}}
+                    <div class="border border-red-500/40 rounded-2xl p-4">
+                        <p class="flex items-center gap-2 text-red-600 font-bold uppercase text-sm mb-3">
+                            <span class="icon-[material-symbols--warning-rounded] w-5 h-5"></span>
+                            Zona de peligro
+                        </p>
+                        <div class="h-px bg-red-500/30 mb-3"></div>
+                        <button
+                            type="button"
+                            id="btn-delete-account"
+                            class="w-full flex items-center gap-3 text-red-600 hover:text-red-500 transition-colors duration-150 cursor-pointer"
+                        >
+                            <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center shrink-0">
+                                <span class="icon-[material-symbols--delete-outline] w-5 h-5"></span>
+                            </div>
+                            <div class="flex-1 text-left">
+                                <p class="font-bold">Eliminar cuenta</p>
+                                <p class="text-xs text-zinc-500">Esta acción no se puede deshacer.</p>
+                            </div>
+                        </button>
+                    </div>
                 </div>
 
             </div>
@@ -72,6 +123,9 @@
 
     {{-- Modal Términos y Condiciones --}}
     <x-terms-view-modal :terms="$terms" />
+
+    {{-- Modal Política de Privacidad --}}
+    <x-privacy-view-modal :privacy="$privacy" />
 
     {{-- Modal Eliminar Cuenta --}}
     <div id="modal-delete-account" class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -84,14 +138,14 @@
             <div class="p-6">
                 <h3 class="text-2xl text-dark text-left mb-4">Eliminar cuenta</h3>
                 <p class="text-dark text-left text-sm mb-6">
-                    ¿Estás seguro de eliminar tu cuenta? Esta acción cerrará tu sesión y no podrás recuperar tu información.
+                    Se eliminarán permanentemente tus pronósticos, ranking y datos personales. Esta acción no se puede deshacer.
                 </p>
 
                 <div class="flex items-center justify-end gap-4">
                     <button
                         type="button"
                         id="modal-delete-account-cancel"
-                        class="text-blue-600 hover:text-blue-500 transition-colors cursor-pointer">
+                        class="text-dark transition-colors cursor-pointer">
                         Cancelar
                     </button>
 
@@ -141,68 +195,73 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const modal    = document.getElementById('modal-logout');
-            const backdrop = document.getElementById('modal-logout-backdrop');
-            const panel    = document.getElementById('modal-logout-panel');
-            const trigger  = document.getElementById('btn-logout');
-            const cancel   = document.getElementById('modal-logout-cancel');
 
-            const open = () => {
-                modal.classList.remove('pointer-events-none');
-                backdrop.classList.remove('opacity-0');
-                panel.classList.remove('scale-90', 'opacity-0');
-                document.body.style.overflow = 'hidden';
+            // Helper: drawer/modal con backdrop deslizable desde abajo
+            const wireDrawer = ({ modalId, backdropId, panelId, triggerId, closeId, hiddenClasses }) => {
+                const modal    = document.getElementById(modalId);
+                const backdrop = document.getElementById(backdropId);
+                const panel    = document.getElementById(panelId);
+                const trigger  = document.getElementById(triggerId);
+                const closeBtn = closeId ? document.getElementById(closeId) : null;
+
+                if (!modal || !backdrop || !panel || !trigger) return;
+
+                const open = () => {
+                    modal.classList.remove('pointer-events-none');
+                    backdrop.classList.remove('opacity-0');
+                    hiddenClasses.forEach(c => panel.classList.remove(c));
+                    document.body.style.overflow = 'hidden';
+                };
+
+                const close = () => {
+                    backdrop.classList.add('opacity-0');
+                    hiddenClasses.forEach(c => panel.classList.add(c));
+                    document.body.style.overflow = '';
+                    panel.addEventListener('transitionend', () => {
+                        modal.classList.add('pointer-events-none');
+                    }, { once: true });
+                };
+
+                trigger.addEventListener('click', open);
+                if (closeBtn) closeBtn.addEventListener('click', close);
+                backdrop.addEventListener('click', close);
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !modal.classList.contains('pointer-events-none')) close();
+                });
             };
 
-            const close = () => {
-                backdrop.classList.add('opacity-0');
-                panel.classList.add('scale-90', 'opacity-0');
-                document.body.style.overflow = '';
-                panel.addEventListener('transitionend', () => {
-                    modal.classList.add('pointer-events-none');
-                }, { once: true });
-            };
-
-            trigger.addEventListener('click', open);
-            cancel.addEventListener('click', close);
-            backdrop.addEventListener('click', close);
-
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && !modal.classList.contains('pointer-events-none')) close();
+            // Logout (modal centrado con escala)
+            wireDrawer({
+                modalId:    'modal-logout',
+                backdropId: 'modal-logout-backdrop',
+                panelId:    'modal-logout-panel',
+                triggerId:  'btn-logout',
+                closeId:    'modal-logout-cancel',
+                hiddenClasses: ['scale-90', 'opacity-0'],
             });
 
-            // Modal Términos y Condiciones (solo lectura)
-            const termsModal    = document.getElementById('modal-terms-view');
-            const termsBackdrop = document.getElementById('modal-terms-view-backdrop');
-            const termsPanel    = document.getElementById('modal-terms-view-panel');
-            const termsTrigger  = document.getElementById('btn-open-terms');
-            const termsClose    = document.getElementById('btn-cerrar-terms-view');
-
-            const openTerms = () => {
-                termsModal.classList.remove('pointer-events-none');
-                termsBackdrop.classList.remove('opacity-0');
-                termsPanel.classList.remove('translate-y-full', 'opacity-0');
-                document.body.style.overflow = 'hidden';
-            };
-
-            const closeTerms = () => {
-                termsBackdrop.classList.add('opacity-0');
-                termsPanel.classList.add('translate-y-full', 'opacity-0');
-                document.body.style.overflow = '';
-                termsPanel.addEventListener('transitionend', () => {
-                    termsModal.classList.add('pointer-events-none');
-                }, { once: true });
-            };
-
-            termsTrigger.addEventListener('click', openTerms);
-            termsClose.addEventListener('click', closeTerms);
-            termsBackdrop.addEventListener('click', closeTerms);
-
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && !termsModal.classList.contains('pointer-events-none')) closeTerms();
+            // Términos y condiciones (drawer)
+            wireDrawer({
+                modalId:    'modal-terms-view',
+                backdropId: 'modal-terms-view-backdrop',
+                panelId:    'modal-terms-view-panel',
+                triggerId:  'btn-open-terms',
+                closeId:    'btn-cerrar-terms-view',
+                hiddenClasses: ['translate-y-full', 'opacity-0'],
             });
 
-            // Modal Eliminar Cuenta
+            // Política de privacidad (drawer)
+            wireDrawer({
+                modalId:    'modal-privacy-view',
+                backdropId: 'modal-privacy-view-backdrop',
+                panelId:    'modal-privacy-view-panel',
+                triggerId:  'btn-open-privacy',
+                closeId:    'btn-cerrar-privacy-view',
+                hiddenClasses: ['translate-y-full', 'opacity-0'],
+            });
+
+            // Eliminar cuenta (modal centrado con escala) + confirmación AJAX
             const deleteModal    = document.getElementById('modal-delete-account');
             const deleteBackdrop = document.getElementById('modal-delete-account-backdrop');
             const deletePanel    = document.getElementById('modal-delete-account-panel');
