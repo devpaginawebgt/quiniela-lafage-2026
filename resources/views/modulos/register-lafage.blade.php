@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Quiniela') }} - Registro Lafage</title>
+        <title>{{ config('app.name', 'Quiniela') }} - Registro Colaboradores</title>
 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
 
@@ -29,7 +29,7 @@
                 </div>
 
                 {{-- Title --}}
-                <h1 class="text-3xl text-center font-bold text-light mb-8">Crear cuenta Lafage</h1>
+                <h1 class="text-3xl text-center font-bold text-light mb-8">Registro de Colaboradores</h1>
 
                 {{-- Toast Errors --}}
                 <x-toast-errors :errors="$errors" :message-error="$message_error ?? null" />
