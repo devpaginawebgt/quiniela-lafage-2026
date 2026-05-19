@@ -83,6 +83,7 @@ class UserService {
             ->when(in_array((int)$user_type_id, [ 2 ]), function($query) use($line_id) {
                 $query->where('line_id', $line_id);
             })
+            ->where('user_type_id', $user_type_id)
             ->where('completed_info', true)
             ->where('status_user', 1)
             ->has('predictions');
