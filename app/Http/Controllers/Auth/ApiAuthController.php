@@ -54,24 +54,24 @@ class ApiAuthController extends Controller
     }
 
     public function register(ApiRegisterRequest $request)
-    {   
+    {
         $data = $request->validated();
 
         $codigo = null;
 
         if ((int)$data['user_type_id'] === 1) {
             $result = $this->codigoService->validate($data['code']);
-    
+
             if (!$result['success']) {
                 throw ValidationException::withMessages(['codigo' => $result['message']]);
             }
-    
+
             $codigo = $result['codigo'];
 
             $data['codigo_id'] = $codigo->id;
 
-            $data['line_id'] = $codigo->line_id;
-        }        
+            $data['line_id'] = 7;
+        }
 
         $data['password'] = Hash::make($data['password']);
 
@@ -82,6 +82,10 @@ class ApiAuthController extends Controller
         $user->refresh();
 
         $user->assignRole('participant');
+
+        if ((int)$data['user_type_id'] === 1 && !empty($codigo)) {
+            $this->codigoService->markAsUsed($codigo);
+        }
 
         event(new Registered($user));
 

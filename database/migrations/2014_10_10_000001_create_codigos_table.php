@@ -16,10 +16,6 @@ class CreateCodigosTable extends Migration
         Schema::create('codigos', function (Blueprint $table) {
             $table->id();
             $table->string('codigo')->unique();
-            $table->foreignId('line_id')
-                ->constrained('lines')
-                ->onUpdate('cascade')
-                ->onDelete('restrict');
             $table->integer('estado')->default(0);
             $table->timestamps();
         });

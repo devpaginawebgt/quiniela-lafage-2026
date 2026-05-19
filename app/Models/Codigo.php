@@ -11,7 +11,6 @@ class Codigo extends Model
 
     protected $fillable = [
         'codigo',
-        'line_id',
         'estado',
     ];
 }

@@ -64,16 +64,16 @@ class RegisteredUserController extends Controller
 
         if ((int)$data['user_type_id'] === 1) {
             $result = $this->codigoService->validate($data['code']);
-    
+
             if (!$result['success']) {
                 throw ValidationException::withMessages(['codigo' => $result['message']]);
             }
-    
+
             $codigo = $result['codigo'];
 
             $data['codigo_id'] = $codigo->id;
 
-            $data['line_id'] = $codigo->line_id;
+            $data['line_id'] = 7;
         }
 
         $data['puntos'] = 0;

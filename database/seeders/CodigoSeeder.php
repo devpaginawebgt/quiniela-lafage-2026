@@ -14,8 +14,7 @@ class CodigoSeeder extends Seeder
      */
     public function run()
     {
-        Codigo::factory(2)->state(['line_id' => 1, 'estado' => 1])->create();
-        Codigo::factory(2)->state(['line_id' => 2, 'estado' => 1])->create();
+        Codigo::factory(4)->state(['estado' => 1])->create();
 
         $codigos = [
             '47298ABK',
@@ -29,12 +28,11 @@ class CodigoSeeder extends Seeder
             '35714RKP',
             '12869LWS',
         ];
-        
+
         foreach($codigos as $codigo) {
             Codigo::create([
-                'codigo'  => $codigo,
-                'line_id' => 1,
-                'estado'  => 0,
+                'codigo' => $codigo,
+                'estado' => 0,
             ]);
         }
     }
