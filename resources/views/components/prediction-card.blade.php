@@ -10,8 +10,11 @@
     $prediccion_equipo_uno = empty($prediccion) ? '' : $prediccion->goles_equipo_1;
     $prediccion_equipo_dos = empty($prediccion) ? '' : $prediccion->goles_equipo_2;
 
+    $usuario        = auth()->user();
+    $perfil_completo = (bool) $usuario->completed_info;
+
     $fecha_utc   = $partido->fecha_partido;
-    $timezone    = auth()->user()->country->timezone;
+    $timezone    = $usuario->country->timezone;
     $fecha_local = $fecha_utc->copy()->timezone($timezone)->locale('es');
     $fecha_fmt   = $fecha_local->isoFormat('dddd, D [de] MMMM [de] YYYY');
     $hora_fmt    = $fecha_local->translatedFormat('h:i a');
@@ -22,33 +25,25 @@
 @endphp
 
 <li class="bg-light border border-complementary-dark rounded-3xl flex flex-col overflow-hidden shadow-md shadow-zinc-400 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ease-in-out"
-    data-equipos="{{ strtolower($equipoUno->nombre . ' ' . $equipoDos->nombre) }}">
+    data-equipos="{{ strtolower($equipoUno->nombre . ' ' . $equipoDos->nombre) }}"
+    data-partido-id="{{ $registro->partido_id }}"
+    data-pronosticado="{{ $pronosticado ? '1' : '0' }}">
 
     <div class="flex flex-col flex-1 p-6 gap-6">
 
-        {{-- Sección 2: Estado + badge pronosticado --}}
-        <div class="flex justify-center items-center gap-4 lg:gap-6">
+        {{-- Mensaje estado de la predicción --}}
+        <div data-banner-pronostico>
             @if($pronosticado)
-                <span class="flex items-center gap-1 bg-green-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full shrink-0">
-                    <span class="icon-[material-symbols--check-circle] w-4 h-4"></span>
-                    Pronosticado
-                </span>
+                <div class="flex items-center gap-3 bg-green-100 text-green-600 rounded-2xl px-4 py-3">
+                    <span class="icon-[material-symbols--check-circle] w-6 h-6 shrink-0"></span>
+                    <span class="text-sm font-bold">Pronóstico registrado.</span>
+                </div>
             @else
-                <span class="flex items-center gap-1 bg-red-600/80 text-white text-xs font-semibold px-3 py-1.5 rounded-full shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 640 640"><path fill="currentColor" d="M320 576c141.4 0 256-114.6 256-256S461.4 64 320 64S64 178.6 64 320s114.6 256 256 256m-89-345c9.4-9.4 24.6-9.4 33.9 0l55 55l55-55c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-55 55l55 55c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-55-55l-55 55c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l55-55l-55-55c-9.4-9.4-9.4-24.6 0-33.9"/></svg>
-                    Pendiente
-                </span>
+                <div class="flex items-center gap-3 bg-red-100 text-red-600 rounded-2xl px-4 py-3">
+                    <span class="icon-[material-symbols--warning-rounded] w-6 h-6 shrink-0"></span>
+                    <span class="text-sm font-bold">Aún no has ingresado un pronóstico.</span>
+                </div>
             @endif
-            <span class="flex items-center gap-1 bg-primary text-white text-xs font-semibold px-3 py-1.5 rounded-full shrink-0">
-                <span class="icon-[material-symbols--info-outline] w-4 h-4"></span>
-                @if ($partido->estado === 0)
-                    Por jugar
-                @elseif ($partido->estado === 2)
-                    ¡En juego!
-                @else
-                    Finalizado
-                @endif
-            </span>
         </div>
 
         {{-- Sección 2b: Fecha + equipos VS --}}
@@ -81,75 +76,105 @@
         {{-- Separador --}}
         <hr class="border-complementary-dark">
 
-        {{-- Footer: Inputs o predicción quemada --}}
-        <div class="flex flex-col gap-6">
+        {{-- Footer: Inputs, predicción quemada o aviso de perfil incompleto --}}
+        <div class="flex flex-col gap-4">
 
-            <div class="flex items-center justify-center gap-4 lg:gap-8">
-
-                @if ($prediccion_bloqueada === false)
-                    {{-- Equipo 1 input --}}
-                    <input
-                        type="number"
-                        name="partidos[]"
-                        value="{{ $registro->partido_id }}"
-                        hidden
-                        class="hidden partido-jornada-quiniela"
+            @if (!$perfil_completo)
+                {{-- Perfil incompleto: bloquea predicción --}}
+                <div class="flex flex-col items-center gap-3 bg-red-100 rounded-2xl px-4 py-5">
+                    <div class="flex items-center gap-3 text-dark">
+                        <span class="icon-[material-symbols--lock] w-6 h-6 shrink-0"></span>
+                        <span class="text-sm">Completa tu perfil para pronosticar</span>
+                    </div>
+                    <a
+                        href="{{ route('web.users.perfil.completar') }}"
+                        class="text-primary font-bold text-base hover:text-secondary transition-color duration-300 ease-in-out"
                     >
+                        Completar perfil
+                    </a>
+                </div>
+            @else
+                <div class="flex items-center justify-center gap-4 lg:gap-8">
 
-                    <div class="flex items-center gap-2 lg:gap-4">
-
-                        <button type="button" class="btn-marcador-decrease bg-primary text-light rounded-full">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 lg:w-6 lg:h-6" viewBox="0 0 32 32"><path fill="currentColor" d="M28 16c0-6.627-5.373-12-12-12S4 9.373 4 16s5.373 12 12 12s12-5.373 12-12m2 0c0 7.732-6.268 14-14 14S2 23.732 2 16S8.268 2 16 2s14 6.268 14 14m-20-1a1 1 0 1 0 0 2h12a1 1 0 1 0 0-2z"/></svg>
-                        </button>
-
+                    @if ($prediccion_bloqueada === false)
+                        {{-- Equipo 1 input --}}
                         <input
                             type="number"
-                            name="prediccion_equipo1_{{ $registro->partido_id }}"
-                            min="0"
-                            max="25"
-                            value="{{ $prediccion_equipo_uno }}"
-                            class="marcador-equipo-1 marcador-equipo border border-complementary-dark text-dark text-center rounded-lg hide-input-arrows w-10 h-9 lg:w-12 lg:h-12 text-base lg:text-xl font-bold"
+                            name="partidos[]"
+                            value="{{ $registro->partido_id }}"
+                            hidden
+                            class="hidden partido-jornada-quiniela"
                         >
 
-                        <button type="button" class="btn-marcador-increase bg-primary text-light rounded-full">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 lg:w-6 lg:h-6" viewBox="0 0 32 32"><path fill="currentColor" d="M15 10a1 1 0 1 1 2 0v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5h-5a1 1 0 1 1 0-2h5zm15 6c0 7.732-6.268 14-14 14S2 23.732 2 16S8.268 2 16 2s14 6.268 14 14m-2 0c0-6.627-5.373-12-12-12S4 9.373 4 16s5.373 12 12 12s12-5.373 12-12"/></svg>
-                        </button>
+                        <div class="flex items-center gap-2 lg:gap-4">
 
-                    </div>
+                            <button type="button" class="btn-marcador-decrease bg-primary text-light rounded-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 lg:w-6 lg:h-6" viewBox="0 0 32 32"><path fill="currentColor" d="M28 16c0-6.627-5.373-12-12-12S4 9.373 4 16s5.373 12 12 12s12-5.373 12-12m2 0c0 7.732-6.268 14-14 14S2 23.732 2 16S8.268 2 16 2s14 6.268 14 14m-20-1a1 1 0 1 0 0 2h12a1 1 0 1 0 0-2z"/></svg>
+                            </button>
 
-                    <span class="text-xl lg:text-2xl font-bold"> : </span>
+                            <input
+                                type="number"
+                                name="prediccion_equipo1_{{ $registro->partido_id }}"
+                                min="0"
+                                max="25"
+                                value="{{ $prediccion_equipo_uno }}"
+                                class="marcador-equipo-1 marcador-equipo border border-complementary-dark text-dark text-center rounded-lg hide-input-arrows w-12 h-9 lg:w-14 lg:h-12 text-base lg:text-xl font-bold"
+                            >
 
-                    {{-- Equipo 2 input --}}
-                    <div class="flex items-center gap-2 lg:gap-4">
+                            <button type="button" class="btn-marcador-increase bg-primary text-light rounded-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 lg:w-6 lg:h-6" viewBox="0 0 32 32"><path fill="currentColor" d="M15 10a1 1 0 1 1 2 0v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5h-5a1 1 0 1 1 0-2h5zm15 6c0 7.732-6.268 14-14 14S2 23.732 2 16S8.268 2 16 2s14 6.268 14 14m-2 0c0-6.627-5.373-12-12-12S4 9.373 4 16s5.373 12 12 12s12-5.373 12-12"/></svg>
+                            </button>
 
-                        <button type="button" class="btn-marcador-decrease bg-primary text-light rounded-full">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 lg:w-6 lg:h-6" viewBox="0 0 32 32"><path fill="currentColor" d="M28 16c0-6.627-5.373-12-12-12S4 9.373 4 16s5.373 12 12 12s12-5.373 12-12m2 0c0 7.732-6.268 14-14 14S2 23.732 2 16S8.268 2 16 2s14 6.268 14 14m-20-1a1 1 0 1 0 0 2h12a1 1 0 1 0 0-2z"/></svg>
-                        </button>
+                        </div>
 
-                        <input
-                            type="number"
-                            name="prediccion_equipo2_{{ $registro->partido_id }}"
-                            min="0"
-                            max="25"
-                            value="{{ $prediccion_equipo_dos }}"
-                            class="marcador-equipo-2 marcador-equipo border border-complementary-dark text-center rounded-lg hide-input-arrows w-10 h-9 lg:w-12 lg:h-12 text-base lg:text-xl font-bold"
-                        >
+                        <span class="text-xl lg:text-2xl font-bold"> : </span>
 
-                        <button type="button" class="btn-marcador-increase bg-primary text-light rounded-full">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 lg:w-6 lg:h-6" viewBox="0 0 32 32"><path fill="currentColor" d="M15 10a1 1 0 1 1 2 0v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5h-5a1 1 0 1 1 0-2h5zm15 6c0 7.732-6.268 14-14 14S2 23.732 2 16S8.268 2 16 2s14 6.268 14 14m-2 0c0-6.627-5.373-12-12-12S4 9.373 4 16s5.373 12 12 12s12-5.373 12-12"/></svg>
-                        </button>
+                        {{-- Equipo 2 input --}}
+                        <div class="flex items-center gap-2 lg:gap-4">
 
-                    </div>
+                            <button type="button" class="btn-marcador-decrease bg-primary text-light rounded-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 lg:w-6 lg:h-6" viewBox="0 0 32 32"><path fill="currentColor" d="M28 16c0-6.627-5.373-12-12-12S4 9.373 4 16s5.373 12 12 12s12-5.373 12-12m2 0c0 7.732-6.268 14-14 14S2 23.732 2 16S8.268 2 16 2s14 6.268 14 14m-20-1a1 1 0 1 0 0 2h12a1 1 0 1 0 0-2z"/></svg>
+                            </button>
 
-                @else
-                    @if($pronosticado)
-                        <span class="text-3xl font-bold text-light">{{ $prediccion_equipo_uno }}</span>
-                        <span class="text-2xl font-bold"> : </span>
-                        <span class="text-3xl font-bold text-light">{{ $prediccion_equipo_dos }}</span>
+                            <input
+                                type="number"
+                                name="prediccion_equipo2_{{ $registro->partido_id }}"
+                                min="0"
+                                max="25"
+                                value="{{ $prediccion_equipo_dos }}"
+                                class="marcador-equipo-2 marcador-equipo border border-complementary-dark text-center rounded-lg hide-input-arrows w-12 h-9 lg:w-14 lg:h-12 text-base lg:text-xl font-bold"
+                            >
+
+                            <button type="button" class="btn-marcador-increase bg-primary text-light rounded-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 lg:w-6 lg:h-6" viewBox="0 0 32 32"><path fill="currentColor" d="M15 10a1 1 0 1 1 2 0v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5h-5a1 1 0 1 1 0-2h5zm15 6c0 7.732-6.268 14-14 14S2 23.732 2 16S8.268 2 16 2s14 6.268 14 14m-2 0c0-6.627-5.373-12-12-12S4 9.373 4 16s5.373 12 12 12s12-5.373 12-12"/></svg>
+                            </button>
+
+                        </div>
+
                     @else
-                        <span class="text-sm text-zinc-400">No has ingresado una predicción</span>
+                        @if($pronosticado)
+                            <span class="text-3xl font-bold text-light">{{ $prediccion_equipo_uno }}</span>
+                            <span class="text-2xl font-bold"> : </span>
+                            <span class="text-3xl font-bold text-light">{{ $prediccion_equipo_dos }}</span>
+                        @else
+                            <span class="text-sm text-zinc-400">No has ingresado una predicción</span>
+                        @endif
                     @endif
-                @endif
+                </div>
+            @endif
+
+            {{-- Badge estado del partido --}}
+            <div class="flex justify-center">
+                <span class="inline-flex items-center gap-1 bg-primary text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+                    <span class="icon-[material-symbols--info-outline] w-4 h-4"></span>
+                    @if ($partido->estado === 0)
+                        Por jugar
+                    @elseif ($partido->estado === 2)
+                        ¡En juego!
+                    @else
+                        Finalizado
+                    @endif
+                </span>
             </div>
 
             <div class="flex flex-col items-center gap-1 text-zinc-600">
@@ -162,6 +187,23 @@
                     {{ $hora_fmt }}
                 </span>
             </div>
+
+            @if ($perfil_completo && !$prediccion_bloqueada)
+                <button
+                    type="button"
+                    class="btn-guardar-prediccion w-full rounded-full px-6 py-2 flex items-center justify-center gap-2 text-light bg-primary hover:brightness-110 focus:ring-3 focus:ring-dark disabled:bg-zinc-400 disabled:hover:brightness-100 disabled:cursor-not-allowed transition-all duration-200"
+                    disabled
+                >
+                    <span data-icon-guardar class="{{ $pronosticado ? 'hidden' : '' }} pt-1">
+                        <span class="icon-[material-symbols--save] w-5 h-5"></span>
+                    </span>
+                    <span data-icon-actualizar class="{{ $pronosticado ? '' : 'hidden' }} pt-1">
+                        <span class="icon-[material-symbols--edit] w-5 h-5"></span>
+                    </span>
+                    <span data-text-guardar class="{{ $pronosticado ? 'hidden' : '' }}">Guardar pronóstico</span>
+                    <span data-text-actualizar class="{{ $pronosticado ? '' : 'hidden' }}">Actualizar pronóstico</span>
+                </button>
+            @endif
         </div>
     </div>
 

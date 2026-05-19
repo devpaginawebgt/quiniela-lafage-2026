@@ -5,14 +5,14 @@
          aria-live="polite">
     </div>
 
-    <h1 class="text-3xl 2xl:text-4xl text-center text-light font-bold mt-2 mb-8">Próximos Partidos</h1>
-
     <x-carousel-home-banners :banners="$banners" />
 
     <div class="py-6 sm:px-4 lg:px-8 bg-secondary-light h-full flex-1" id="selecciones-container">
         <div class="overflow-hidden xl:max-w-5xl 2xl:max-w-440 w-full mx-auto">
 
             <div class="px-6 pb-6">
+                <h1 class="text-3xl 2xl:text-4xl text-center text-dark font-bold mt-2 mb-8">Próximos Partidos</h1>
+
                 <div class="w-full max-w-lg mx-auto mb-4">
                     <x-search-input id="buscar-partidos" name="buscar_partidos" placeholder="Buscar Partidos" />
                 </div>
@@ -27,35 +27,7 @@
                     </x-form-select>
                 </form>
 
-                <form
-                    id="formPredicionesWeb"
-                    action="{{ route('web.save-predicciones') }}"
-                    method="POST"
-                    data-url-predicciones="{{ route('web.save-predicciones') }}"
-                >
-
-                    @csrf
-
-                    <input type="number" name="jornada" value="{{ $jornada_activa }}" hidden class="hidden">
-
-                    @php
-                        $user = Auth::user();
-                    @endphp
-
-                    {{-- @if(!$user->hasRole('admin')) --}}
-                        <div class="flex ">
-                            <button
-                                type="submit"
-                                class="focus:outline-none hover:brightness-[1.2] focus:ring-3 focus:ring-dark rounded-full fixed bottom-20 right-4 shadow-md shadow-zinc-900 bg-primary text-light text-md lg:text-lg py-2 lg:py-3 px-4 lg:px-6 gap-2 flex justify-center items-center z-50 hover:-translate-y-0.5 transition-all ease-in-out duration-300"
-                            >
-                                <span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M21 7v12q0 .825-.587 1.413T19 21H5q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h12zm-2 .85L16.15 5H5v14h14zm-4.875 9.275Q15 16.25 15 15t-.875-2.125T12 12t-2.125.875T9 15t.875 2.125T12 18t2.125-.875M6 10h9V6H6zM5 7.85V19V5z"/></svg>
-                                </span>
-                                Pronosticar
-                            </button>
-                        </div>
-                    {{-- @endif --}}
-
+                <div data-url-predicciones="{{ route('web.save-predicciones') }}">
                     @if (isset($partidosJornada) && $partidosJornada->isNotEmpty())
 
                         <ul id="partidos-jornada-general" class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 2xl:gap-12 gap-4 lg:gap-8 items-center min-h-96">
@@ -73,8 +45,7 @@
                         </p>
 
                     @endif
-
-                </form>
+                </div>
             </div>
 
         </div>
@@ -87,7 +58,7 @@
         <div id="modal-resultado-backdrop" class="absolute inset-0 bg-black/70 opacity-0 transition-opacity duration-300"></div>
 
         {{-- Panel --}}
-        <div id="modal-resultado-panel" class="relative bg-secondary-light lg:rounded-3xl overflow-hidden w-full lg:max-w-4xl h-full lg:h-auto lg:max-h-[90dvh] flex flex-col opacity-0 transition-opacity duration-300 ease-out">
+        <div id="modal-resultado-panel" class="relative bg-secondary-light lg:rounded-3xl overflow-hidden w-full lg:max-w-lg h-full lg:h-auto lg:max-h-[90dvh] flex flex-col opacity-0 transition-opacity duration-300 ease-out">
 
             {{-- Header --}}
             <div class="shrink-0 pt-6 pb-4 px-6 flex items-start justify-between gap-4">
@@ -99,7 +70,7 @@
 
             {{-- Scrollable cards container --}}
             <div class="overflow-y-auto flex-1 px-6 py-4 pb-6">
-                <div id="modal-resultado-cards" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                <div id="modal-resultado-cards" class="grid grid-cols-1 gap-4"></div>
             </div>
 
         </div>

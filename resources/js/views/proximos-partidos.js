@@ -29,64 +29,106 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Logica para guardar predicciones via AJAX
+    // Logica para guardar predicciones via AJAX (por card)
 
-    const formPredicciones = document.getElementById('formPredicionesWeb');
+    const prediccionesContainer = document.querySelector('[data-url-predicciones]');
 
-    if (formPredicciones) {
-        
-        const btnSubmit = formPredicciones.querySelector('button[type="submit"]');
-        const inputsMarcador = formPredicciones.querySelectorAll('.marcador-equipo');
+    if (prediccionesContainer) {
 
-        function setFormDisabled(disabled) {
-            if (btnSubmit) {
-                btnSubmit.disabled = disabled;
-                btnSubmit.classList.toggle('opacity-50', disabled);
-                btnSubmit.classList.toggle('pointer-events-none', disabled);
+        const urlPredicciones = prediccionesContainer.dataset.urlPredicciones;
+
+        const parseMarcador = (input) => {
+            if (!input || input.value === '') return null;
+            const parsed = parseInt(input.value, 10);
+            if (isNaN(parsed) || parsed < 0 || parsed > 25) return null;
+            return parsed;
+        };
+
+        const refreshCardButton = (card) => {
+            const btn = card.querySelector('.btn-guardar-prediccion');
+            if (!btn) return;
+
+            const inputEquipo1 = card.querySelector('.marcador-equipo-1');
+            const inputEquipo2 = card.querySelector('.marcador-equipo-2');
+
+            const valido = parseMarcador(inputEquipo1) !== null && parseMarcador(inputEquipo2) !== null;
+            btn.disabled = !valido;
+        };
+
+        const setCardPronosticado = (card) => {
+            card.dataset.pronosticado = '1';
+
+            const banner = card.querySelector('[data-banner-pronostico]');
+            if (banner) {
+                banner.innerHTML = `
+                    <div class="flex items-center gap-3 bg-green-100 text-green-600 rounded-2xl px-4 py-3">
+                        <span class="icon-[material-symbols--check-circle] w-6 h-6 shrink-0"></span>
+                        <span class="text-sm font-bold">Pronóstico registrado.</span>
+                    </div>
+                `;
             }
 
-            inputsMarcador.forEach(input => {
-                input.disabled = disabled;
-                input.classList.toggle('opacity-50', disabled);
-            });
-        }
+            const btn = card.querySelector('.btn-guardar-prediccion');
+            if (btn) {
+                btn.querySelector('[data-icon-guardar]')?.classList.add('hidden');
+                btn.querySelector('[data-text-guardar]')?.classList.add('hidden');
+                btn.querySelector('[data-icon-actualizar]')?.classList.remove('hidden');
+                btn.querySelector('[data-text-actualizar]')?.classList.remove('hidden');
+            }
+        };
 
-        formPredicciones.addEventListener('submit', function (e) {
-            e.preventDefault();
+        const setBtnLoading = (btn, loading) => {
+            btn.disabled = loading;
+            btn.classList.toggle('opacity-70', loading);
+            btn.classList.toggle('pointer-events-none', loading);
+        };
 
-            setFormDisabled(true);
+        // Estado inicial de los botones
+        document.querySelectorAll('[data-partido-id]').forEach(refreshCardButton);
 
-            const partidoInputs = document.querySelectorAll('.partido-jornada-quiniela');
-            const predicciones = [];
+        // Recalcular validez al editar marcador
+        document.addEventListener('input', (e) => {
+            if (!e.target.classList.contains('marcador-equipo')) return;
+            const card = e.target.closest('[data-partido-id]');
+            if (card) refreshCardButton(card);
+        });
 
-            partidoInputs.forEach(function (input) {
-                const parsedId = parseInt(input.value);
-                const idPartido = isNaN(parsedId) ? null : parsedId;
+        // Click en guardar/actualizar
+        document.addEventListener('click', (e) => {
 
-                const inputEquipo1 = document.querySelector(`[name="prediccion_equipo1_${input.value}"]`);
-                const inputEquipo2 = document.querySelector(`[name="prediccion_equipo2_${input.value}"]`);
+            const btn = e.target.closest('.btn-guardar-prediccion');
 
-                const rawEquipo1 = inputEquipo1 ? parseInt(inputEquipo1.value) : NaN;
-                const rawEquipo2 = inputEquipo2 ? parseInt(inputEquipo2.value) : NaN;
+            if (!btn || btn.disabled) return;
 
-                const prediccionEquipoUno = isNaN(rawEquipo1) ? null : rawEquipo1;
-                const prediccionEquipoDos = isNaN(rawEquipo2) ? null : rawEquipo2;
+            console.log(btn);
 
-                if (idPartido !== null && prediccionEquipoUno !== null && prediccionEquipoDos !== null) {
-                    predicciones.push({
-                        idPartido,
-                        prediccionEquipoUno,
-                        prediccionEquipoDos,
-                    });
-                }
-            });
+            const card = btn.closest('[data-partido-id]');
 
-            const url = formPredicciones.dataset.urlPredicciones;
+            console.log(card);
 
-            axios.post(url, { predicciones })
+            if (!card) return;
+
+            const idPartido = parseInt(card.dataset.partidoId, 10);
+            const prediccionEquipoUno = parseMarcador(card.querySelector('.marcador-equipo-1'));
+            const prediccionEquipoDos = parseMarcador(card.querySelector('.marcador-equipo-2'));
+
+            if (isNaN(idPartido) || prediccionEquipoUno === null || prediccionEquipoDos === null) return;
+
+            setBtnLoading(btn, true);
+
+            axios.post(urlPredicciones, {
+                predicciones: [{ idPartido, prediccionEquipoUno, prediccionEquipoDos }],
+            })
                 .then(response => {
                     const data = response.data.data;
-                    openModalResultado(data.prediccionesProcesadas, data.prediccionesRechazadas);
+                    const procesadas = data.prediccionesProcesadas || [];
+                    const rechazadas = data.prediccionesRechazadas || [];
+
+                    if (procesadas.length > 0) {
+                        setCardPronosticado(card);
+                    }
+
+                    openModalResultado(procesadas, rechazadas);
                 })
                 .catch(error => {
                     if (error.response?.status === 422) {
@@ -98,7 +140,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     showToastErrors(['Ocurrió un error inesperado. Intenta de nuevo.']);
                 })
-                .finally(() => setFormDisabled(false));
+                .finally(() => {
+                    setBtnLoading(btn, false);
+                    refreshCardButton(card);
+                });
         });
     }
 

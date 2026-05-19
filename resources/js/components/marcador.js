@@ -15,5 +15,7 @@ export const initMarcadorButtons = () => {
         } else {
             if (input.value > 0) input.value--;
         }
+
+        input.dispatchEvent(new Event('input', { bubbles: true }));
     });
 };
