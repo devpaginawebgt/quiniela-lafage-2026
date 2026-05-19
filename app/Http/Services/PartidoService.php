@@ -137,7 +137,7 @@ class PartidoService {
 
         foreach ($partidosJugados as $partido) {
 
-            if (in_array((int)$partido->jornada_id, [1, 2, 3])) {
+            if (in_array((int)$partido->partido->jornada_id, [1, 2, 3])) {
 
                 $equipo1 = $partido->equipoUno;
                 $equipo2 = $partido->equipoDos;
