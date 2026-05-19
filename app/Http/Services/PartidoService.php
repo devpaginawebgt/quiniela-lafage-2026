@@ -23,14 +23,16 @@ class PartidoService {
         return Phase::whereHas('jornadas', function ($query) {
             $query->whereHas('partidos');
         })
-        ->with(['jornadas' => fn($q) => $q->whereHas('partidos')])
+        ->with('jornadas')
+        // ->with(['jornadas' => fn($q) => $q->whereHas('partidos')])
         ->orderBy('id')
         ->get();
     }
 
     public function getJornadas()
     {
-        return Jornada::whereHas('partidos')->get();
+        return Jornada::all();
+        // return Jornada::whereHas('partidos')->get();
     }
 
     public function getJornada(int $jornada)
