@@ -41,8 +41,8 @@
                                 data-avatar-url="{{ asset($avatar->url) }}"
                                 data-avatar-name="{{ $avatar->name }}"
                             >
-                                <div class="avatar-option-img w-28 h-28 rounded-full overflow-hidden border-4 transition-colors {{ (int) $user->avatar_id === (int) $avatar->id ? 'border-primary' : 'border-transparent' }}">
-                                    <img src="{{ asset($avatar->url) }}" alt="{{ $avatar->name }}" class="w-full h-full object-cover">
+                                <div class="avatar-option-img w-28 h-28 p-1 rounded-full overflow-hidden border-4 transition-colors {{ (int) $user->avatar_id === (int) $avatar->id ? 'border-primary' : 'border-transparent' }}">
+                                    <img src="{{ asset($avatar->url) }}" alt="{{ $avatar->name }}" class="w-full h-full object-cover rounded-full">
                                 </div>
                                 <span class="font-bold text-dark capitalize">{{ $avatar->name }}</span>
                             </button>

@@ -22,18 +22,18 @@
         <div class="w-full max-w-lg mx-auto mt-8 mb-6 relative">
             {{-- Header pill --}}
             <div class="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                <div class="inline-flex items-center gap-2 bg-emerald-500 text-light text-sm font-semibold px-5 py-2 rounded-full shadow">
+                <div class="inline-flex items-center gap-2 bg-green-600 text-light text-sm font-semibold px-5 py-2 rounded-full shadow">
                     <span class="icon-[material-symbols--trophy] w-5 h-5"></span>
                     Tu posición en el ranking
                 </div>
             </div>
 
             {{-- Card --}}
-            <div class="bg-light rounded-2xl border-2 border-emerald-500 shadow-md shadow-zinc-400 pt-6 pb-3 px-4">
+            <div class="bg-light rounded-2xl border-2 border-green-600 shadow-md shadow-zinc-400 pt-6 pb-3 px-4">
                 <div class="flex items-center gap-4">
                     {{-- Avatar --}}
-                    <div class="w-20 h-20 rounded-full overflow-hidden bg-complementary-primary border-2 border-emerald-500 shrink-0">
-                        <img src="{{ $avatarUrl }}" alt="{{ $userRank->nombres }}" class="w-full h-full object-cover">
+                    <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-green-600 shrink-0 p-1">
+                        <img src="{{ $avatarUrl }}" alt="{{ $userRank->nombres }}" class="w-full h-full object-cover rounded-full">
                     </div>
 
                     {{-- Posición --}}
