@@ -10,9 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 import Swiper from 'swiper';
-import { Autoplay, Pagination } from 'swiper/modules';
+import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
-Swiper.use([Autoplay, Pagination]);
+Swiper.use([Autoplay, Pagination, Navigation]);
 window.Swiper = Swiper;

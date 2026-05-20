@@ -8,7 +8,7 @@
     {{-- Panel --}}
     <div
         id="modal-avatar-edit-panel"
-        class="relative bg-light rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md flex flex-col translate-y-full opacity-0 transition-[transform,opacity] duration-300 ease-out"
+        class="relative bg-light rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md lg:max-w-3xl flex flex-col translate-y-full opacity-0 transition-[transform,opacity] duration-300 ease-out"
         data-current-avatar-id="{{ $user->avatar_id }}"
     >
         {{-- Drag handle --}}
@@ -29,7 +29,7 @@
         </div>
 
         {{-- Swiper --}}
-        <div class="px-6 py-4">
+        <div class="px-6 lg:px-8 py-4 relative">
             <div class="swiper avatar-edit-swiper">
                 <div class="swiper-wrapper">
                     @foreach($avatars as $avatar)
@@ -50,10 +50,26 @@
                     @endforeach
                 </div>
             </div>
+
+            {{-- Navigation arrows (solo lg+) --}}
+            <button
+                type="button"
+                class="avatar-edit-swiper-prev hidden lg:flex absolute left-1 top-1/2 -translate-y-1/2 z-10 w-10 h-10 items-center justify-center rounded-full bg-primary text-light hover:bg-secondary hover:text-dark transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                aria-label="Anterior"
+            >
+                <span class="icon-[material-symbols--chevron-left-rounded] w-7 h-7"></span>
+            </button>
+            <button
+                type="button"
+                class="avatar-edit-swiper-next hidden lg:flex absolute right-1 top-1/2 -translate-y-1/2 z-10 w-10 h-10 items-center justify-center rounded-full bg-primary text-light hover:bg-secondary hover:text-dark transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                aria-label="Siguiente"
+            >
+                <span class="icon-[material-symbols--chevron-right-rounded] w-7 h-7"></span>
+            </button>
         </div>
 
-        {{-- Hint --}}
-        <div class="px-6 py-2 flex items-center justify-center gap-2 text-primary font-bold">
+        {{-- Hint (oculto en lg+) --}}
+        <div class="px-6 py-2 flex lg:hidden items-center justify-center gap-2 text-primary font-bold">
             <span class="icon-[material-symbols--arrow-back-rounded] w-5 h-5"></span>
             Desliza para explorar
             <span class="icon-[material-symbols--arrow-forward-rounded] w-5 h-5"></span>

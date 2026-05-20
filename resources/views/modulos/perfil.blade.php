@@ -331,6 +331,10 @@
                 slidesPerView: 'auto',
                 spaceBetween: 16,
                 centerInsufficientSlides: true,
+                navigation: {
+                    nextEl: '.avatar-edit-swiper-next',
+                    prevEl: '.avatar-edit-swiper-prev',
+                },
             });
 
             const openAvatar = () => {
