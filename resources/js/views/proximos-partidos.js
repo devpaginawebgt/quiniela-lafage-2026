@@ -5,7 +5,53 @@ initMarcadorButtons();
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Logica para cambiar de jornada 
+    // Modal recordatorio de reglas (solo una vez por usuario via localStorage)
+
+    const STORAGE_KEY_REGLAS = 'reglas-modal-visto';
+    const modalReglas = document.getElementById('modal-recordatorio-reglas');
+
+    if (modalReglas && !localStorage.getItem(STORAGE_KEY_REGLAS)) {
+        const backdropReglas = document.getElementById('modal-recordatorio-backdrop');
+        const panelReglas = document.getElementById('modal-recordatorio-panel');
+        const btnCancelar = document.getElementById('modal-recordatorio-cancelar');
+        const btnConfirmar = document.getElementById('modal-recordatorio-confirmar');
+
+        const cerrarModalReglas = () => {
+            backdropReglas.classList.add('opacity-0');
+            panelReglas.classList.add('opacity-0');
+            setTimeout(() => {
+                modalReglas.style.display = 'none';
+                modalReglas.classList.add('pointer-events-none');
+                document.body.classList.remove('overflow-hidden');
+            }, 300);
+        };
+
+        const marcarVisto = () => localStorage.setItem(STORAGE_KEY_REGLAS, '1');
+
+        // Mostrar
+        document.body.classList.add('overflow-hidden');
+        modalReglas.style.display = '';
+        modalReglas.classList.remove('pointer-events-none');
+        requestAnimationFrame(() => {
+            backdropReglas.classList.remove('opacity-0');
+            panelReglas.classList.remove('opacity-0');
+        });
+
+        btnCancelar?.addEventListener('click', () => {
+            marcarVisto();
+            cerrarModalReglas();
+        });
+
+        // "Ver reglas" navega, sólo guardamos el flag antes de salir
+        btnConfirmar?.addEventListener('click', marcarVisto);
+
+        backdropReglas?.addEventListener('click', () => {
+            marcarVisto();
+            cerrarModalReglas();
+        });
+    }
+
+    // Logica para cambiar de jornada
 
     const select = document.getElementById('select-proximos-partidos');
 

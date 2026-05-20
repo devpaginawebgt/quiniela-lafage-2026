@@ -63,6 +63,42 @@
         </div>
     </div>
 
+    {{-- Modal Recordatorio Reglas --}}
+    <div id="modal-recordatorio-reglas" class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4" style="display: none;">
+
+        {{-- Backdrop --}}
+        <div id="modal-recordatorio-backdrop" class="absolute inset-0 bg-black/70 opacity-0 transition-opacity duration-300"></div>
+
+        {{-- Panel --}}
+        <div id="modal-recordatorio-panel" class="relative bg-light rounded-3xl w-full max-w-sm flex flex-col opacity-0 transition-opacity duration-300 ease-out overflow-hidden">
+
+            <div class="px-6 pt-8 pb-6 text-center">
+                <h2 class="text-2xl font-bold text-dark mb-4">¡Hola, {{ Auth::user()->nombres }}!</h2>
+                <p class="text-base text-dark/80 leading-relaxed">
+                    Te recomendamos revisar las reglas del juego antes de empezar a pronosticar.
+                </p>
+            </div>
+
+            <div class="flex items-center justify-end gap-4 px-6 pb-6">
+                <button
+                    type="button"
+                    id="modal-recordatorio-cancelar"
+                    class="text-primary font-semibold px-4 py-2 hover:underline transition-colors"
+                >
+                    Ahora no
+                </button>
+                <a
+                    href="{{ route('web.reglas') }}"
+                    id="modal-recordatorio-confirmar"
+                    class="bg-red-500 hover:bg-red-600 text-light font-semibold rounded-full px-6 py-3 transition-colors"
+                >
+                    Ver reglas
+                </a>
+            </div>
+
+        </div>
+    </div>
+
     {{-- Modal Resultado de Predicciones --}}
     <div id="modal-resultado-predicciones" class="pointer-events-none fixed inset-0 z-50 flex items-end lg:items-center justify-center p-0 lg:p-4" style="display: none;">
 
