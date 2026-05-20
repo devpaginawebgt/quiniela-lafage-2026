@@ -1,4 +1,4 @@
-# Términos y Condiciones — Quiniela Lafage
+# TÉRMINOS Y CONDICIONES – QUINIELA LAFAGE
 
 ## 1. Aceptación de términos
 
@@ -14,15 +14,25 @@ Cada usuario podrá contar con una única cuenta y es responsable de mantener la
 
 ## 4. Mecánica del juego
 
-El usuario participará realizando predicciones por cada partido disponible en la jornada, incluyendo el resultado del encuentro (ganador o empate), el marcador exacto y, cuando aplique, selecciones de bonus. Todas las predicciones deberán registrarse un día antes de cada partido; después de iniciado los marcadores no podrán ser modificadas ni ingresadas.
+El usuario participará realizando predicciones por cada partido disponible en la jornada, incluyendo el resultado del encuentro (ganador o empate) y el marcador exacto.
 
-La asignación de puntos se realizará conforme al sistema definido por la plataforma y será reflejada una vez finalizado cada partido.
+Las predicciones podrán realizarse hasta un minuto antes del inicio de cada partido. Una vez iniciado el encuentro, no podrán ingresarse ni modificarse pronósticos.
+
+La asignación de puntos se realizará conforme al siguiente sistema:
+
+- Marcador exacto: +5 puntos
+- Acertó ganador: +3 puntos
+- Predijo empate: +1 punto
+
+Los puntos no son acumulables. En cada predicción se asignará únicamente la puntuación correspondiente al resultado más acertado obtenido.
+
+Los puntos serán reflejados en la plataforma una vez finalizado cada partido.
 
 ## 5. Tiempos de participación
 
-Las predicciones deberán registrarse antes del inicio oficial de cada partido. Una vez alcanzada la hora de inicio, el partido se considerará cerrado, por lo que no se permitirán modificaciones ni el ingreso de nuevas predicciones bajo ninguna circunstancia.
+Las predicciones deberán registrarse antes del inicio oficial de cada partido. Una vez alcanzada la hora de inicio, el partido se considerará cerrado, por lo que no se permitirán modificaciones ni el ingreso de nuevas predicciones bajo ninguna circunstancia. La hora de inicio será determinada según el horario oficial del partido indicado en la plataforma.
 
-La hora de inicio será determinada según el horario oficial del partido indicado en la plataforma.
+Asimismo, para todas las fases y jornadas de la quiniela, únicamente se tomarán en cuenta los resultados correspondientes a los 90 minutos reglamentarios del partido, incluyendo tiempo de reposición. No se considerarán tiempos extra, prórrogas ni tanda de penales.
 
 ## 6. Ranking y resultados
 
@@ -30,9 +40,9 @@ Los puntos serán asignados una vez finalizado cada partido y se verán reflejad
 
 ## 7. Premios (si aplica)
 
-Los premios, en caso de aplicar, serán definidos y comunicados por Lafage a través de la plataforma. Estos no son transferibles ni canjeables por dinero en efectivo. La asignación y entrega de premios estará sujeta a la validación del cumplimiento de los requisitos de participación y a la verificación de la información del usuario.
+Los premios, en caso de aplicar, serán definidos y comunicados por Lafage a través de la plataforma y podrán variar según el país y las marcas participantes correspondientes a cada región. Estos no son transferibles ni canjeables por dinero en efectivo. La asignación y entrega de premios estará sujeta a la validación del cumplimiento de los requisitos de participación, así como a la verificación de la información proporcionada por el usuario, incluyendo documentos de identificación personal (DPI) y número de colegiado profesional, cuando corresponda.
 
-Lafage se reserva el derecho de sustituir premios por otros de igual o mayor valor en caso de ser necesario. En caso de que la dinámica contemple únicamente reconocimientos, estos serán de carácter simbólico y no implicarán compensación económica.
+Lafage se reserva el derecho de sustituir premios por otros de igual o mayor valor en caso de ser necesario. Asimismo, la empresa podrá solicitar información o documentación adicional para validar la identidad y elegibilidad de los ganadores antes de realizar la entrega del premio. En caso de que la dinámica contemple únicamente reconocimientos, estos serán de carácter simbólico y no implicarán compensación económica.
 
 ## 8. Uso adecuado de la plataforma
 
