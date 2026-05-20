@@ -20,7 +20,7 @@
 
             <div class="w-full max-w-2xl z-10">
                 {{-- Logo --}}
-                <div class="mb-8">
+                <div class="mb-8 px-4">
                     <img
                         src="/images/logos/logo-white.png"
                         class="w-full max-w-40 2xl:max-w-72 mx-auto"
@@ -29,7 +29,7 @@
                 </div>
 
                 {{-- Title --}}
-                <h1 class="text-3xl text-center font-bold text-light mb-8">Registro de Colaboradores</h1>
+                <h1 class="text-3xl text-center font-bold text-light mb-8 px-4">Registro de Colaboradores</h1>
 
                 {{-- Toast Errors --}}
                 <x-toast-errors :errors="$errors" :message-error="$message_error ?? null" />
