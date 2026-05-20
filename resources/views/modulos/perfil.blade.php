@@ -389,7 +389,7 @@
                     const newUrl = data?.data?.avatar?.url ?? selectedAvatarUrl;
 
                     if (newUrl && avatarDisplay) {
-                        avatarDisplay.innerHTML = `<img src="${newUrl}" alt="Avatar" class="w-full h-full object-cover">`;
+                        avatarDisplay.innerHTML = `<img src="${newUrl}" alt="Avatar" class="w-full h-full rounded-full object-cover">`;
                     }
 
                     currentAvatarId = selectedAvatarId;
