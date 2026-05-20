@@ -23,7 +23,7 @@ class LineSeeder extends Seeder
             ['name' => 'Línea Dermatológica'],
 
             // Linea para dependientes
-            ['name' => 'Líneas de Medicamentos'],
+            ['name' => 'Línea Dependientes'],
         ];
 
         foreach($lineas as $linea) {
