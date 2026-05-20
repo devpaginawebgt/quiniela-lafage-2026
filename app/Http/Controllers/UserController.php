@@ -186,7 +186,7 @@ class UserController extends Controller
 
         $brands = Brand::all();
 
-        $premios = $this->premioService->getPremios($user->line_id, (int) $user->user_type_id);
+        $premios = empty($line) ? [] : $this->premioService->getPremios($user->line_id, (int) $user->user_type_id);
 
         $userRank = $this->userService->getUserRank($user);
         $userRank->loadMissing(['country', 'avatar']);
