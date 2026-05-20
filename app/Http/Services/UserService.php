@@ -59,7 +59,7 @@ class UserService {
         return User::find($userId);
     }
 
-    private function rankingQuery(int|string $line_id, int|string $user_type_id, array $columns = ['id', 'nombres', 'apellidos', 'avatar_id', 'pais_id', 'numero_documento', 'email', 'puntos', 'created_at']): Builder
+    private function rankingQuery(int|string $line_id, int|string $user_type_id, array $columns = ['id', 'nombres', 'apellidos', 'avatar_id', 'pais_id', 'numero_documento', 'email', 'puntos', 'created_at', 'deleted_at']): Builder
     {
         return User::select($columns)
             ->selectRaw('RANK() OVER (ORDER BY puntos DESC, created_at ASC, nombres ASC) as posicion')
@@ -76,12 +76,15 @@ class UserService {
     {
         return $this->rankingQuery($line_id, $user_type_id)
             ->with(['country', 'avatar'])
+            ->limit(100)
             ->get();
     }
 
     public function getRankingWeb(int|string $line_id, int|string $user_type_id, $perPage = 100)
     {
-        return $this->rankingQuery($line_id, $user_type_id)
+        return User::query()
+            ->fromSub($this->rankingQuery($line_id, $user_type_id), 'users')
+            ->where('posicion', '<=', 100)
             ->with(['country', 'avatar'])
             ->simplePaginate($perPage);
     }

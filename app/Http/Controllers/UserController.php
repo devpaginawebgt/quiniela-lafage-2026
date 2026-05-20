@@ -208,10 +208,10 @@ class UserController extends Controller
         $result = $this->userService->getRankingWeb($line_id, (int)$user->user_type_id, $perPage);
 
         return $this->successResponse([
-            'has_more' => $result->hasMorePages(),
+            'has_more'     => $result->hasMorePages(),
             'current_page' => $result->currentPage(),
-            'next_page' => $result->hasMorePages() ? $result->currentPage() + 1 : null,
-            'users' => UserRankingResource::collection($result->items()),
+            'next_page'    => $result->hasMorePages() ? $result->currentPage() + 1 : null,
+            'users'        => UserRankingResource::collection($result->items()),
         ]);
     }
 
