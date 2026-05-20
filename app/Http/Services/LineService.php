@@ -8,11 +8,11 @@ class LineService {
 
     public function getLines()
     {
-        return Line::all();
+        return Line::where('is_visible', true)->get();
     }
 
     public function getLine(string|int $line_id)
-    {   
+    {
         return Line::find($line_id);
     }
 

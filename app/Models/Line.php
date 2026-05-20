@@ -9,6 +9,11 @@ class Line extends Model
 {
     protected $fillable = [
         'name',
+        'is_visible',
+    ];
+
+    protected $casts = [
+        'is_visible' => 'boolean',
     ];
 
     public function users(): HasMany
