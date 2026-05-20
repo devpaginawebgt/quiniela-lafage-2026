@@ -1,15 +1,15 @@
 <x-app-layout>
-    <div class="py-6 sm:px-4 lg:px-8 bg-secondary-light rounded-t-4xl flex flex-col h-[calc(100dvh-9rem)]">
+    <div class="mt-auto  pt-6 sm:px-4 lg:px-8 bg-secondary-light rounded-t-4xl flex flex-col h-[calc(100dvh-14rem)] lg:h-[calc(100dvh-16rem)]">
         <div class="w-full max-w-xl mx-auto px-6 pb-6 flex flex-col flex-1 min-h-0">
 
             <h1 class="text-3xl 2xl:text-4xl text-center text-dark font-bold mt-2 mb-6 shrink-0">Reglas del juego</h1>
 
-            <div class="swiper reglas-swiper flex-1 min-h-0 w-full">
+            <div class="swiper reglas-swiper w-full">
                 <div class="swiper-wrapper">
 
                     {{-- Slide 1: Pronósticos --}}
                     <div class="swiper-slide">
-                        <div class="flex flex-col gap-6 pb-4">
+                        <div class="flex flex-col gap-4 pb-4">
                             <div class="flex justify-center items-center gap-4">
                                 <img
                                     src="{{ asset('images/decoracion/step1.png') }}"
@@ -76,8 +76,8 @@
 
                     {{-- Slide 2: Tiempo límite --}}
                     <div class="swiper-slide">
-                        <div class="flex flex-col gap-6 pb-4">
-                            <div class="flex justify-center items-center gap-4">
+                        <div class="flex flex-col gap-4 pb-4">
+                            <div class="flex justify-cnter items-center gap-4">
                                 <img
                                     src="{{ asset('images/decoracion/step2.png') }}"
                                     alt="Tiempo límite"
@@ -118,7 +118,7 @@
 
                     {{-- Slide 3: Juego justo --}}
                     <div class="swiper-slide">
-                        <div class="flex flex-col gap-6 pb-4">
+                        <div class="flex flex-col gap-4 pb-4">
                             <div class="flex justify-center items-center gap-4">
                                 <img
                                     src="{{ asset('images/decoracion/step3.png') }}"
@@ -187,9 +187,11 @@
     </div>
 
     <style>
-        .reglas-swiper .swiper-slide {
-            overflow-y: auto;
-            overscroll-behavior: contain;
+        @media screen and (max-width: 640px) {
+            .reglas-swiper .swiper-slide {
+                overflow-y: auto;
+                overscroll-behavior: contain;
+            }
         }
         .reglas-pagination .swiper-pagination-bullet {
             background-color: var(--color-complementary-dark);
