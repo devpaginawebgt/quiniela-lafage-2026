@@ -23,9 +23,9 @@ class PartidoService {
         // return Phase::whereHas('jornadas', function ($query) {
         //     $query->whereHas('partidos');
         // })
+        // ->with(['jornadas' => fn($q) => $q->whereHas('partidos')])
         return Phase::whereHas('jornadas')
         ->with('jornadas')
-        // ->with(['jornadas' => fn($q) => $q->whereHas('partidos')])
         ->orderBy('id')
         ->get();
     }

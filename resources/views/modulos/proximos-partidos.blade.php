@@ -11,21 +11,33 @@
         <div class="overflow-hidden xl:max-w-5xl 2xl:max-w-440 w-full mx-auto">
 
             <div class="px-6 pb-6">
-                <h1 class="text-3xl 2xl:text-4xl text-center text-dark font-bold mt-2 mb-8">Próximos Partidos</h1>
+                <h1 class="text-3xl 2xl:text-4xl text-center text-dark font-bold mt-2 mb-6">Próximos Partidos</h1>
 
-                <div class="w-full max-w-lg mx-auto mb-4">
-                    <x-search-input id="buscar-partidos" name="buscar_partidos" placeholder="Buscar Partidos" />
-                </div>
+                @php
+                    $faseActiva = $phases->first(fn($p) => $p->jornadas->contains('id', $jornada_activa));
+                @endphp
+
+                @if($faseActiva)
+                    <h2 class="text-xl 2xl:text-2xl text-center text-dark font-bold mb-6">{{ $faseActiva->name }}</h2>
+                @endif
 
                 <form id="form-proximos-partidos" action="{{ route('web.proximos-partidos') }}" method="GET" class="w-full max-w-lg mx-auto mb-4">
                     <x-form-select id="select-proximos-partidos" name="jornada" label="Jornada:">
-                        @foreach($jornadas as $jornada)
-                            <option value="{{ $jornada->id }}" {{ $jornada->id === $jornada_activa ? 'selected' : '' }}>
-                                {{ $jornada->name }}
-                            </option>
+                        @foreach($phases as $phase)
+                            <optgroup label="{{ $phase->name }}">
+                                @foreach($phase->jornadas as $jornada)
+                                    <option value="{{ $jornada->id }}" {{ $jornada->id === $jornada_activa ? 'selected' : '' }}>
+                                        {{ $jornada->name }}
+                                    </option>
+                                @endforeach
+                            </optgroup>
                         @endforeach
                     </x-form-select>
                 </form>
+
+                <div class="w-full max-w-lg mx-auto mb-8">
+                    <x-search-input id="buscar-partidos" name="buscar_partidos" placeholder="Buscar Partidos" />
+                </div>
 
                 <div data-url-predicciones="{{ route('web.save-predicciones') }}">
                     @if (isset($partidosJornada) && $partidosJornada->isNotEmpty())

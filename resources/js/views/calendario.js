@@ -44,6 +44,17 @@ const cargarJornada = async (idJornada) => {
     }
 };
 
+const actualizarSubtituloFase = (selectJornadas) => {
+    const subtitulo = document.getElementById('fase-activa-subtitulo');
+    if (!subtitulo) return;
+
+    const opcion = selectJornadas.options[selectJornadas.selectedIndex];
+    const nombreFase = opcion?.parentElement?.label ?? '';
+
+    subtitulo.textContent = nombreFase;
+    subtitulo.classList.toggle('hidden', !nombreFase);
+};
+
 // --- Inicialización ---
 document.addEventListener('DOMContentLoaded', () => {
     const inputCalendario = document.getElementById('jornadas');
@@ -53,6 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     inputCalendario.addEventListener('change', function () {
         if (!this.value) return;
+        actualizarSubtituloFase(this);
         cargarJornada(this.value);
     });
 

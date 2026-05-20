@@ -58,17 +58,20 @@ class JornadaController extends Controller
 
     }
 
-    public function partidosWeb() {        
+    public function partidosWeb() {
 
         // Jornadas
 
-        $jornadas = $this->partidoService->getJornadas();
+        $phases = $this->partidoService->getPhases();
+
+        $jornada_activa = $phases->pluck('jornadas')->flatten()->firstWhere('is_current', true)?->id;
 
         $grupos = $this->grupoService->getGrupos();
 
         return view('modulos.partidos', [
-            'jornadas' => $jornadas,
-            'grupos'   => $grupos
+            'phases'         => $phases,
+            'jornada_activa' => $jornada_activa,
+            'grupos'         => $grupos,
         ]);
 
     }

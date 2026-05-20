@@ -1,5 +1,13 @@
 <div class="py-6 sm:px-4 lg:px-8 bg-secondary-light rounded-t-4xl h-full flex-1">
-    <h1 class="text-3xl 2xl:text-4xl text-center text-dark font-bold mt-2 mb-8">Calendario de Partidos</h1>
+    <h1 class="text-3xl 2xl:text-4xl text-center text-dark font-bold mt-2 mb-6">Calendario de Partidos</h1>
+
+    @php
+        $faseActiva = $phases->first(fn($p) => $p->jornadas->contains('id', $jornada_activa));
+    @endphp
+
+    <p id="fase-activa-subtitulo" class="text-xl 2xl:text-2xl text-center text-dark font-bold mb-8 {{ $faseActiva ? '' : 'hidden' }}">
+        {{ $faseActiva?->name }}
+    </p>
 
     <div class="overflow-hidden xl:max-w-5xl 2xl:max-w-440 w-full mx-auto">
         <div class="px-6 pb-6">
@@ -9,10 +17,14 @@
 
             <div class="w-full max-w-lg mx-auto mb-6">
                 <x-form-select id="jornadas" name="jornada" label="Jornada:">
-                    @foreach($jornadas as $jornada)
-                        <option value="{{ $jornada->id }}" {{ $jornada->is_current === true ? 'selected' : '' }}>
-                            {{ $jornada->name }}
-                        </option>
+                    @foreach($phases as $phase)
+                        <optgroup label="{{ $phase->name }}">
+                            @foreach($phase->jornadas as $jornada)
+                                <option value="{{ $jornada->id }}" {{ $jornada->id === $jornada_activa ? 'selected' : '' }}>
+                                    {{ $jornada->name }}
+                                </option>
+                            @endforeach
+                        </optgroup>
                     @endforeach
                 </x-form-select>
             </div>

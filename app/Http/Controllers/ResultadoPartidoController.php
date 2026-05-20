@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Services\PartidoService;
 use App\Http\Services\PrediccionService;
 use App\Http\Services\UserService;
+use App\Models\Jornada;
 use App\Traits\ApiResponse;
 
 class ResultadoPartidoController extends Controller
@@ -196,9 +197,9 @@ class ResultadoPartidoController extends Controller
 
         // Jornadas
 
-        $jornadas = $this->partidoService->getJornadas();
+        $phases = $this->partidoService->getPhases();
 
-        $jornada_activa = $jornadas->firstWhere('is_current', true);
+        $jornada_activa = $phases->pluck('jornadas')->flatten()->firstWhere('is_current', true);
 
         $jornada_filtrada = (int)$request->get('jornada') ?: $jornada_activa->id;
 
@@ -207,7 +208,7 @@ class ResultadoPartidoController extends Controller
         $partidosJornada = $this->prediccionService->getPrediccionesJornada($jornada_filtrada);
 
         return view('modulos.proximos-partidos', [
-            'jornadas'        => $jornadas,
+            'phases'          => $phases,
             'banners'         => $banners,
             'jornada_activa'  => $jornada_filtrada,
             'partidosJornada' => $partidosJornada,
@@ -222,9 +223,9 @@ class ResultadoPartidoController extends Controller
 
         // Jornadas
 
-        $jornadas = $this->partidoService->getJornadas();
+        $phases = $this->partidoService->getPhases();
 
-        $jornada_activa = $jornadas->firstWhere('is_current', true);
+        $jornada_activa = $phases->pluck('jornadas')->flatten()->firstWhere('is_current', true);
 
         $jornada_filtrada = (int)$request->get('jornada') ?: $jornada_activa->id;
 
@@ -233,7 +234,7 @@ class ResultadoPartidoController extends Controller
         $resultados = $this->prediccionService->getResultados($jornada_filtrada);
 
         return view('modulos.mis-predicciones', [
-            'jornadas'        => $jornadas,
+            'phases'          => $phases,
             'jornada_activa'  => $jornada_filtrada,
             'resultados'      => $resultados,
         ]);
