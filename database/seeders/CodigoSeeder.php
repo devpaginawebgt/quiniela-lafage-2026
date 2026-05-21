@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Codigo;
+use App\Models\Country;
 use Illuminate\Database\Seeder;
 
 class CodigoSeeder extends Seeder
@@ -14,26 +15,24 @@ class CodigoSeeder extends Seeder
      */
     public function run()
     {
-        Codigo::factory(4)->state(['estado' => 1])->create();
+        // Codigo::factory(4)->state(['estado' => 1])->create();
 
-        $codigos = [
-            '47298ABK',
-            '81532JRT',
-            '26947MPL',
-            '59103WQX',
-            '73846FNG',
-            '18472CYV',
-            '60291HZD',
-            '94358BTM',
-            '35714RKP',
-            '12869LWS',
-        ];
+        $codigosPorPais = require __DIR__ . '/data/codigos.php';
 
-        foreach($codigos as $codigo) {
-            Codigo::create([
-                'codigo' => $codigo,
-                'estado' => 0,
-            ]);
+        foreach ($codigosPorPais as $countryCode => $codigos) {
+            $country = Country::where('country_code', $countryCode)->first();
+
+            if (! $country) {
+                continue;
+            }
+
+            foreach ($codigos as $codigo) {
+                Codigo::create([
+                    'codigo'     => $codigo,
+                    'country_id' => $country->id,
+                    'estado'     => 0,
+                ]);
+            }
         }
     }
 }

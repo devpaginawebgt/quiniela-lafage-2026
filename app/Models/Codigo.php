@@ -11,6 +11,7 @@ class Codigo extends Model
 
     protected $fillable = [
         'codigo',
+        'country_id',
         'estado',
     ];
 }
