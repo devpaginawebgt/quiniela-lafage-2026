@@ -60,7 +60,7 @@ class ApiAuthController extends Controller
         $codigo = null;
 
         if ((int)$data['user_type_id'] === 1) {
-            $result = $this->codigoService->validate($data['code']);
+            $result = $this->codigoService->validate($data['code'], $data['pais_id']);
 
             if (!$result['success']) {
                 throw ValidationException::withMessages(['codigo' => $result['message']]);

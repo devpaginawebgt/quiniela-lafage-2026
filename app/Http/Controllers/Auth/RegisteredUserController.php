@@ -51,8 +51,10 @@ class RegisteredUserController extends Controller
 
         $codigo = null;
 
+        $id_pais = $this->userService->getGuestCountry()->id ?? 1;
+
         if ((int)$data['user_type_id'] === 1) {
-            $result = $this->codigoService->validate($data['code']);
+            $result = $this->codigoService->validate($data['code'], $id_pais);
 
             if (!$result['success']) {
                 throw ValidationException::withMessages(['codigo' => $result['message']]);
@@ -67,7 +69,7 @@ class RegisteredUserController extends Controller
 
         unset($data['code']);
 
-        $data['pais_id']           = $this->userService->getGuestCountry()->id;
+        $data['pais_id']           = $id_pais;
         $data['puntos']            = 0;
         $data['password']          = Hash::make($data['password']);
         $data['completed_info']    = false;
