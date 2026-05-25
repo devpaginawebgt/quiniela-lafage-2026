@@ -21,14 +21,14 @@ class HelperService
 
     public static function ImagePath(string $path): string
     {
-        $baseUrl = env('APP_URL');
+        $baseUrl = config('app.url');
 
         return $baseUrl . $path;
     }
 
     public static function DefaultUserImagePath(): string
     {
-        $baseUrl = env('APP_URL');
+        $baseUrl = config('app.url');
 
         return $baseUrl . '/images/decoracion/avatar.png';
     }
