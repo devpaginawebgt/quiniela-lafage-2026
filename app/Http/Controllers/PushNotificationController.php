@@ -72,14 +72,13 @@ class PushNotificationController extends Controller
             'country_id'   => $data['country_id'] ?? null,
             'status'       => PushNotification::STATUS_SENDING,
             'scheduled_at' => now(),
-            'recipients'   => $recipients->count(),
             'created_by'   => $request->user()->id,
             'from_system'  => false,
         ]);
 
         // Validate notifications sent
 
-        $result = $service->sendAdminNotification($pushNotification);
+        $result = $service->sendAdminNotification($pushNotification, $recipients);
 
         $pushNotification->update([
             'status'     => $result['success'] ? PushNotification::STATUS_SENT : PushNotification::STATUS_FAILED,
