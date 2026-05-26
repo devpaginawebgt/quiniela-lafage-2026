@@ -3,7 +3,7 @@
 
         {{-- Módulo: Notificaciones Push --}}
         @can('admin.enviar-notificaciones-push')
-            <section class="w-full max-w-2xl lg:max-w-4xl rounded-2xl bg-primary backdrop-blur shadow-lg py-4 sm:py-6 px-4 sm:px-6 mb-6">
+            <section class="w-full max-w-2xl lg:max-w-5xl rounded-2xl bg-primary backdrop-blur shadow-lg py-4 sm:py-6 px-4 sm:px-6 mb-6">
 
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-3">
@@ -62,17 +62,31 @@
                             </select>
                         </div>
 
-                        {{-- País --}}
-                        <div>
-                            <label for="country_id" class="block mb-2 text-sm font-medium text-light">País</label>
-                            <select id="country_id"
-                                    name="country_id"
-                                    class="block w-full py-2.5 px-3 text-sm rounded-lg bg-light text-dark border border-complementary-dark/30 focus:ring-secondary focus:border-secondary">
-                                <option value="">Todos los países</option>
-                                @foreach($countries as $country)
-                                    <option value="{{ $country->id }}" @selected(old('country_id') == $country->id)>{{ $country->name }}</option>
-                                @endforeach
-                            </select>
+                        {{-- País y Línea --}}
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label for="country_id" class="block mb-2 text-sm font-medium text-light">País</label>
+                                <select id="country_id"
+                                        name="country_id"
+                                        class="block w-full py-2.5 px-3 text-sm rounded-lg bg-light text-dark border border-complementary-dark/30 focus:ring-secondary focus:border-secondary">
+                                    <option value="">Todos los países</option>
+                                    @foreach($countries as $country)
+                                        <option value="{{ $country->id }}" @selected(old('country_id') == $country->id)>{{ $country->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="line_id" class="block mb-2 text-sm font-medium text-light">Línea</label>
+                                <select id="line_id"
+                                        name="line_id"
+                                        class="block w-full py-2.5 px-3 text-sm rounded-lg bg-light text-dark border border-complementary-dark/30 focus:ring-secondary focus:border-secondary">
+                                    <option value="">Todas las líneas</option>
+                                    @foreach($lines as $line)
+                                        <option value="{{ $line->id }}" @selected(old('line_id') == $line->id)>{{ $line->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
 
                         {{-- Título --}}

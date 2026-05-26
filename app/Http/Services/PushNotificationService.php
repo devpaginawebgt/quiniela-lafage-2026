@@ -32,13 +32,14 @@ class PushNotificationService
      * Usado por el controlador admin para contar destinatarios antes de crear
      * el registro.
      *
-     * @param  array{country_id?: int|null, user_type_id?: int|null}  $filters
+     * @param  array{country_id?: int|null, user_type_id?: int|null, line_id?: int|null}  $filters
      */
     public function filterRecipients(array $filters): Collection
     {
         return $this->baseRecipientsQuery()
             ->when($filters['country_id'] ?? null,   fn ($q, $id) => $q->where('pais_id', $id))
             ->when($filters['user_type_id'] ?? null, fn ($q, $id) => $q->where('user_type_id', $id))
+            ->when($filters['line_id'] ?? null,      fn ($q, $id) => $q->where('line_id', $id))
             ->get();
     }
 
@@ -57,6 +58,7 @@ class PushNotificationService
         $recipients ??= $this->baseRecipientsQuery()
             ->when($pushNotification->country_id,   fn ($q, $id) => $q->where('pais_id', $id))
             ->when($pushNotification->user_type_id, fn ($q, $id) => $q->where('user_type_id', $id))
+            ->when($pushNotification->line_id,      fn ($q, $id) => $q->where('line_id', $id))
             ->get();
 
         return $this->dispatch(

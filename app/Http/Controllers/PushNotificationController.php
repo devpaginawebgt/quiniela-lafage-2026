@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PushNotification\StorePushNotificationRequest;
 use App\Http\Services\PushNotificationService;
 use App\Models\Country;
+use App\Models\Line;
 use App\Models\PushNotification;
 use App\Models\PushNotificationType;
 use App\Models\UserType;
@@ -31,7 +32,11 @@ class PushNotificationController extends Controller
 
         $userTypes = UserType::orderBy('name')->get(['id', 'name', 'plural_name']);
 
-        return view('modulos.admin.notification-form', compact('countries', 'userTypes'));
+        $lines = Line::where('is_visible', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return view('modulos.admin.notification-form', compact('countries', 'userTypes', 'lines'));
     }
 
     /**
@@ -70,6 +75,7 @@ class PushNotificationController extends Controller
             'image_path'   => $imagePath,
             'user_type_id' => $data['user_type_id'] ?? null,
             'country_id'   => $data['country_id'] ?? null,
+            'line_id'      => $data['line_id'] ?? null,
             'status'       => PushNotification::STATUS_SENDING,
             'scheduled_at' => now(),
             'created_by'   => $request->user()->id,

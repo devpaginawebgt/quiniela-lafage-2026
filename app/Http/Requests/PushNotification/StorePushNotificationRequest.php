@@ -18,6 +18,7 @@ class StorePushNotificationRequest extends FormRequest
             'description'  => ['required', 'string', 'max:240'],
             'user_type_id' => ['nullable', 'integer', 'exists:user_types,id'],
             'country_id'   => ['nullable', 'integer', 'exists:countries,id'],
+            'line_id'      => ['nullable', 'integer', 'exists:lines,id'],
             'image'        => ['nullable', 'image', 'max:500'], // 500 KB
         ];
     }
@@ -38,6 +39,9 @@ class StorePushNotificationRequest extends FormRequest
 
             'country_id.integer'   => 'El país seleccionado no es válido.',
             'country_id.exists'    => 'El país seleccionado no existe.',
+
+            'line_id.integer'      => 'La línea seleccionada no es válida.',
+            'line_id.exists'       => 'La línea seleccionada no existe.',
 
             'image.image'          => 'El archivo debe ser una imagen.',
             'image.max'            => 'La imagen no puede superar los 500 KB.',
