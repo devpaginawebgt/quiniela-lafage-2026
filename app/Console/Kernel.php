@@ -19,10 +19,10 @@ class Kernel extends ConsoleKernel
              ->everyMinute()
              ->withoutOverlapping();
 
-        // $schedule->command('push:dispatch-scheduled')
-        //     ->everyFiveMinutes()
-        //     ->withoutOverlapping()
-        //     ->runInBackground();
+        $schedule->command('push:dispatch-scheduled')
+            ->everyFiveMinutes()
+            ->withoutOverlapping()
+            ->runInBackground();
     }
 
     /**

@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\PushNotification;
 
+use Carbon\Carbon;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Throwable;
 
 class StorePushNotificationRequest extends FormRequest
 {
@@ -14,12 +17,52 @@ class StorePushNotificationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'        => ['required', 'string', 'max:100'],
-            'description'  => ['required', 'string', 'max:240'],
-            'user_type_id' => ['nullable', 'integer', 'exists:user_types,id'],
-            'country_id'   => ['nullable', 'integer', 'exists:countries,id'],
-            'line_id'      => ['nullable', 'integer', 'exists:lines,id'],
-            'image'        => ['nullable', 'image', 'max:500'], // 500 KB
+            'title'            => ['required', 'string', 'max:100'],
+            'description'      => ['required', 'string', 'max:240'],
+            'user_type_id'     => ['nullable', 'integer', 'exists:user_types,id'],
+            'country_id'       => ['nullable', 'integer', 'exists:countries,id'],
+            'line_id'          => ['nullable', 'integer', 'exists:lines,id'],
+            'image'            => ['nullable', 'image', 'max:500'], // 500 KB
+            'schedule_enabled' => ['nullable', 'in:0,1'],
+            'send_at_date'     => ['required_if:schedule_enabled,1', 'nullable', 'date_format:Y-m-d'],
+            'send_at_time'     => ['required_if:schedule_enabled,1', 'nullable', 'date_format:H:i'],
+        ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $v) {
+            if ((string) $this->input('schedule_enabled') !== '1') {
+                return;
+            }
+
+            $date = $this->input('send_at_date');
+            $time = $this->input('send_at_time');
+
+            if (! $date || ! $time) {
+                return;
+            }
+
+            $userTimezone = $this->user()?->country?->timezone ?? config('app.timezone');
+
+            try {
+                $scheduledAt = Carbon::createFromFormat('Y-m-d H:i', "$date $time", $userTimezone);
+            } catch (Throwable $e) {
+                $v->errors()->add('send_at_date', 'Fecha y hora de envío inválidas.');
+                return;
+            }
+
+            if (! $scheduledAt || $scheduledAt->lessThan(now()->addMinutes(5))) {
+                $v->errors()->add('send_at_date', 'La hora de envío debe ser al menos 5 minutos en el futuro.');
+            }
+        });
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'send_at_date' => 'fecha de envío',
+            'send_at_time' => 'hora de envío',
         ];
     }
 
@@ -45,6 +88,11 @@ class StorePushNotificationRequest extends FormRequest
 
             'image.image'          => 'El archivo debe ser una imagen.',
             'image.max'            => 'La imagen no puede superar los 500 KB.',
+
+            'send_at_date.required_if'    => 'La fecha de envío es obligatoria al programar.',
+            'send_at_date.date_format'    => 'La fecha de envío no es válida.',
+            'send_at_time.required_if'    => 'La hora de envío es obligatoria al programar.',
+            'send_at_time.date_format'    => 'La hora de envío no es válida.',
         ];
     }
 }

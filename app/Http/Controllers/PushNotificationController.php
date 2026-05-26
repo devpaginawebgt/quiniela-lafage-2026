@@ -9,6 +9,7 @@ use App\Models\Line;
 use App\Models\PushNotification;
 use App\Models\PushNotificationType;
 use App\Models\UserType;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PushNotificationController extends Controller
@@ -46,14 +47,28 @@ class PushNotificationController extends Controller
     {
         $data = $request->validated();
 
-        // Get users that match criteria
+        $scheduleEnabled = (string) ($data['schedule_enabled'] ?? '0') === '1';
 
-        $recipients = $service->filterRecipients($data);
+        $userTimezone = $request->user()->country?->timezone ?? config('app.timezone');
 
-        if ($recipients->isEmpty()) {
-            return redirect()
-                ->route('web.admin.notifications.create')
-                ->with('warning', 'No hay usuarios con notificaciones activadas que coincidan con los filtros seleccionados.');
+        $scheduledAtLocal = $scheduleEnabled
+            ? Carbon::createFromFormat('Y-m-d H:i', $data['send_at_date'] . ' ' . $data['send_at_time'], $userTimezone)
+            : null;
+            
+        $scheduledAtUtc = $scheduledAtLocal?->copy()->utc();
+
+        // Para envío inmediato validamos destinatarios antes de crear el registro.
+        // Para envío programado se omite: la audiencia puede cambiar antes de disparar.
+        $recipients = null;
+
+        if (! $scheduleEnabled) {
+            $recipients = $service->filterRecipients($data);
+
+            if ($recipients->isEmpty()) {
+                return redirect()
+                    ->route('web.admin.notifications.create')
+                    ->with('warning', 'No hay usuarios con notificaciones activadas que coincidan con los filtros seleccionados.');
+            }
         }
 
         // Save image in public storage before saving the notification
@@ -76,11 +91,17 @@ class PushNotificationController extends Controller
             'user_type_id' => $data['user_type_id'] ?? null,
             'country_id'   => $data['country_id'] ?? null,
             'line_id'      => $data['line_id'] ?? null,
-            'status'       => PushNotification::STATUS_SENDING,
-            'scheduled_at' => now(),
+            'status'       => $scheduleEnabled ? PushNotification::STATUS_PENDING : PushNotification::STATUS_SENDING,
+            'scheduled_at' => $scheduleEnabled ? $scheduledAtUtc : now(),
             'created_by'   => $request->user()->id,
             'from_system'  => false,
         ]);
+
+        if ($scheduleEnabled) {
+            return redirect()
+                ->route('web.admin.notifications.create')
+                ->with('status', 'Notificación programada para el ' . $scheduledAtLocal->format('d/m/Y H:i') . '.');
+        }
 
         // Validate notifications sent
 
@@ -104,12 +125,6 @@ class PushNotificationController extends Controller
         return redirect()
             ->route('web.admin.notifications.create')
             ->with('status', '¡Notificación enviada correctamente!');
-
-        // if ($result['failed'] > 0) {
-        //     return redirect()
-        //         ->route('web.admin.notifications.create')
-        //         ->with('warning', "Notificación enviada con {$result['failed']} fallo(s). Revisa los logs para más detalles.");
-        // }
     }
 
     /**

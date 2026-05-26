@@ -128,6 +128,50 @@
                             <p id="image-help" class="mt-1 text-xs text-complementary-light">Solo imágenes. Tamaño máximo 500 KB.</p>
                         </div>
 
+                        {{-- Programar envío --}}
+                        @php
+                            $scheduleEnabledOld = old('schedule_enabled', '1') === '1';
+                            $defaultScheduleDate = now()->addDay()->toDateString();
+                            $defaultScheduleTime = '08:00';
+                        @endphp
+                        <div>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="hidden" name="schedule_enabled" value="0">
+                                <input type="checkbox"
+                                       id="schedule_toggle"
+                                       name="schedule_enabled"
+                                       value="1"
+                                       @checked($scheduleEnabledOld)
+                                       class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-complementary-dark/40 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-secondary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:border-complementary-dark/30 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+                                <span class="ms-3 text-sm font-medium text-light">Programar envío</span>
+                            </label>
+
+                            <div id="schedule_fields" class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-5 {{ $scheduleEnabledOld ? '' : 'hidden' }}">
+                                <div>
+                                    <label for="send_at_date" class="block mb-2 text-sm font-medium text-light">Fecha de envío</label>
+                                    <input type="date"
+                                           id="send_at_date"
+                                           name="send_at_date"
+                                           min="{{ now()->toDateString() }}"
+                                           value="{{ old('send_at_date', $defaultScheduleDate) }}"
+                                           data-default="{{ $defaultScheduleDate }}"
+                                           class="block w-full py-2.5 px-3 text-sm rounded-lg bg-light text-dark border border-complementary-dark/30 focus:ring-secondary focus:border-secondary" />
+                                </div>
+                                <div>
+                                    <label for="send_at_time" class="block mb-2 text-sm font-medium text-light">Hora de envío</label>
+                                    <input type="time"
+                                           id="send_at_time"
+                                           name="send_at_time"
+                                           step="60"
+                                           value="{{ old('send_at_time', $defaultScheduleTime) }}"
+                                           data-default="{{ $defaultScheduleTime }}"
+                                           class="block w-full py-2.5 px-3 text-sm rounded-lg bg-light text-dark border border-complementary-dark/30 focus:ring-secondary focus:border-secondary" />
+                                </div>
+                                <p class="sm:col-span-2 -mt-2 text-xs text-complementary-light">Se enviará a partir de la fecha y hora indicadas (mínimo 5 minutos en el futuro).</p>
+                            </div>
+                        </div>
+
                         {{-- Acciones --}}
                         <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-2">
                             <button type="reset"
@@ -136,9 +180,10 @@
                                 Limpiar
                             </button>
                             <button type="submit"
+                                    id="submit_button"
                                     class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-secondary text-light hover:brightness-110 transition-colors">
-                                <span class="icon-[material-symbols--send-rounded] w-5 h-5"></span>
-                                Enviar notificación
+                                <span id="submit_icon" class="{{ $scheduleEnabledOld ? 'icon-[material-symbols--schedule-send-outline-rounded]' : 'icon-[material-symbols--send-rounded]' }} w-5 h-5"></span>
+                                <span id="submit_label">{{ $scheduleEnabledOld ? 'Programar notificación' : 'Enviar notificación' }}</span>
                             </button>
                         </div>
                     </form>
@@ -205,6 +250,36 @@
 
                     bodyInput?.addEventListener('input', (e) => {
                         previewBody.textContent = e.target.value.trim() || defaultBody;
+                    });
+
+                    const scheduleToggle = document.getElementById('schedule_toggle');
+                    const scheduleFields = document.getElementById('schedule_fields');
+                    const scheduleDate = document.getElementById('send_at_date');
+                    const scheduleTime = document.getElementById('send_at_time');
+                    const submitIcon = document.getElementById('submit_icon');
+                    const submitLabel = document.getElementById('submit_label');
+
+                    const sendIconClass = 'icon-[material-symbols--send-rounded]';
+                    const scheduleIconClass = 'icon-[material-symbols--schedule-send-outline-rounded]';
+
+                    const applyScheduleState = (enabled) => {
+                        scheduleFields.classList.toggle('hidden', !enabled);
+                        if (enabled) {
+                            if (!scheduleDate.value) scheduleDate.value = scheduleDate.dataset.default ?? '';
+                            if (!scheduleTime.value) scheduleTime.value = scheduleTime.dataset.default ?? '';
+                        } else {
+                            scheduleDate.value = '';
+                            scheduleTime.value = '';
+                        }
+                        submitIcon?.classList.toggle(sendIconClass, !enabled);
+                        submitIcon?.classList.toggle(scheduleIconClass, enabled);
+                        if (submitLabel) {
+                            submitLabel.textContent = enabled ? 'Programar notificación' : 'Enviar notificación';
+                        }
+                    };
+
+                    scheduleToggle?.addEventListener('change', (e) => {
+                        applyScheduleState(e.target.checked);
                     });
 
                     imageInput?.addEventListener('change', (e) => {
