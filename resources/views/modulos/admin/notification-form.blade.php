@@ -1,9 +1,9 @@
 <x-admin-layout>
-    <div class="max-w-screen-2xl mx-auto h-full flex-1 flex justify-center items-center">
+    <div class="w-full h-full mx-auto flex-1 flex justify-center items-center">
 
         {{-- Módulo: Notificaciones Push --}}
         @can('admin.enviar-notificaciones-push')
-            <section class="rounded-2xl bg-primary backdrop-blur shadow-lg py-4 sm:py-6 px-4 sm:px-6 mb-6">
+            <section class="w-full max-w-2xl lg:max-w-4xl rounded-2xl bg-primary backdrop-blur shadow-lg py-4 sm:py-6 px-4 sm:px-6 mb-6">
 
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-3">
@@ -38,96 +38,99 @@
 
                 <x-toast-errors :errors="$errors" />
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="w-full flex flex-col lg:flex-row gap-6">
 
                     {{-- Formulario de envío --}}
-                    <div class="lg:col-span-2">
-                        <form action="{{ route('web.admin.notifications.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
-                            @csrf
+                    <form
+                        action="{{ route('web.admin.notifications.store') }}"
+                        method="POST"
+                        enctype="multipart/form-data"
+                        class="flex-1 min-w-0 space-y-5"
+                    >
+                        @csrf
 
-                            {{-- Audiencia --}}
-                            <div>
-                                <label for="user_type_id" class="block mb-2 text-sm font-medium text-light">Audiencia</label>
-                                <select id="user_type_id"
-                                        name="user_type_id"
-                                        class="block w-full py-2.5 px-3 text-sm rounded-lg bg-light text-dark border border-complementary-dark/30 focus:ring-secondary focus:border-secondary">
-                                    <option value="">Todos los participantes</option>
-                                    @foreach($userTypes as $userType)
-                                        <option value="{{ $userType->id }}" @selected(old('user_type_id') == $userType->id)>{{ $userType->plural_name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                        {{-- Audiencia --}}
+                        <div>
+                            <label for="user_type_id" class="block mb-2 text-sm font-medium text-light">Audiencia</label>
+                            <select id="user_type_id"
+                                    name="user_type_id"
+                                    class="block w-full py-2.5 px-3 text-sm rounded-lg bg-light text-dark border border-complementary-dark/30 focus:ring-secondary focus:border-secondary">
+                                <option value="">Todos los participantes</option>
+                                @foreach($userTypes as $userType)
+                                    <option value="{{ $userType->id }}" @selected(old('user_type_id') == $userType->id)>{{ $userType->plural_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                            {{-- País --}}
-                            <div>
-                                <label for="country_id" class="block mb-2 text-sm font-medium text-light">País</label>
-                                <select id="country_id"
-                                        name="country_id"
-                                        class="block w-full py-2.5 px-3 text-sm rounded-lg bg-light text-dark border border-complementary-dark/30 focus:ring-secondary focus:border-secondary">
-                                    <option value="">Todos los países</option>
-                                    @foreach($countries as $country)
-                                        <option value="{{ $country->id }}" @selected(old('country_id') == $country->id)>{{ $country->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                        {{-- País --}}
+                        <div>
+                            <label for="country_id" class="block mb-2 text-sm font-medium text-light">País</label>
+                            <select id="country_id"
+                                    name="country_id"
+                                    class="block w-full py-2.5 px-3 text-sm rounded-lg bg-light text-dark border border-complementary-dark/30 focus:ring-secondary focus:border-secondary">
+                                <option value="">Todos los países</option>
+                                @foreach($countries as $country)
+                                    <option value="{{ $country->id }}" @selected(old('country_id') == $country->id)>{{ $country->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                            {{-- Título --}}
-                            <div>
-                                <label for="title" class="block mb-2 text-sm font-medium text-light">Título</label>
-                                <input type="text"
-                                    id="title"
-                                    name="title"
-                                    maxlength="100"
-                                    value="{{ old('title') }}"
-                                    placeholder="Ej. ¡Nueva jornada disponible!"
-                                    class="block w-full py-2.5 px-3 text-sm rounded-lg border bg-light text-dark border-complementary-dark/30 placeholder-zinc-400 focus:ring-secondary focus:border-secondary"
-                                    required />
-                                <p class="mt-1 text-xs text-complementary-light">Máximo 100 caracteres.</p>
-                            </div>
+                        {{-- Título --}}
+                        <div>
+                            <label for="title" class="block mb-2 text-sm font-medium text-light">Título</label>
+                            <input type="text"
+                                id="title"
+                                name="title"
+                                maxlength="100"
+                                value="{{ old('title') }}"
+                                placeholder="Ej. ¡Nueva jornada disponible!"
+                                class="block w-full py-2.5 px-3 text-sm rounded-lg border bg-light text-dark border-complementary-dark/30 placeholder-zinc-400 focus:ring-secondary focus:border-secondary"
+                                required />
+                            <p class="mt-1 text-xs text-complementary-light">Máximo 100 caracteres.</p>
+                        </div>
 
-                            {{-- Mensaje --}}
-                            <div>
-                                <label for="description" class="block mb-2 text-sm font-medium text-light">Mensaje</label>
-                                <textarea id="description"
-                                        name="description"
-                                        rows="4"
-                                        maxlength="240"
-                                        placeholder="Escribe el contenido de la notificación..."
-                                        class="block w-full p-2.5 text-sm rounded-lg bg-light text-dark border-complementary-dark/30 placeholder-zinc-400 focus:ring-secondary focus:border-secondary"
-                                        required>{{ old('description') }}</textarea>
-                                <p class="mt-1 text-xs text-complementary-light">Máximo 240 caracteres.</p>
-                            </div>
+                        {{-- Mensaje --}}
+                        <div>
+                            <label for="description" class="block mb-2 text-sm font-medium text-light">Mensaje</label>
+                            <textarea id="description"
+                                    name="description"
+                                    rows="4"
+                                    maxlength="240"
+                                    placeholder="Escribe el contenido de la notificación..."
+                                    class="block w-full p-2.5 text-sm rounded-lg bg-light text-dark border-complementary-dark/30 placeholder-zinc-400 focus:ring-secondary focus:border-secondary"
+                                    required>{{ old('description') }}</textarea>
+                            <p class="mt-1 text-xs text-complementary-light">Máximo 240 caracteres.</p>
+                        </div>
 
-                            {{-- Imagen opcional --}}
-                            <div>
-                                <label for="image" class="block mb-2 text-sm font-medium text-light">Imagen <span class="text-complementary-light font-normal">(opcional)</span></label>
-                                <input type="file"
-                                    id="image"
-                                    name="image"
-                                    accept="image/*"
-                                    data-max-size="512000"
-                                    class="block w-full text-sm text-complementary-dark rounded-lg cursor-pointer bg-light border focus:outline-none focus:ring-secondary focus:border-secondary file:mr-3 file:py-2.5 file:border-0 file:text-sm file:font-semibold file:bg-secondary file:text-complementary-primary hover:file:brightness-110" />
-                                <p id="image-help" class="mt-1 text-xs text-complementary-light">Solo imágenes. Tamaño máximo 500 KB.</p>
-                            </div>
+                        {{-- Imagen opcional --}}
+                        <div>
+                            <label for="image" class="block mb-2 text-sm font-medium text-light">Imagen <span class="text-complementary-light font-normal">(opcional)</span></label>
+                            <input type="file"
+                                id="image"
+                                name="image"
+                                accept="image/*"
+                                data-max-size="512000"
+                                class="block w-full text-sm text-complementary-dark rounded-lg cursor-pointer bg-light border focus:outline-none focus:ring-secondary focus:border-secondary file:mr-3 file:py-2.5 file:border-0 file:text-sm file:font-semibold file:bg-secondary file:text-light hover:file:brightness-110" />
+                            <p id="image-help" class="mt-1 text-xs text-complementary-light">Solo imágenes. Tamaño máximo 500 KB.</p>
+                        </div>
 
-                            {{-- Acciones --}}
-                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-2">
-                                <button type="reset"
-                                        class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-zinc-200  bg-red-800 hover:bg-red-700 hover:text-light transition-colors">
-                                    <span class="icon-[material-symbols--close-rounded] w-5 h-5"></span>
-                                    Limpiar
-                                </button>
-                                <button type="submit"
-                                        class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-secondary text-complementary-primary hover:brightness-110 transition-colors">
-                                    <span class="icon-[material-symbols--send-rounded] w-5 h-5"></span>
-                                    Enviar notificación
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        {{-- Acciones --}}
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-2">
+                            <button type="reset"
+                                    class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-zinc-200  bg-red-800 hover:bg-red-700 hover:text-light transition-colors">
+                                <span class="icon-[material-symbols--close-rounded] w-5 h-5"></span>
+                                Limpiar
+                            </button>
+                            <button type="submit"
+                                    class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-secondary text-light hover:brightness-110 transition-colors">
+                                <span class="icon-[material-symbols--send-rounded] w-5 h-5"></span>
+                                Enviar notificación
+                            </button>
+                        </div>
+                    </form>
 
                     {{-- Vista previa --}}
-                    <aside class="lg:col-span-1">
+                    <aside class="w-full lg:max-w-xs lg:shrink-0">
                         <p class="text-xs uppercase tracking-wider text-complementary-light mb-2">Vista previa</p>
                         <div class="rounded-xl border border-zinc-100 bg-zinc-600 backdrop-blur-xl p-4">
                             <div class="flex items-start gap-3">
