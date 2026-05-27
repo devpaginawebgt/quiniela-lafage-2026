@@ -12,56 +12,61 @@ class PremioSeeder extends Seeder
      */
     public function run(): void
     {
-        $base_premios = [
+        // Premios para Médicos (Doctores) → user_type_id = 2
+        // Aplica a todas las líneas de doctor (1-6)
+        $premios_doctores = [
             [
                 'posicion'        => 1,
-                'titulo_posicion' => 'Primeros 3 lugares',
-                'nombre'          => 'Televisión 55" 4K UHD',
-                'descripcion'     => 'Televisor de alta definición con conectividad inteligente y control por voz.',
-                'imagen'          => '/images/premios/tv.png',
+                'titulo_posicion' => '1er lugar',
+                'nombre'          => 'Televisión 60"',
+                'descripcion'     => 'Televisor de 60 pulgadas de alta definición.',
+                'imagen'          => '/images/premios/doctores/Premio 1.jpeg',
             ],
             [
                 'posicion'        => 2,
-                'titulo_posicion' => 'Siguientes 3 lugares',
-                'nombre'          => 'Teléfono Xiaomi 5G',
-                'descripcion'     => 'Smartphone Xiaomi con conectividad 5G, pantalla AMOLED y cámara de alta resolución.',
-                'imagen'          => '/images/premios/phone.png',
-            ],
-            [
-                'posicion'        => 3,
-                'titulo_posicion' => 'Siguientes 2 lugares',
-                'nombre'          => 'Smartwatch deportivo',
-                'descripcion'     => 'Reloj inteligente con monitor de ritmo cardíaco y seguimiento de actividad física.',
-                'imagen'          => '/images/premios/smartwatch.png',
+                'titulo_posicion' => '2do lugar',
+                'nombre'          => 'Camisola del equipo ganador',
+                'descripcion'     => 'Camisola oficial del equipo campeón del Mundial 2026.',
+                'imagen'          => '/images/premios/doctores/Premio 2.jpeg',
             ],
         ];
 
-        // Líneas de Doctor (1-6) → user_type_id = 2 (Doctor)
-        // Línea de Dependientes (7) → user_type_id = 1 (Dependiente)
-        $line_user_type_map = [
-            1 => 2,
-            2 => 2,
-            3 => 2,
-            4 => 2,
-            5 => 2,
-            6 => 2,
-            7 => 1,
-        ];
+        $lineas_doctor = [1, 2, 3, 4, 5, 6];
 
-        foreach ($line_user_type_map as $line_id => $user_type_id) {
-            foreach ($base_premios as $premio) {
+        foreach ($lineas_doctor as $line_id) {
+            foreach ($premios_doctores as $premio) {
                 Premio::create(array_merge($premio, [
                     'line_id'      => $line_id,
-                    'user_type_id' => $user_type_id,
+                    'user_type_id' => 2,
                 ]));
             }
         }
 
-        // foreach ($base_premios as $premio) {
-        //     Premio::create(array_merge($premio, [
-        //         'line_id'      => 1,
-        //         'user_type_id' => 3,
-        //     ]));
-        // }
+        // Premios para Dependientes → user_type_id = 1, línea 7
+        $premios_dependientes = [
+            [
+                'posicion'        => 1,
+                'titulo_posicion' => '1er lugar',
+                'nombre'          => 'Giftcard de $200',
+                'descripcion'     => 'Tarjeta de regalo por un valor de $200.',
+                'imagen'          => '/images/premios/dependientes/Premio 1.jpeg',
+            ],
+            [
+                'posicion'        => 2,
+                'titulo_posicion' => '2do lugar',
+                'nombre'          => 'Giftcard de $100',
+                'descripcion'     => 'Tarjeta de regalo por un valor de $100.',
+                'imagen'          => '/images/premios/dependientes/Premio 2.jpeg',
+            ],
+        ];
+
+        foreach ($premios_dependientes as $premio) {
+            Premio::create(array_merge($premio, [
+                'line_id'      => 7,
+                'user_type_id' => 1,
+            ]));
+        }
+
+        // Colaboradores (user_type_id = 3) → sin premios por el momento
     }
 }
