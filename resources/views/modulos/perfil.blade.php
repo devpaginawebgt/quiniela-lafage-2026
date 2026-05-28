@@ -186,11 +186,12 @@
                         Cancelar
                     </button>
 
-                    <form method="POST" action="{{ route('web.logout') }}">
+                    <form id="form-logout" method="POST" action="{{ route('web.logout') }}">
                         @csrf
                         <button
                             type="submit"
-                            class="text-red-600 hover:text-red-500 transition-colors cursor-pointer">
+                            id="btn-logout-submit"
+                            class="text-red-600 hover:text-red-500 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-wait inline-flex items-center gap-2">
                             Cerrar sesión
                         </button>
                     </form>
@@ -201,6 +202,30 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+
+            // Helper: pone un botón en estado de carga (spinner + texto, deshabilitado).
+            const setButtonLoading = (btn, loadingText) => {
+                if (!btn || btn.disabled) return;
+                if (btn.dataset.originalContent === undefined) {
+                    btn.dataset.originalContent = btn.innerHTML;
+                }
+                btn.disabled = true;
+                btn.classList.add('cursor-wait', 'opacity-80');
+                btn.innerHTML = `
+                    <span class="icon-[material-symbols--progress-activity] w-5 h-5 animate-spin"></span>
+                    <span>${loadingText}</span>
+                `;
+            };
+
+            const resetButtonLoading = (btn) => {
+                if (!btn) return;
+                if (btn.dataset.originalContent !== undefined) {
+                    btn.innerHTML = btn.dataset.originalContent;
+                    delete btn.dataset.originalContent;
+                }
+                btn.disabled = false;
+                btn.classList.remove('cursor-wait', 'opacity-80');
+            };
 
             // Helper: drawer/modal con backdrop deslizable desde abajo
             const wireDrawer = ({ modalId, backdropId, panelId, triggerId, closeId, hiddenClasses }) => {
@@ -246,6 +271,18 @@
                 closeId:    'modal-logout-cancel',
                 hiddenClasses: ['scale-90', 'opacity-0'],
             });
+
+            // Logout: estado de carga al enviar el form
+            const logoutForm   = document.getElementById('form-logout');
+            const logoutSubmit = document.getElementById('btn-logout-submit');
+            const logoutCancel = document.getElementById('modal-logout-cancel');
+
+            if (logoutForm && logoutSubmit) {
+                logoutForm.addEventListener('submit', () => {
+                    setButtonLoading(logoutSubmit, 'Cerrando sesión...');
+                    if (logoutCancel) logoutCancel.disabled = true;
+                });
+            }
 
             // Términos y condiciones (drawer)
             wireDrawer({
@@ -300,15 +337,19 @@
             });
 
             deleteConfirm.addEventListener('click', async () => {
-                deleteConfirm.disabled = true;
-                deleteCancel.disabled  = true;
+                if (deleteConfirm.disabled) return;
+
+                setButtonLoading(deleteConfirm, 'Eliminando...');
+                deleteCancel.disabled = true;
+                deleteCancel.classList.add('opacity-50', 'cursor-not-allowed');
 
                 try {
                     await window.axios.delete('{{ route('web.users.perfil.delete') }}');
                     window.location.href = '{{ route('ingresa') }}';
                 } catch (error) {
-                    deleteConfirm.disabled = false;
-                    deleteCancel.disabled  = false;
+                    resetButtonLoading(deleteConfirm);
+                    deleteCancel.disabled = false;
+                    deleteCancel.classList.remove('opacity-50', 'cursor-not-allowed');
                     alert('No se pudo eliminar la cuenta. Inténtalo nuevamente.');
                 }
             });
