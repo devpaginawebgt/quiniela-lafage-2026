@@ -30,7 +30,7 @@ class PrediccionResource extends JsonResource
                 break;
         }
 
-        $pronosticado = boolval(!empty($this->prediccion?->goles_equipo_1) && !empty($this->prediccion?->goles_equipo_2));
+        $pronosticado = boolval(!is_null($this->prediccion?->goles_equipo_1) && !is_null($this->prediccion?->goles_equipo_2));
 
         $message = $pronosticado
                 ? 'Pronóstico registrado.'
