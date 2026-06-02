@@ -93,6 +93,10 @@ Route::middleware(['auth'])->as('web.')->group(function () {
             Route::post('notificaciones', 'store')->name('store');
         });
 
+        Route::view('power-bi', 'modulos.admin.power-bi')
+            ->middleware('can:admin.ver-reportes')
+            ->name('power-bi');
+
     });
 
     Route::get('/', function () {
