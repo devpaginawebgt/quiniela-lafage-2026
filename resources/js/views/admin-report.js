@@ -109,7 +109,7 @@ $(function () {
                 { data: "fecha", title: "Fecha" },
                 { data: "title", title: "Título" },
                 { data: "audiencia", title: "Audiencia" },
-                { data: "destinatarios", title: "Destinatarios" },
+                { data: "scheduled_at_formatted", title: "Programada para" },
                 { data: "status_badge", title: "Estado", orderable: false, searchable: false },
                 { data: "acciones", title: "Acciones", orderable: false, searchable: false },
             ],

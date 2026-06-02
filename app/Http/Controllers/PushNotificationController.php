@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PushNotification\StorePushNotificationRequest;
+use App\Http\Requests\PushNotification\UpdatePushNotificationRequest;
 use App\Http\Services\PushNotificationService;
 use App\Models\Country;
 use App\Models\Line;
@@ -46,14 +47,29 @@ class PushNotificationController extends Controller
                     $n->line?->name,
                 ])->filter()->implode(' · ');
             })
-            ->addColumn('destinatarios', fn($n) => $n->recipients !== null ? number_format($n->recipients) : '—')
+            ->addColumn('scheduled_at_formatted', fn($n) => $n->scheduled_at?->timezone('America/Guatemala')->format('d/m/Y h:i A') ?? '—')
             ->addColumn('status_badge', function ($n) {
                 return $this->statusBadgeHtml($n->status);
             })
             ->addColumn('acciones', function ($n) {
-                $canCancel = $n->status === PushNotification::STATUS_PENDING;
-                $cancelDisabled = $canCancel ? '' : 'disabled aria-disabled="true"';
-                $cancelClasses = $canCancel
+                $canEditOrCancel = $n->status === PushNotification::STATUS_PENDING;
+                $disabledAttrs = $canEditOrCancel ? '' : 'disabled aria-disabled="true"';
+
+                $editUrl = route('web.admin.notifications.edit', $n);
+                $editEnabledClasses = 'bg-complementary-secondary text-light hover:brightness-110';
+                $editDisabledClasses = 'bg-gray-200 text-gray-400 cursor-not-allowed pointer-events-none';
+                $editButton = $canEditOrCancel
+                    ? '<a href="' . $editUrl . '"
+                            class="inline-flex items-center justify-center w-8 h-8 rounded-lg transition-colors ' . $editEnabledClasses . '"
+                            title="Editar">
+                            <span class="icon-[material-symbols--edit-outline-rounded] w-5 h-5"></span>
+                        </a>'
+                    : '<span class="inline-flex items-center justify-center w-8 h-8 rounded-lg ' . $editDisabledClasses . '"
+                            title="Solo se pueden editar notificaciones pendientes">
+                            <span class="icon-[material-symbols--edit-outline-rounded] w-5 h-5"></span>
+                        </span>';
+
+                $cancelClasses = $canEditOrCancel
                     ? 'bg-secondary text-light hover:brightness-110'
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed';
 
@@ -65,11 +81,12 @@ class PushNotificationController extends Controller
                             title="Ver detalle">
                             <span class="icon-[material-symbols--visibility-outline-rounded] w-5 h-5"></span>
                         </button>
+                        ' . $editButton . '
                         <button type="button"
                             class="js-notification-cancel inline-flex items-center justify-center w-8 h-8 rounded-lg transition-colors ' . $cancelClasses . '"
                             data-id="' . $n->id . '"
-                            ' . $cancelDisabled . '
-                            title="' . ($canCancel ? 'Cancelar envío' : 'Solo se pueden cancelar notificaciones pendientes') . '">
+                            ' . $disabledAttrs . '
+                            title="' . ($canEditOrCancel ? 'Cancelar envío' : 'Solo se pueden cancelar notificaciones pendientes') . '">
                             <span class="icon-[material-symbols--cancel] w-5 h-5"></span>
                         </button>
                     </div>
@@ -77,6 +94,9 @@ class PushNotificationController extends Controller
             })
             ->filterColumn('fecha', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(created_at, '%d/%m/%Y') LIKE ?", ["%{$keyword}%"]);
+            })
+            ->filterColumn('scheduled_at_formatted', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(scheduled_at, '%d/%m/%Y') LIKE ?", ["%{$keyword}%"]);
             })
             ->filterColumn('audiencia', function ($query, $keyword) {
                 $query->where(function ($q) use ($keyword) {
@@ -195,6 +215,115 @@ class PushNotificationController extends Controller
     }
 
     /**
+     * Show the form for editing a pending notification.
+     */
+    public function edit(PushNotification $notification)
+    {
+        if ($notification->status !== PushNotification::STATUS_PENDING) {
+            return redirect()
+                ->route('web.admin.notifications.index')
+                ->with('warning', 'Solo se pueden editar notificaciones pendientes de envío.');
+        }
+
+        $countries = Country::where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        $userTypes = UserType::orderBy('name')->get(['id', 'name', 'plural_name']);
+
+        $lines = Line::where('is_visible', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return view('modulos.admin.notification-edit', compact('notification', 'countries', 'userTypes', 'lines'));
+    }
+
+    /**
+     * Update a pending notification. If the user disables the schedule toggle,
+     * the notification is sent immediately as part of the update.
+     */
+    public function update(UpdatePushNotificationRequest $request, PushNotification $notification, PushNotificationService $service)
+    {
+        $data = $request->validated();
+
+        $scheduleEnabled = (string) ($data['schedule_enabled'] ?? '0') === '1';
+        $removeImage = (string) ($data['remove_image'] ?? '0') === '1';
+
+        $userTimezone = $request->user()->country?->timezone ?? config('app.timezone');
+
+        $scheduledAtLocal = $scheduleEnabled
+            ? Carbon::createFromFormat('Y-m-d H:i', $data['send_at_date'] . ' ' . $data['send_at_time'], $userTimezone)
+            : null;
+
+        $scheduledAtUtc = $scheduledAtLocal?->copy()->utc();
+
+        // Envío inmediato: validar destinatarios antes de tocar el registro.
+        $recipients = null;
+
+        if (! $scheduleEnabled) {
+            $recipients = $service->filterRecipients($data);
+
+            if ($recipients->isEmpty()) {
+                return redirect()
+                    ->route('web.admin.notifications.edit', $notification)
+                    ->withInput()
+                    ->with('warning', 'No hay usuarios con notificaciones activadas que coincidan con los filtros seleccionados.');
+            }
+        }
+
+        // Imagen: nueva > eliminar actual > mantener.
+        $imagePath = $notification->image_path;
+
+        if ($request->hasFile('image')) {
+            if ($imagePath) {
+                Storage::disk('public')->delete($imagePath);
+            }
+            $imagePath = $request->file('image')->store('push-notifications', 'public');
+        } elseif ($removeImage && $imagePath) {
+            Storage::disk('public')->delete($imagePath);
+            $imagePath = null;
+        }
+
+        $notification->update([
+            'title'        => $data['title'],
+            'description'  => $data['description'],
+            'image_path'   => $imagePath,
+            'user_type_id' => $data['user_type_id'] ?? null,
+            'country_id'   => $data['country_id'] ?? null,
+            'line_id'      => $data['line_id'] ?? null,
+            'status'       => $scheduleEnabled ? PushNotification::STATUS_PENDING : PushNotification::STATUS_SENDING,
+            'scheduled_at' => $scheduleEnabled ? $scheduledAtUtc : now(),
+        ]);
+
+        if ($scheduleEnabled) {
+            return redirect()
+                ->route('web.admin.notifications.index')
+                ->with('status', 'Notificación actualizada. Reprogramada para el ' . $scheduledAtLocal->format('d/m/Y H:i') . '.');
+        }
+
+        $result = $service->sendAdminNotification($notification, $recipients);
+
+        $notification->update([
+            'status'     => $result['success'] ? PushNotification::STATUS_SENT : PushNotification::STATUS_FAILED,
+            'sent_at'    => now(),
+            'recipients' => $result['total'],
+            'success'    => $result['success'],
+            'failed'     => $result['failed'],
+            'comment'    => $result['error'],
+        ]);
+
+        if ($result['success'] === false) {
+            return redirect()
+                ->route('web.admin.notifications.index')
+                ->with('error', 'Ocurrió un error al enviar las notificaciones, intenta nuevamente o contacta a Soporte.');
+        }
+
+        return redirect()
+            ->route('web.admin.notifications.index')
+            ->with('status', '¡Notificación actualizada y enviada correctamente!');
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(PushNotification $notification)
@@ -215,7 +344,7 @@ class PushNotificationController extends Controller
             'id'           => $notification->id,
             'title'        => $notification->title,
             'description'  => $notification->description,
-            'image_url'    => $notification->image_path ? Storage::disk('public')->url($notification->image_path) : null,
+            'image_url'    => $notification->image_path ? asset('storage/' . $notification->image_path) : null,
             'audience'     => $audience,
             'status'       => $notification->status,
             'status_label' => $this->statusLabel($notification->status),

@@ -33,7 +33,7 @@
                         <th class="px-4 py-3 border border-gray-200">Fecha</th>
                         <th class="px-4 py-3 border border-gray-200">Título</th>
                         <th class="px-4 py-3 border border-gray-200">Audiencia</th>
-                        <th class="px-4 py-3 border border-gray-200">Destinatarios</th>
+                        <th class="px-4 py-3 border border-gray-200">Programada para</th>
                         <th class="px-4 py-3 border border-gray-200">Estado</th>
                         <th class="px-4 py-3 border border-gray-200">Acciones</th>
                     </tr>

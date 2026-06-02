@@ -94,6 +94,8 @@ Route::middleware(['auth'])->as('web.')->group(function () {
             Route::get('notificaciones/nueva', 'create')->name('create');
             Route::post('notificaciones', 'store')->name('store');
             Route::get('notificaciones/{notification}', 'show')->name('show');
+            Route::get('notificaciones/{notification}/editar', 'edit')->name('edit');
+            Route::put('notificaciones/{notification}', 'update')->name('update');
             Route::patch('notificaciones/{notification}/cancelar', 'cancel')->name('cancel');
         });
 
