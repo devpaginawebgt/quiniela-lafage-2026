@@ -32,7 +32,8 @@ class PushNotificationController extends Controller
     {
         $query = PushNotification::query()
             ->with(['userType:id,plural_name', 'country:id,name', 'line:id,name'])
-            ->latest('id');
+            ->orderByRaw("FIELD(status, 'pending') DESC")
+            ->orderBy('scheduled_at', 'asc');
 
         return DataTables::eloquent($query)
             ->addColumn('fecha', fn($n) => $n->created_at?->timezone('America/Guatemala')->format('d/m/Y h:i A') ?? '—')

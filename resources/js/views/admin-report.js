@@ -106,10 +106,10 @@ $(function () {
             },
             columns: [
                 { data: "id", title: "#" },
-                { data: "fecha", title: "Fecha" },
                 { data: "title", title: "Título" },
                 { data: "audiencia", title: "Audiencia" },
                 { data: "scheduled_at_formatted", title: "Programada para" },
+                { data: "fecha", title: "Fecha de creación" },
                 { data: "status_badge", title: "Estado", orderable: false, searchable: false },
                 { data: "acciones", title: "Acciones", orderable: false, searchable: false },
             ],

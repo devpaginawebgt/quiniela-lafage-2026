@@ -30,10 +30,10 @@
                 <thead class="text-xs uppercase bg-gray-100 text-gray-700">
                     <tr>
                         <th class="px-4 py-3 border border-gray-200">#</th>
-                        <th class="px-4 py-3 border border-gray-200">Fecha</th>
                         <th class="px-4 py-3 border border-gray-200">Título</th>
                         <th class="px-4 py-3 border border-gray-200">Audiencia</th>
                         <th class="px-4 py-3 border border-gray-200">Programada para</th>
+                        <th class="px-4 py-3 border border-gray-200">Fecha de creación</th>
                         <th class="px-4 py-3 border border-gray-200">Estado</th>
                         <th class="px-4 py-3 border border-gray-200">Acciones</th>
                     </tr>
