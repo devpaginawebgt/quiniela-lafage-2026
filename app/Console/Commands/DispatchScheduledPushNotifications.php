@@ -49,7 +49,7 @@ class DispatchScheduledPushNotifications extends Command
 
             $result = match ($slug) {
                 PushNotificationType::ADMIN => $service->sendAdminNotification($pushNotification),
-                PushNotificationType::MATCH => $this->dispatchMatchNotification($service, $pushNotification),
+                // PushNotificationType::MATCH => $this->dispatchMatchNotification($service, $pushNotification),
                 default                     => $this->handleUnknownType($pushNotification, $slug),
             };
 
@@ -74,23 +74,23 @@ class DispatchScheduledPushNotifications extends Command
      *
      * @return array{success: bool, total: int, failed: int, error: ?string}
      */
-    protected function dispatchMatchNotification(PushNotificationService $service, PushNotification $pushNotification): array
-    {
-        $withPrediction    = $service->sendMatchWithPredictionNotification($pushNotification);
-        $withoutPrediction = $service->sendMatchWithoutPredictionNotification($pushNotification);
+    // protected function dispatchMatchNotification(PushNotificationService $service, PushNotification $pushNotification): array
+    // {
+    //     $withPrediction    = $service->sendMatchWithPredictionNotification($pushNotification);
+    //     $withoutPrediction = $service->sendMatchWithoutPredictionNotification($pushNotification);
 
-        $errors = array_filter([
-            $withPrediction['error'] ? "with_prediction: {$withPrediction['error']}" : null,
-            $withoutPrediction['error'] ? "without_prediction: {$withoutPrediction['error']}" : null,
-        ]);
+    //     $errors = array_filter([
+    //         $withPrediction['error'] ? "with_prediction: {$withPrediction['error']}" : null,
+    //         $withoutPrediction['error'] ? "without_prediction: {$withoutPrediction['error']}" : null,
+    //     ]);
 
-        return [
-            'success' => $withPrediction['success'] && $withoutPrediction['success'],
-            'total'   => $withPrediction['total'] + $withoutPrediction['total'],
-            'failed'  => $withPrediction['failed'] + $withoutPrediction['failed'],
-            'error'   => $errors ? implode(' | ', $errors) : null,
-        ];
-    }
+    //     return [
+    //         'success' => $withPrediction['success'] && $withoutPrediction['success'],
+    //         'total'   => $withPrediction['total'] + $withoutPrediction['total'],
+    //         'failed'  => $withPrediction['failed'] + $withoutPrediction['failed'],
+    //         'error'   => $errors ? implode(' | ', $errors) : null,
+    //     ];
+    // }
 
     /**
      * @return array{success: bool, total: int, failed: int, error: ?string}
