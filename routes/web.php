@@ -89,8 +89,12 @@ Route::middleware(['auth'])->as('web.')->group(function () {
         });
 
         Route::controller(PushNotificationController::class)->as('notifications.')->group(function() {
+            Route::get('notificaciones', 'index')->name('index');
+            Route::get('notificaciones/data', 'data')->name('data');
             Route::get('notificaciones/nueva', 'create')->name('create');
             Route::post('notificaciones', 'store')->name('store');
+            Route::get('notificaciones/{notification}', 'show')->name('show');
+            Route::patch('notificaciones/{notification}/cancelar', 'cancel')->name('cancel');
         });
 
         Route::view('power-bi', 'modulos.admin.power-bi')

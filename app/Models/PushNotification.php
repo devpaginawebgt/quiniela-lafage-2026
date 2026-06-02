@@ -56,6 +56,11 @@ class PushNotification extends Model
         return $this->belongsTo(PushNotificationType::class, 'push_notification_type_id');
     }
 
+    public function line(): BelongsTo
+    {
+        return $this->belongsTo(Line::class, 'line_id');
+    }
+
     public function partido(): BelongsTo
     {
         return $this->belongsTo(Partido::class);

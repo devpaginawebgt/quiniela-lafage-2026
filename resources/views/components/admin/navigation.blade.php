@@ -31,11 +31,11 @@
 
     @can('admin.enviar-notificaciones-push')
     <li>
-        <a href="{{ route('web.admin.notifications.create') }}"
+        <a href="{{ route('web.admin.notifications.index') }}"
             @class([
                 'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors text-light',
-                'bg-secondary font-semibold' => request()->routeIs('web.admin.notifications.create'),
-                'hover:bg-complementary-primary/40' => ! request()->routeIs('web.admin.notifications.create'),
+                'bg-secondary font-semibold' => request()->routeIs('web.admin.notifications.*'),
+                'hover:bg-complementary-primary/40' => ! request()->routeIs('web.admin.notifications.*'),
             ])>
             <span class="icon-[material-symbols--notifications-active-outline-rounded] w-5 h-5"></span>
             <span>Notificaciones</span>

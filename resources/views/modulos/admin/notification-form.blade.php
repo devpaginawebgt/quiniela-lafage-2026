@@ -1,6 +1,5 @@
 <x-admin-layout>
     <div class="w-full h-full mx-auto flex-1 flex justify-center items-center">
-
         {{-- Módulo: Notificaciones Push --}}
         @can('admin.enviar-notificaciones-push')
             <section class="w-full max-w-2xl lg:max-w-5xl rounded-2xl bg-primary backdrop-blur shadow-lg py-4 sm:py-6 px-4 sm:px-6 mb-6">
@@ -10,6 +9,11 @@
                         <span class="icon-[material-symbols--notifications-active-outline-rounded] w-6 h-6 lg:w-8 lg:h-8 text-secondary"></span>
                         <h2 class="font-semibold text-light text-lg lg:text-2xl">Enviar notificación</h2>
                     </div>
+                    <a href="{{ route('web.admin.notifications.index') }}"
+                        class="inline-flex items-center gap-2 text-sm text-light hover:text-secondary transition-colors">
+                        <span class="icon-[material-symbols--arrow-back-rounded] w-5 h-5"></span>
+                        <span class="hidden sm:inline">Volver al listado</span>
+                    </a>
                 </div>
 
                 @if (session('status'))
@@ -315,67 +319,5 @@
                 })();
             </script>
         @endcan
-
-        {{-- Historial de envíos --}}
-        {{-- @can('admin.ver-reportes')
-        <section class="rounded-2xl bg-complementary-primary/80 backdrop-blur shadow-lg py-4 sm:py-6 px-4 sm:px-6 mb-6">
-
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-3">
-                    <span class="icon-[material-symbols--history-rounded] w-6 h-6 lg:w-7 lg:h-7 text-secondary"></span>
-                    <h2 class="font-semibold text-light text-base lg:text-xl">Historial reciente</h2>
-                </div>
-            </div>
-
-            <div class="relative overflow-x-auto rounded-lg border border-complementary-dark/20">
-                <table class="w-full text-sm text-left rtl:text-right text-complementary-light">
-                    <thead class="text-xs uppercase bg-primary/70 text-light">
-                        <tr>
-                            <th scope="col" class="px-4 py-3">Fecha</th>
-                            <th scope="col" class="px-4 py-3">Título</th>
-                            <th scope="col" class="px-4 py-3">Audiencia</th>
-                            <th scope="col" class="px-4 py-3 text-right">Destinatarios</th>
-                            <th scope="col" class="px-4 py-3 text-center">Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php
-                            $ejemplos = [
-                                ['fecha' => '2026-04-20 18:05', 'titulo' => 'Recuerda enviar tus predicciones', 'audiencia' => 'Todos',       'destinatarios' => 420, 'ok' => true],
-                                ['fecha' => '2026-04-18 09:30', 'titulo' => 'Resultados de la jornada 3',        'audiencia' => 'Activos',     'destinatarios' => 312, 'ok' => true],
-                                ['fecha' => '2026-04-15 14:12', 'titulo' => 'Nueva trivia disponible',           'audiencia' => 'Dependientes','destinatarios' => 178, 'ok' => false],
-                            ];
-                        @endphp
-
-                        @foreach($ejemplos as $row)
-                            <tr class="border-t border-complementary-dark/20 hover:bg-primary/30 transition-colors">
-                                <td class="px-4 py-3 whitespace-nowrap tabular-nums">{{ $row['fecha'] }}</td>
-                                <td class="px-4 py-3 font-medium text-light">{{ $row['titulo'] }}</td>
-                                <td class="px-4 py-3">{{ $row['audiencia'] }}</td>
-                                <td class="px-4 py-3 text-right tabular-nums font-semibold text-light">{{ number_format($row['destinatarios']) }}</td>
-                                <td class="px-4 py-3 text-center">
-                                    @if($row['ok'])
-                                        <span class="inline-flex items-center gap-1 bg-secondary/20 text-secondary text-xs font-medium px-2.5 py-0.5 rounded-full">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                                            Enviada
-                                        </span>
-                                    @else
-                                        <span class="inline-flex items-center gap-1 bg-red-500/20 text-red-300 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-red-300"></span>
-                                            Parcial
-                                        </span>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="flex items-center justify-between mt-4 text-xs text-complementary-light">
-                <span>Mostrando <span class="font-semibold text-light">3</span> de <span class="font-semibold text-light">3</span> envíos</span>
-            </div>
-        </section>
-        @endcan --}}
     </div>
 </x-admin-layout>

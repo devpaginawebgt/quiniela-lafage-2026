@@ -11,6 +11,8 @@ use App\Models\PushNotificationType;
 use App\Models\UserType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 
 class PushNotificationController extends Controller
 {
@@ -19,7 +21,72 @@ class PushNotificationController extends Controller
      */
     public function index()
     {
-        //
+        return view('modulos.admin.notifications');
+    }
+
+    /**
+     * Server-side data for the notifications DataTable.
+     */
+    public function data()
+    {
+        $query = PushNotification::query()
+            ->with(['userType:id,plural_name', 'country:id,name', 'line:id,name'])
+            ->latest('id');
+
+        return DataTables::eloquent($query)
+            ->addColumn('fecha', fn($n) => $n->created_at?->timezone('America/Guatemala')->format('d/m/Y h:i A') ?? '—')
+            ->addColumn('audiencia', function ($n) {
+                if (! $n->user_type_id && ! $n->country_id && ! $n->line_id) {
+                    return 'Todos los participantes';
+                }
+
+                return collect([
+                    $n->userType?->plural_name,
+                    $n->country?->name,
+                    $n->line?->name,
+                ])->filter()->implode(' · ');
+            })
+            ->addColumn('destinatarios', fn($n) => $n->recipients !== null ? number_format($n->recipients) : '—')
+            ->addColumn('status_badge', function ($n) {
+                return $this->statusBadgeHtml($n->status);
+            })
+            ->addColumn('acciones', function ($n) {
+                $canCancel = $n->status === PushNotification::STATUS_PENDING;
+                $cancelDisabled = $canCancel ? '' : 'disabled aria-disabled="true"';
+                $cancelClasses = $canCancel
+                    ? 'bg-secondary text-light hover:brightness-110'
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed';
+
+                return '
+                    <div class="flex items-center justify-center gap-1">
+                        <button type="button"
+                            class="js-notification-show inline-flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-light hover:brightness-110 transition-colors"
+                            data-id="' . $n->id . '"
+                            title="Ver detalle">
+                            <span class="icon-[material-symbols--visibility-outline-rounded] w-5 h-5"></span>
+                        </button>
+                        <button type="button"
+                            class="js-notification-cancel inline-flex items-center justify-center w-8 h-8 rounded-lg transition-colors ' . $cancelClasses . '"
+                            data-id="' . $n->id . '"
+                            ' . $cancelDisabled . '
+                            title="' . ($canCancel ? 'Cancelar envío' : 'Solo se pueden cancelar notificaciones pendientes') . '">
+                            <span class="icon-[material-symbols--cancel] w-5 h-5"></span>
+                        </button>
+                    </div>
+                ';
+            })
+            ->filterColumn('fecha', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(created_at, '%d/%m/%Y') LIKE ?", ["%{$keyword}%"]);
+            })
+            ->filterColumn('audiencia', function ($query, $keyword) {
+                $query->where(function ($q) use ($keyword) {
+                    $q->whereHas('userType', fn($q) => $q->where('plural_name', 'like', "%{$keyword}%"))
+                      ->orWhereHas('country', fn($q) => $q->where('name', 'like', "%{$keyword}%"))
+                      ->orWhereHas('line', fn($q) => $q->where('name', 'like', "%{$keyword}%"));
+                });
+            })
+            ->rawColumns(['status_badge', 'acciones'])
+            ->make(true);
     }
 
     /**
@@ -54,7 +121,7 @@ class PushNotificationController extends Controller
         $scheduledAtLocal = $scheduleEnabled
             ? Carbon::createFromFormat('Y-m-d H:i', $data['send_at_date'] . ' ' . $data['send_at_time'], $userTimezone)
             : null;
-            
+
         $scheduledAtUtc = $scheduledAtLocal?->copy()->utc();
 
         // Para envío inmediato validamos destinatarios antes de crear el registro.
@@ -130,32 +197,94 @@ class PushNotificationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(PushNotification $pushNotification)
+    public function show(PushNotification $notification)
     {
-        //
+        $notification->load(['userType:id,plural_name', 'country:id,name', 'line:id,name', 'creator:id,nombres,apellidos']);
+
+        $tz = 'America/Guatemala';
+
+        $audience = (! $notification->user_type_id && ! $notification->country_id && ! $notification->line_id)
+            ? 'Todos los participantes'
+            : collect([
+                $notification->userType?->plural_name,
+                $notification->country?->name,
+                $notification->line?->name,
+            ])->filter()->implode(' · ');
+
+        return response()->json([
+            'id'           => $notification->id,
+            'title'        => $notification->title,
+            'description'  => $notification->description,
+            'image_url'    => $notification->image_path ? Storage::disk('public')->url($notification->image_path) : null,
+            'audience'     => $audience,
+            'status'       => $notification->status,
+            'status_label' => $this->statusLabel($notification->status),
+            'scheduled_at' => $notification->scheduled_at?->timezone($tz)->format('d/m/Y h:i A'),
+            'sent_at'      => $notification->sent_at?->timezone($tz)->format('d/m/Y h:i A'),
+            'recipients'   => $notification->recipients,
+            'success'      => $notification->success,
+            'failed'       => $notification->failed,
+            'comment'      => $notification->comment,
+            'created_by'   => trim(($notification->creator?->nombres ?? '') . ' ' . ($notification->creator?->apellidos ?? '')) ?: null,
+            'created_at'   => $notification->created_at?->timezone($tz)->format('d/m/Y h:i A'),
+        ]);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Cancel a pending notification (state transition only — no physical delete).
      */
-    public function edit(PushNotification $pushNotification)
+    public function cancel(Request $request, PushNotification $notification)
     {
-        //
+        if ($notification->status !== PushNotification::STATUS_PENDING) {
+            return response()->json([
+                'ok'      => false,
+                'message' => 'Solo se pueden cancelar notificaciones pendientes de envío.',
+            ], 422);
+        }
+
+        $user = $request->user();
+        $stamp = now()->timezone('America/Guatemala')->format('d/m/Y H:i');
+        $byName = trim(($user?->nombres ?? '') . ' ' . ($user?->apellidos ?? '')) ?: ('usuario #' . $user?->id);
+
+        $notification->update([
+            'status'  => PushNotification::STATUS_CANCELED,
+            'comment' => "Cancelada manualmente por {$byName} el {$stamp}.",
+        ]);
+
+        return response()->json([
+            'ok'     => true,
+            'status' => PushNotification::STATUS_CANCELED,
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, PushNotification $pushNotification)
+    private function statusLabel(string $status): string
     {
-        //
+        return match ($status) {
+            PushNotification::STATUS_PENDING  => 'Pendiente',
+            PushNotification::STATUS_SENDING  => 'Enviando',
+            PushNotification::STATUS_SENT     => 'Enviada',
+            PushNotification::STATUS_FAILED   => 'Fallida',
+            PushNotification::STATUS_CANCELED => 'Cancelada',
+            default                           => ucfirst($status),
+        };
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(PushNotification $pushNotification)
+    private function statusBadgeHtml(string $status): string
     {
-        //
+        [$bg, $text, $border, $dot, $label] = match ($status) {
+            PushNotification::STATUS_SENT     => ['bg-green-100',  'text-green-700',  'border-green-200',  'bg-green-600',  'Enviada'],
+            PushNotification::STATUS_SENDING  => ['bg-blue-100',   'text-blue-700',   'border-blue-200',   'bg-blue-600',   'Enviando'],
+            PushNotification::STATUS_PENDING  => ['bg-amber-100',  'text-amber-700',  'border-amber-200',  'bg-amber-500',  'Pendiente'],
+            PushNotification::STATUS_FAILED   => ['bg-red-100',    'text-red-700',    'border-red-200',    'bg-red-600',    'Fallida'],
+            PushNotification::STATUS_CANCELED => ['bg-gray-100',   'text-gray-700',   'border-gray-200',   'bg-gray-500',   'Cancelada'],
+            default                           => ['bg-gray-100',   'text-gray-700',   'border-gray-200',   'bg-gray-500',   ucfirst($status)],
+        };
+
+        return '
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium rounded-full border ' . $bg . ' ' . $text . ' ' . $border . '">
+                <span class="w-1.5 h-1.5 rounded-full ' . $dot . '"></span>
+                ' . $label . '
+            </span>
+        ';
     }
 }
