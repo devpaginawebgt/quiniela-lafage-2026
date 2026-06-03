@@ -2,7 +2,7 @@
 
 namespace App\Http\Services;
 
-use App\Models\ApiMatch;
+use App\Models\ApiFixture;
 use App\Models\ApiPlayer;
 use App\Models\ApiResponse;
 use App\Models\ApiTeam;
@@ -152,10 +152,10 @@ class ApiFootballService
     /**
      * Sincroniza los partidos (fixtures) de una ronda específica llamando a
      * `/fixtures?league={league}&season={season}&round={round}` y haciendo
-     * `updateOrCreate` en `api_matches` por `api_fixture_id`. Es idempotente:
+     * `updateOrCreate` en `api_fixtures` por `api_fixture_id`. Es idempotente:
      * cada ejecución refresca fecha, estado y marcador, y actualiza
      * `last_synced_at`. Esta tabla es un espejo puro de la API; el enlace con
-     * `partidos` se hace en un paso posterior vía `partidos.api_match_id`.
+     * `partidos` se hace en un paso posterior vía `partidos.api_fixture_id`.
      *
      * @param  string $round  Nombre exacto de la ronda según API-Football
      *                        (ej. `'Group Stage - 1'`, `'Round of 16'`, `'Final'`).
@@ -186,7 +186,7 @@ class ApiFootballService
 
             if (! $fixture || empty($fixture['id'])) continue;
 
-            ApiMatch::updateOrCreate(
+            ApiFixture::updateOrCreate(
                 ['api_fixture_id' => $fixture['id']],
                 [
                     'league_id'        => $entry['league']['id']     ?? $league,
@@ -194,11 +194,18 @@ class ApiFootballService
                     'round'            => $entry['league']['round']  ?? $round,
                     'api_home_team_id' => $entry['teams']['home']['id'] ?? null,
                     'api_away_team_id' => $entry['teams']['away']['id'] ?? null,
-                    'match_date'       => $fixture['date']            ?? null,
-                    'status_short'     => $fixture['status']['short'] ?? null,
-                    'status_long'      => $fixture['status']['long']  ?? null,
-                    'goals_home'       => $entry['goals']['home']     ?? null,
-                    'goals_away'       => $entry['goals']['away']     ?? null,
+                    'date'             => $fixture['date']             ?? null,
+                    'timezone'         => $fixture['timezone']         ?? null,
+                    'status_short'     => $fixture['status']['short']  ?? null,
+                    'status_long'      => $fixture['status']['long']   ?? null,
+                    'goals_home'       => $entry['goals']['home']      ?? null,
+                    'goals_away'       => $entry['goals']['away']      ?? null,
+                    'ft_goals_home'    => $entry['score']['fulltime']['home']  ?? null,
+                    'ft_goals_away'    => $entry['score']['fulltime']['away']  ?? null,
+                    'et_goals_home'    => $entry['score']['extratime']['home'] ?? null,
+                    'et_goals_away'    => $entry['score']['extratime']['away'] ?? null,
+                    'pt_goals_home'    => $entry['score']['penalty']['home']   ?? null,
+                    'pt_goals_away'    => $entry['score']['penalty']['away']   ?? null,
                     'last_synced_at'   => $now,
                 ]
             );

@@ -23,6 +23,7 @@ class Partido extends Model
        'brand_id',
        'jugado',
        'estado',
+       'api_fixture_id',
     ];
 
     protected function casts(): array
