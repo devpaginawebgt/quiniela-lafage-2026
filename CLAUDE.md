@@ -135,3 +135,68 @@ Ubicación: `app/Http/Services/BracketGameService.php`.
 
 - `config/quiniela.php` expone `system_notifications_email` vía `env('SYSTEM_NOTIFICATIONS_EMAIL')`. Uso: `config('quiniela.system_notifications_email')`.
 - Mailable: `App\Mail\SystemNotification` acepta `customSubject` y `body` (vista `emails.system-notification`). Nota: la propiedad se llama `customSubject` (no `subject`) porque `Mailable` ya reserva `$subject`.
+
+## Integración — API-Football (api-sports.io)
+
+Servicio: `App\Http\Services\ApiFootballService`. Toda llamada externa pasa por el método privado `request($endpoint)`, que centraliza headers, manejo de errores y persistencia de la respuesta cruda.
+
+### Config y `.env`
+
+- Config: `config/api-football.php` expone `base_url` y `api_key` vía `env('API_FOOTBALL_BASE_URL')` y `env('API_FOOTBALL_API_KEY')`.
+- Uso: `config('api-football.base_url')` / `config('api-football.api_key')`. **No** usar `env()` fuera del config.
+- `.env` esperado:
+  - `API_FOOTBALL_BASE_URL=https://v3.football.api-sports.io`
+  - `API_FOOTBALL_API_KEY=<api-key>`
+
+### Tablas y modelos
+
+| Tabla | Modelo | Propósito |
+|---|---|---|
+| `api_responses` | `App\Models\ApiResponse` | Log persistente de **cada** request a la API (endpoint, params, errors, paging, status_code, success). En éxito, `response` se guarda `null` (los datos se transforman en tablas de dominio); en error guarda el `response` crudo para diagnóstico. |
+| `api_teams` | `App\Models\ApiTeam` | Catálogo de equipos sincronizados desde `/teams`. Clave externa: `api_team_id` (unique). |
+| `api_players` | `App\Models\ApiPlayer` | Plantillas sincronizadas desde `/players/squads`. Clave externa: `api_player_id` (unique). Tiene `is_active` y `last_synced_at` para soft-tracking de bajas. |
+
+- `ApiResponse` castea `parameters`/`errors`/`paging`/`response` como `array` (JSON) y `success` como `boolean`.
+- `ApiPlayer` expone accessor `position_label` que traduce el `position` (Goalkeeper/Defender/Midfielder/Attacker) usando `lang/es/positions.php`.
+
+### Patrón del método `request()`
+
+1. Hace `Http::withHeaders(['x-apisports-key' => ...])->get(base_url . endpoint)`.
+2. Determina `$success = $response->ok() && empty($body['errors'])`.
+3. Inserta una fila en `api_responses` **siempre** (éxito o error).
+4. Devuelve `['error' => bool, 'data' => array]` o `['error' => true, 'message' => '...']`.
+
+### Métodos públicos existentes
+
+- `getTeams(int $league = 1, int $season = 2026): array` — pide `/teams?league={league}&season={season}`, hace `updateOrCreate` en `api_teams` por `api_team_id`. Devuelve `['error' => bool, 'synced' => int]`.
+- `getTeamSquad(int $teamExternalId)` — pide `/players/squads?team={id}`, hace `updateOrCreate` por `api_player_id` y marca `is_active=false` a los jugadores que ya no aparecen en la respuesta.
+
+### Enlace `Equipo` ↔ API-Football
+
+- La tabla `equipos` tiene dos columnas dedicadas a la integración:
+  - `code` (string, nullable) — código **alpha-3 estilo FIFA** que coincide con `api_teams.code` (ej. `MEX`, `CRO`, `BRA`). Es el **identificador de match** con la API. Se popula vía `php artisan db:seed --class=EquipoSeeder` (array `id => FIFA_ALPHA3` con `UPDATE`, idempotente; ver el propio seeder para la lista completa de códigos).
+  - `api_team_id` (unsignedBigInteger, nullable, FK a `api_teams.api_team_id` con `onDelete('set null')`) — el ID externo enlazado tras correr `app:sincronizar-equipos`.
+- Convención: `codigo_iso` (alpha-2, ej. `MX`) se usa para banderas/UI; `code` (alpha-3, ej. `MEX`) se usa exclusivamente para enlazar con API-Football. **No** mezclar los dos.
+- Relaciones en `App\Models\Equipo`:
+  - `apiTeam()` → `belongsTo(ApiTeam, 'api_team_id', 'api_team_id')`
+  - `players()` → `hasMany(ApiPlayer, 'api_team_id', 'api_team_id')` (jugadores sincronizados del equipo).
+
+### Comandos de consola
+
+- `php artisan app:sincronizar-equipos` — descarga el catálogo de equipos (`/teams`), hace `updateOrCreate` en `api_teams` y enlaza `equipos.api_team_id`. **Reusable**: cada ejecución refresca info de `ApiTeam` y actualiza el FK en `equipos`. Opciones: `--league=1` (default WC), `--season=2026`, `--force` (re-enlaza equipos que ya tenían `api_team_id`). Matching: `strtoupper(Equipo.code) == ApiTeam.code` (match directo alpha-3). Lista al final los equipos sin coincidencia (code vacío o sin ApiTeam que matchee). Ubicación: `App\Console\Commands\SincronizarEquipos`.
+- `php artisan app:sincronizar-plantillas` — recorre todos los `Equipo` con `api_team_id` no nulo y llama `ApiFootballService::getTeamSquad()` por cada uno. Acepta `--equipo=<id>` para sincronizar uno solo. Muestra barra de progreso y resumen final con los fallidos. Ubicación: `App\Console\Commands\SincronizarPlantillas`.
+
+### Cómo añadir un nuevo endpoint (patrón a seguir)
+
+Por ejemplo, para obtener partidos (`/fixtures`):
+
+1. Añadir un método público `getFixtures($params)` que llame `$this->request('/fixtures?' . http_build_query($params))`.
+2. Salir temprano con `if ($result['error'] === true) return;`.
+3. Recorrer `$result['data']` y persistir en la tabla de dominio que corresponda (`partidos`, `equipo_partidos`, etc. — **no** crear una `api_fixtures` salvo que se necesite mantener el shape crudo de la API).
+4. Si la respuesta exitosa requiere debugging futuro, considerar guardar también el `response` en `api_responses` (actualmente se omite en éxito).
+
+### Convenciones importantes
+
+- **Nunca** instanciar `Http::...` fuera de `request()`: rompería el log en `api_responses`.
+- IDs externos de la API se guardan en columnas `api_*_id` (unique), separadas del `id` autoincremental local.
+- Los modelos `Api*` son una capa de **espejo** de la API; el dominio del negocio (predicciones, puntuaciones, bracket) vive en `Equipo`, `Partido`, `ResultadoPartido`, etc.
