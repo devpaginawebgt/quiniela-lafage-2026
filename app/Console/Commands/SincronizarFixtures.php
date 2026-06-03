@@ -4,9 +4,11 @@ namespace App\Console\Commands;
 
 use App\Http\Services\ApiFootballService;
 use App\Http\Services\MatchService;
+use App\Mail\SystemNotification;
 use App\Models\ApiFixture;
 use App\Models\Jornada;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Mail;
 
 class SincronizarFixtures extends Command
 {
@@ -90,6 +92,47 @@ class SincronizarFixtures extends Command
         $this->line("  Enlazados (backfill):    {$matchResult['linked']}");
         $this->line("  Fechas actualizadas:     {$matchResult['updated']}");
         $this->line("  Omitidos (sin cambios):  {$matchResult['skipped']}");
+
+        $pendingDates = $fixtures->filter(
+            fn ($f) => in_array($f->status_short, ['TBD', 'PST'], true)
+        );
+
+        $emailBody  = "Sincronización de fixtures completada para Jornada [{$jornada->id}] '{$jornada->name}' → '{$jornada->api_round}'.\n\n";
+        $emailBody .= "Fixtures sincronizados desde API: {$apiResult['synced']}\n\n";
+        $emailBody .= "Proyectando fixtures a partidos locales...\n\n";
+        $emailBody .= "  Partidos creados:        {$matchResult['created']}\n";
+        $emailBody .= "  Enlazados (backfill):    {$matchResult['linked']}\n";
+        $emailBody .= "  Fechas actualizadas:     {$matchResult['updated']}\n";
+        $emailBody .= "  Omitidos (sin cambios):  {$matchResult['skipped']}\n\n";
+
+        if ($pendingDates->isNotEmpty()) {
+            $this->newLine();
+            $this->warn("ATENCIÓN: {$pendingDates->count()} partido(s) con fecha aún por definirse o reprogramar.");
+            $this->line('Deberás volver a correr este comando cuando la API actualice las fechas:');
+
+            $emailBody .= "ATENCIÓN: {$pendingDates->count()} partido(s) con fecha aún por definirse o reprogramar.\n";
+            $emailBody .= "Deberás volver a correr este comando cuando la API actualice las fechas:\n";
+
+            foreach ($pendingDates as $f) {
+                $line = "  - Fixture {$f->api_fixture_id}: home={$f->api_home_team_id} vs away={$f->api_away_team_id} (status: {$f->status_short})";
+                $this->line($line);
+                $emailBody .= $line . "\n";
+            }
+        } else {
+            $this->newLine();
+            $this->info('Todas las fechas de la ronda están confirmadas.');
+            $emailBody .= "Todas las fechas de la ronda están confirmadas.\n";
+        }
+
+        $to = config('quiniela.system_notifications_email');
+
+        if (empty($to)) {
+            $this->warn('Email de reporte no enviado: SYSTEM_NOTIFICATIONS_EMAIL no está configurado.');
+        } else {
+            $subject = "Sincronización fixtures — Jornada {$jornada->id} '{$jornada->name}'";
+            Mail::to($to)->send(new SystemNotification($subject, $emailBody));
+            $this->info("Reporte enviado por email a {$to}.");
+        }
 
         return $matchResult['error'] === true ? Command::FAILURE : Command::SUCCESS;
     }
