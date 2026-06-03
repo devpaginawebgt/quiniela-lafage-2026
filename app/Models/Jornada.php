@@ -11,6 +11,7 @@ class Jornada extends Model
     protected $fillable = [
         'phase_id',
         'name',
+        'api_round',
         'is_current'
     ];
 
