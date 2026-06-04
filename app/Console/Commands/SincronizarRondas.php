@@ -3,8 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Http\Services\ApiFootballService;
+use App\Http\Services\PartidoService;
 use App\Mail\SystemNotification;
 use App\Models\Jornada;
+use App\Models\Partido;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
@@ -132,6 +134,42 @@ class SincronizarRondas extends Command
         $this->newLine();
         $this->info("Triggered: {$triggered}, omitidos (sin pendientes o completados): {$skipped}, fallidos: {$failed}");
 
+        $this->newLine();
+        $this->info('Evaluando flag `completed` por jornada...');
+
+        $markedCompleted = 0;
+        $alreadyCompleted = 0;
+        $notCompleted = 0;
+
+        foreach (Jornada::orderBy('id')->get() as $jornada) {
+            $hasPartidos = Partido::where('jornada_id', $jornada->id)->exists();
+
+            $isCompleted = $hasPartidos
+                && ! Partido::where('jornada_id', $jornada->id)
+                    ->where('estado', '!=', 1)
+                    ->exists();
+
+            if (! $isCompleted) {
+                $notCompleted++;
+                continue;
+            }
+
+            if ($jornada->completed) {
+                $alreadyCompleted++;
+                continue;
+            }
+
+            $jornada->update(['completed' => true]);
+            $markedCompleted++;
+            $this->line("✓ Jornada [{$jornada->id}] '{$jornada->name}' marcada como completada.");
+        }
+
+        $this->info("Marcadas completadas ahora: {$markedCompleted} | ya completadas: {$alreadyCompleted} | en curso: {$notCompleted}");
+
+        $this->newLine();
+        $this->info('Safety-net: ejecutando PartidoService::verifyJourneyStatus()...');
+        app(PartidoService::class)->verifyJourneyStatus();
+
         $emailBody  = "Sincronización de rondas completada (league={$league}, season={$season}).\n\n";
         $emailBody .= "Rondas del API:                          " . count($rounds) . "\n";
         $emailBody .= "Jornadas locales:                        {$jornadas->count()}\n\n";
@@ -142,6 +180,11 @@ class SincronizarRondas extends Command
         $emailBody .= "  Triggered:                             {$triggered}\n";
         $emailBody .= "  Omitidos (sin pendientes/completados): {$skipped}\n";
         $emailBody .= "  Fallidos:                              {$failed}\n\n";
+
+        $emailBody .= "Flag `completed`:\n";
+        $emailBody .= "  Marcadas completadas ahora:            {$markedCompleted}\n";
+        $emailBody .= "  Ya completadas:                        {$alreadyCompleted}\n";
+        $emailBody .= "  En curso:                              {$notCompleted}\n\n";
 
         $emailBody .= "Detalle por jornada:\n";
         foreach ($jornadas as $j) {

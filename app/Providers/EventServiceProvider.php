@@ -13,6 +13,7 @@ use App\Listeners\UpdateGroupPoints;
 use App\Listeners\UpdatePredictionPoints;
 use App\Listeners\UpdateUserBonusCombo;
 use App\Listeners\VerifyJourneyStatus;
+use App\Listeners\VerifyJourneyStatusOnMatch;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Notifications\Events\NotificationFailed;
@@ -28,8 +29,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendWelcomeEmail::class,
         ],
-        MatchCreated::class => [            
+        MatchCreated::class => [
             AddMatchBrands::class,
+            VerifyJourneyStatusOnMatch::class,
         ],
         ResultCreated::class => [
             UpdatePredictionPoints::class,
