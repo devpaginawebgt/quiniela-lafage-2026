@@ -9,6 +9,7 @@ use App\Models\ApiFixture;
 use App\Models\Equipo;
 use App\Models\EquipoPartido;
 use App\Models\Jornada;
+use App\Models\MatchResultRequest;
 use App\Models\Partido;
 use App\Models\ResultadoPartido;
 use Illuminate\Support\Collection;
@@ -127,6 +128,8 @@ class MatchService
                             'equipo_2'   => $equipo_2,
                         ]);
 
+                        $this->scheduleResultRequest($partido);
+
                         $partido->load('equipos');
                         MatchCreated::dispatch($partido);
                     });
@@ -152,8 +155,15 @@ class MatchService
 
                 $partido->update($changes);
 
-                if (array_key_exists('api_fixture_id', $changes)) $linked++;
-                if (array_key_exists('fecha_partido',  $changes)) $updated++;
+                if (array_key_exists('api_fixture_id', $changes)) {
+                    $this->scheduleResultRequest($partido->refresh());
+                    $linked++;
+                }
+
+                if (array_key_exists('fecha_partido', $changes)) {
+                    $this->rescheduleResultRequest($partido);
+                    $updated++;
+                }
             }
 
             return [
@@ -182,8 +192,12 @@ class MatchService
     /**
      * Crea ResultadoPartido para cada ApiFixture finalizado cuyo Partido local ya
      * exista y aún no tenga resultado. Por cada Resultado nuevo dispara
-     * `ResultCreated`. Considera "finalizado" si `status_short` ∈ FT|AET|PEN
-     * y ambos marcadores vienen poblados.
+     * `ResultCreated`. Considera "finalizado" si `status_short` ∈ FT|AET|PEN.
+     *
+     * IMPORTANTE: el marcador guardado es el de **fulltime** (`ft_goals_*`) —
+     * regulación + tiempo añadido. Las reglas de la quiniela cuentan hasta el
+     * minuto 90; alargue y penales se ignoran (un partido decidido por penales
+     * se registra como empate al 90).
      *
      * @param  Collection<int,ApiFixture> $fixtures
      * @return array{error: bool, created: int, skipped: int}
@@ -196,8 +210,8 @@ class MatchService
         try {
             foreach ($fixtures as $fixture) {
                 $finished = in_array($fixture->status_short, ['FT', 'AET', 'PEN'], true)
-                    && $fixture->goals_home !== null
-                    && $fixture->goals_away !== null;
+                    && $fixture->ft_goals_home !== null
+                    && $fixture->ft_goals_away !== null;
 
                 if (! $finished) {
                     $skipped++;
@@ -220,7 +234,9 @@ class MatchService
                     continue;
                 }
 
-                $equipos = EquipoPartido::where('partido_id', $partido->id)->first();
+                $equipos = EquipoPartido::with(['equipoUno:id,nombre', 'equipoDos:id,nombre'])
+                    ->where('partido_id', $partido->id)
+                    ->first();
 
                 if (! $equipos) {
                     $this->notify(
@@ -233,18 +249,41 @@ class MatchService
 
                 $ganador_id = null;
 
-                if ($fixture->goals_home > $fixture->goals_away) {
+                if ($fixture->ft_goals_home > $fixture->ft_goals_away) {
                     $ganador_id = $equipos->equipo_1;
-                } elseif ($fixture->goals_home < $fixture->goals_away) {
+                } elseif ($fixture->ft_goals_home < $fixture->ft_goals_away) {
                     $ganador_id = $equipos->equipo_2;
                 }
 
                 $resultado = ResultadoPartido::create([
                     'partido_id'        => $partido->id,
-                    'goles_equipo_1'    => $fixture->goals_home,
-                    'goles_equipo_2'    => $fixture->goals_away,
+                    'goles_equipo_1'    => $fixture->ft_goals_home,
+                    'goles_equipo_2'    => $fixture->ft_goals_away,
                     'equipo_ganador_id' => $ganador_id,
                 ]);
+
+                $nombre1 = $equipos->equipoUno?->nombre ?? "Equipo #{$equipos->equipo_1}";
+                $nombre2 = $equipos->equipoDos?->nombre ?? "Equipo #{$equipos->equipo_2}";
+                $ganadorTexto = match (true) {
+                    $ganador_id === null                  => 'Empate al 90',
+                    $ganador_id === $equipos->equipo_1    => $nombre1,
+                    $ganador_id === $equipos->equipo_2    => $nombre2,
+                    default                                => "Equipo #{$ganador_id}",
+                };
+
+                $emailTo = config('quiniela.system_notifications_email');
+
+                if (! empty($emailTo)) {
+                    $subject = "Resultado registrado — {$nombre1} {$fixture->ft_goals_home} - {$fixture->ft_goals_away} {$nombre2}";
+                    $body    = "Se registró un nuevo resultado de partido:\n\n" .
+                        "Partido id:     {$partido->id} (api_fixture_id: {$fixture->api_fixture_id})\n" .
+                        "Jornada id:     {$partido->jornada_id}\n" .
+                        "Marcador FT:    {$nombre1} {$fixture->ft_goals_home} - {$fixture->ft_goals_away} {$nombre2}\n" .
+                        "Ganador:        {$ganadorTexto}\n" .
+                        "Status API:     {$fixture->status_short} ({$fixture->status_long})";
+
+                    Mail::to($emailTo)->send(new SystemNotification($subject, $body));
+                }
 
                 ResultCreated::dispatch($resultado);
 
@@ -260,6 +299,139 @@ class MatchService
 
             return ['error' => true, 'created' => $created, 'skipped' => $skipped];
         }
+    }
+
+    /**
+     * Agenda una MatchResultRequest para capturar el resultado del partido cuando
+     * termine. Idempotente: si ya existe una para este partido, retorna esa.
+     * `scheduled_at = fecha_partido + OFFSET_MINUTES` (≈ fin del tiempo regular).
+     *
+     * @return MatchResultRequest|null null si no se pudo agendar (faltan datos).
+     */
+    public function scheduleResultRequest(Partido $partido): ?MatchResultRequest
+    {
+        $existing = MatchResultRequest::where('partido_id', $partido->id)->first();
+
+        if ($existing) return $existing;
+
+        if (! $partido->fecha_partido || ! $partido->api_fixture_id) {
+            $this->notify(
+                'MatchService::scheduleResultRequest — Datos insuficientes',
+                "No se puede agendar request para Partido id={$partido->id}: fecha_partido=" .
+                ($partido->fecha_partido?->toIso8601String() ?? 'null') .
+                ", api_fixture_id=" . ($partido->api_fixture_id ?? 'null') . '.'
+            );
+            return null;
+        }
+
+        return MatchResultRequest::create([
+            'partido_id'     => $partido->id,
+            'api_fixture_id' => $partido->api_fixture_id,
+            'status'         => MatchResultRequest::STATUS_PENDING,
+            'scheduled_at'   => $partido->fecha_partido->copy()->addMinutes(MatchResultRequest::OFFSET_MINUTES),
+            'attempts'       => 0,
+        ]);
+    }
+
+    /**
+     * Recalcula `scheduled_at` de la MatchResultRequest asociada al partido
+     * cuando la fecha del partido cambia en la API. No toca `attempts` ni
+     * `status` (decisión de diseño: una request ya en curso o terminada no
+     * se reabre por un cambio de fecha).
+     */
+    public function rescheduleResultRequest(Partido $partido): void
+    {
+        if (! $partido->fecha_partido) return;
+
+        MatchResultRequest::where('partido_id', $partido->id)
+            ->update([
+                'scheduled_at' => $partido->fecha_partido->copy()->addMinutes(MatchResultRequest::OFFSET_MINUTES),
+            ]);
+    }
+
+    /**
+     * Procesa una MatchResultRequest: consulta el fixture vía API-Football,
+     * persiste un snapshot del último estado/marcador, y según el resultado:
+     *   - Si el partido terminó → crea ResultadoPartido y marca request como completed.
+     *   - Si sigue vivo → reagenda en now + RETRY_INTERVAL_MINUTES.
+     *   - Si llegó a MAX_ATTEMPTS sin terminar → marca request como failed.
+     */
+    public function processResultRequest(MatchResultRequest $request): void
+    {
+        $claimed = MatchResultRequest::where('id', $request->id)
+            ->where('status', MatchResultRequest::STATUS_PENDING)
+            ->update([
+                'status'            => MatchResultRequest::STATUS_FETCHING,
+                'last_attempted_at' => now(),
+            ]);
+
+        if ($claimed === 0) return;
+
+        $request->refresh();
+
+        try {
+            $result = app(ApiFootballService::class)->getFixture($request->api_fixture_id);
+
+            if ($result['error'] === true || ! $result['fixture']) {
+                $this->bumpFailedAttempt($request, 'API request failed or returned empty.');
+                return;
+            }
+
+            $fixture = $result['fixture'];
+
+            $request->last_status_short = $fixture->status_short;
+            $request->last_status_long  = $fixture->status_long;
+            $request->last_goals_home   = $fixture->goals_home;
+            $request->last_goals_away   = $fixture->goals_away;
+
+            $finished = in_array($fixture->status_short, ['FT', 'AET', 'PEN'], true)
+                && $fixture->ft_goals_home !== null
+                && $fixture->ft_goals_away !== null;
+
+            if ($finished) {
+                $this->getMatchesResult(collect([$fixture]));
+
+                $request->status       = MatchResultRequest::STATUS_COMPLETED;
+                $request->completed_at = now();
+                $request->save();
+                return;
+            }
+
+            $request->attempts++;
+
+            if ($request->attempts >= MatchResultRequest::MAX_ATTEMPTS) {
+                $request->status     = MatchResultRequest::STATUS_FAILED;
+                $request->last_error = "Max attempts reached. Last status: {$fixture->status_short}.";
+            } else {
+                $request->status       = MatchResultRequest::STATUS_PENDING;
+                $request->scheduled_at = now()->addMinutes(MatchResultRequest::RETRY_INTERVAL_MINUTES);
+            }
+
+            $request->save();
+        } catch (Throwable $e) {
+            $this->notify(
+                'MatchService::processResultRequest — Excepción',
+                "Request id={$request->id}, api_fixture_id={$request->api_fixture_id}. " .
+                $e->getMessage() . "\n" . $e->getTraceAsString()
+            );
+
+            $this->bumpFailedAttempt($request, $e->getMessage());
+        }
+    }
+
+    private function bumpFailedAttempt(MatchResultRequest $request, string $error): void
+    {
+        $request->attempts++;
+        $request->last_error = $error;
+
+        if ($request->attempts >= MatchResultRequest::MAX_ATTEMPTS) {
+            $request->status = MatchResultRequest::STATUS_FAILED;
+        } else {
+            $request->status       = MatchResultRequest::STATUS_PENDING;
+            $request->scheduled_at = now()->addMinutes(MatchResultRequest::RETRY_INTERVAL_MINUTES);
+        }
+
+        $request->save();
     }
 
     private function notify(string $subject, string $body): void
