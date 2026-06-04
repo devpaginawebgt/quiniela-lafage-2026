@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class ApiRegisterRequest extends FormRequest
@@ -25,7 +26,7 @@ class ApiRegisterRequest extends FormRequest
         return [
             'nombres'                 => ['required', 'string', 'min:2', 'max:40'],
             'apellidos'               => ['required', 'string', 'min:2', 'max:40'],
-            'email'                   => ['required', 'email',  'min:5', 'max:255', 'unique:users'],
+            'email'                   => ['required', 'email',  'min:5', 'max:255', Rule::unique('users')->whereNull('deleted_at')],
             'pais_id'                 => ['required', 'integer', 'exists:countries,id'],
             'password'                => ['required', 'confirmed', Password::defaults()],
             'user_type_id'            => ['required', 'integer', 'exists:user_types,id'],

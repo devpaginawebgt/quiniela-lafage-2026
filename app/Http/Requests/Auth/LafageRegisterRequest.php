@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class LafageRegisterRequest extends FormRequest
@@ -17,7 +18,7 @@ class LafageRegisterRequest extends FormRequest
         return [
             'nombres'                => ['required', 'string', 'min:2', 'max:60'],
             'apellidos'              => ['required', 'string', 'min:2', 'max:60'],
-            'email'                  => ['required', 'email', 'min:5', 'max:255', 'unique:users'],
+            'email'                  => ['required', 'email', 'min:5', 'max:255', Rule::unique('users')->whereNull('deleted_at')],
             'pais_id'                => ['required', 'integer', 'exists:countries,id'],
             'line_id'                => ['required', 'integer', 'exists:lines,id'],
             'password'               => ['required', 'confirmed', Password::defaults()],

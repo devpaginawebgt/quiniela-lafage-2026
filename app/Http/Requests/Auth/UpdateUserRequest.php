@@ -39,7 +39,7 @@ class UpdateUserRequest extends FormRequest
         return [
             'company_id'       => ['required', 'integer', 'exists:companies,id'],
             'branch'           => ['required', 'string', 'min:3', 'max:255'],
-            'numero_documento' => ['required', 'string', 'min:6', 'max:20', Rule::unique('users', 'numero_documento')->ignore($userId)],
+            'numero_documento' => ['required', 'string', 'min:6', 'max:20', Rule::unique('users', 'numero_documento')->ignore($userId)->whereNull('deleted_at')],
             'line_id'          => ['prohibited'],
             'colegiado'        => ['prohibited'],
         ];
@@ -52,9 +52,9 @@ class UpdateUserRequest extends FormRequest
         return [
             'company_id'       => ['prohibited'],
             'branch'           => ['prohibited'],
-            'numero_documento' => ['required', 'string', 'min:6', 'max:20', Rule::unique('users', 'numero_documento')->ignore($userId)],
+            'numero_documento' => ['required', 'string', 'min:6', 'max:20', Rule::unique('users', 'numero_documento')->ignore($userId)->whereNull('deleted_at')],
             'line_id'          => ['required', 'integer', 'exists:lines,id'],
-            'colegiado'        => ['required', 'string', 'min:2', 'max:20', Rule::unique('users', 'colegiado')->ignore($userId)],
+            'colegiado'        => ['required', 'string', 'min:2', 'max:20', Rule::unique('users', 'colegiado')->ignore($userId)->whereNull('deleted_at')],
         ];
     }
 
