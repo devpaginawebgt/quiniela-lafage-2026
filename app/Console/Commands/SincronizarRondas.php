@@ -3,8 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Http\Services\ApiFootballService;
+use App\Mail\SystemNotification;
 use App\Models\Jornada;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Mail;
 
 class SincronizarRondas extends Command
 {
@@ -84,6 +87,78 @@ class SincronizarRondas extends Command
 
         if ($sinRonda > 0) {
             $this->warn("Jornadas sin ronda en API (no actualizadas): {$sinRonda}");
+        }
+
+        $this->newLine();
+        $this->info('Evaluando jornadas para disparar sincronización de fixtures...');
+
+        $triggered = 0;
+        $skipped   = 0;
+        $failed    = 0;
+
+        foreach (Jornada::whereNotNull('api_round')->orderBy('id')->get() as $jornada) {
+            if ($jornada->completed) {
+                $skipped++;
+                $this->line("· Jornada [{$jornada->id}] '{$jornada->name}' completed=true, skip.");
+                continue;
+            }
+
+            $needsSync = $jornada->fixtures == 0 || $jornada->fixtures_pending_date > 0;
+
+            if (! $needsSync) {
+                $skipped++;
+                $this->line("· Jornada [{$jornada->id}] '{$jornada->name}' sin pendientes (fixtures={$jornada->fixtures}, pending=0), skip.");
+                continue;
+            }
+
+            $this->info("→ Disparando app:sincronizar-fixtures para Jornada [{$jornada->id}] '{$jornada->name}'...");
+
+            $exitCode = Artisan::call('app:sincronizar-fixtures', [
+                '--jornada' => $jornada->id,
+                '--league'  => $league,
+                '--season'  => $season,
+            ]);
+
+            $this->line(Artisan::output());
+
+            if ($exitCode === Command::SUCCESS) {
+                $triggered++;
+            } else {
+                $failed++;
+                $this->warn("✗ app:sincronizar-fixtures falló para Jornada [{$jornada->id}] (exit code {$exitCode}). Continuando con las siguientes.");
+            }
+        }
+
+        $this->newLine();
+        $this->info("Triggered: {$triggered}, omitidos (sin pendientes o completados): {$skipped}, fallidos: {$failed}");
+
+        $emailBody  = "Sincronización de rondas completada (league={$league}, season={$season}).\n\n";
+        $emailBody .= "Rondas del API:                          " . count($rounds) . "\n";
+        $emailBody .= "Jornadas locales:                        {$jornadas->count()}\n\n";
+        $emailBody .= "Enlazadas/actualizadas:                  {$linked}\n";
+        $emailBody .= "Sin cambios (ya enlazadas):              {$unchanged}\n";
+        $emailBody .= "Sin ronda en API:                        {$sinRonda}\n\n";
+        $emailBody .= "Sincronización de fixtures disparada:\n";
+        $emailBody .= "  Triggered:                             {$triggered}\n";
+        $emailBody .= "  Omitidos (sin pendientes/completados): {$skipped}\n";
+        $emailBody .= "  Fallidos:                              {$failed}\n\n";
+
+        $emailBody .= "Detalle por jornada:\n";
+        foreach ($jornadas as $j) {
+            $roundLabel = $j->api_round ?: '(sin api round)';
+            $emailBody .= "  - {$j->name} - {$roundLabel}\n";
+        }
+
+        $emailBody .= "\nNota: cada Sincronizar Fixtures disparado envía su propio email con el detalle por jornada.\n";
+
+        $to = config('quiniela.system_notifications_email');
+
+        if (empty($to)) {
+            $this->warn('Email de reporte no enviado: SYSTEM_NOTIFICATIONS_EMAIL no está configurado.');
+        } else {
+            $subject = "Sincronización de rondas — league {$league}, season {$season}";
+            Mail::to($to)->send(new SystemNotification($subject, $emailBody));
+            $this->info("Reporte enviado por email a {$to}.");
         }
 
         return Command::SUCCESS;

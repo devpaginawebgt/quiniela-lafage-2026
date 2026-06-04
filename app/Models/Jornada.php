@@ -12,12 +12,20 @@ class Jornada extends Model
         'phase_id',
         'name',
         'api_round',
-        'is_current'
+        'fixtures',
+        'fixtures_pending_date',
+        'completed',
+        'is_current',
     ];
 
     protected function casts(): array
     {
-        return [ 'is_current' => 'boolean' ];
+        return [
+            'fixtures'              => 'integer',
+            'fixtures_pending_date' => 'integer',
+            'completed'             => 'boolean',
+            'is_current'            => 'boolean',
+        ];
     }
 
     public function phase(): BelongsTo

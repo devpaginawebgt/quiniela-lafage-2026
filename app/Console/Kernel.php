@@ -28,6 +28,12 @@ class Kernel extends ConsoleKernel
             ->everyFiveMinutes()
             ->withoutOverlapping()
             ->runInBackground();
+
+        $schedule->command('app:sincronizar-rondas')
+            ->dailyAt('07:00')
+            ->timezone('America/Mexico_City')
+            ->withoutOverlapping()
+            ->runInBackground();
     }
 
     /**

@@ -97,6 +97,13 @@ class SincronizarFixtures extends Command
             fn ($f) => in_array($f->status_short, ['TBD', 'PST'], true)
         );
 
+        $jornada->update([
+            'fixtures'              => $fixtures->count(),
+            'fixtures_pending_date' => $pendingDates->count(),
+        ]);
+
+        $this->info("Contadores de Jornada actualizados: fixtures={$fixtures->count()}, fixtures_pending_date={$pendingDates->count()}.");
+
         $emailBody  = "Sincronización de fixtures completada para Jornada [{$jornada->id}] '{$jornada->name}' → '{$jornada->api_round}'.\n\n";
         $emailBody .= "Fixtures sincronizados desde API: {$apiResult['synced']}\n\n";
         $emailBody .= "Proyectando fixtures a partidos locales...\n\n";
@@ -104,6 +111,7 @@ class SincronizarFixtures extends Command
         $emailBody .= "  Enlazados (backfill):    {$matchResult['linked']}\n";
         $emailBody .= "  Fechas actualizadas:     {$matchResult['updated']}\n";
         $emailBody .= "  Omitidos (sin cambios):  {$matchResult['skipped']}\n\n";
+        $emailBody .= "Contadores de Jornada: fixtures={$fixtures->count()}, fixtures_pending_date={$pendingDates->count()}.\n\n";
 
         if ($pendingDates->isNotEmpty()) {
             $this->newLine();
