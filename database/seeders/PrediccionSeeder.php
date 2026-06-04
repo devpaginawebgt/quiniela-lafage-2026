@@ -36,46 +36,46 @@ class PrediccionSeeder extends Seeder
         //     Preccion::factory()->create(['user_id' => 4, 'partido_id' => $id_partido]);
         // }
 
-        $users = User::where('status_user', 1)->get();
-        $partidoIds = Partido::pluck('id');
+        // $users = User::where('status_user', 1)->get();
+        // $partidoIds = Partido::pluck('id');
 
-        if ($partidoIds->isEmpty()) {
-            $this->command->warn('No hay partidos en la base de datos. Se omite la creación de predicciones.');
-            return;
-        }
+        // if ($partidoIds->isEmpty()) {
+        //     $this->command->warn('No hay partidos en la base de datos. Se omite la creación de predicciones.');
+        //     return;
+        // }
 
         // ~5% de usuarios no generan predicciones (para testear filtro en ranking)
-        $skipRate = 0.05;
+        // $skipRate = 0.05;
 
-        $records = [];
+        // $records = [];
 
-        foreach ($users as $user) {
-            if (fake()->boolean($skipRate * 100)) {
-                continue;
-            }
+        // foreach ($users as $user) {
+        //     if (fake()->boolean($skipRate * 100)) {
+        //         continue;
+        //     }
 
-            foreach ($partidoIds as $partidoId) {
-                $records[] = [
-                    'user_id'        => $user->id,
-                    'partido_id'     => $partidoId,
-                    'goles_equipo_1' => fake()->numberBetween(0, 6),
-                    'goles_equipo_2' => fake()->numberBetween(0, 6),
-                    'status'         => 0,
-                    'created_at'     => now(),
-                    'updated_at'     => now(),
-                ];
-            }
+        //     foreach ($partidoIds as $partidoId) {
+        //         $records[] = [
+        //             'user_id'        => $user->id,
+        //             'partido_id'     => $partidoId,
+        //             'goles_equipo_1' => fake()->numberBetween(0, 6),
+        //             'goles_equipo_2' => fake()->numberBetween(0, 6),
+        //             'status'         => 0,
+        //             'created_at'     => now(),
+        //             'updated_at'     => now(),
+        //         ];
+        //     }
 
-            // Insertar en lotes de 1000 para no saturar memoria
-            if (count($records) >= 1000) {
-                Preccion::insert($records);
-                $records = [];
-            }
-        }
+        //     // Insertar en lotes de 1000 para no saturar memoria
+        //     if (count($records) >= 1000) {
+        //         Preccion::insert($records);
+        //         $records = [];
+        //     }
+        // }
 
-        // Insertar registros restantes
-        if (count($records) > 0) {
-            Preccion::insert($records);
-        }
+        // // Insertar registros restantes
+        // if (count($records) > 0) {
+        //     Preccion::insert($records);
+        // }
     }
 }

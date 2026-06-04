@@ -102,61 +102,61 @@ class CountrySeeder extends Seeder
         //     'is_active'              => false
         // ]);
 
-        $argentina = Country::create([
-            'name'                   => 'Argentina',
-            'image'                  => '/images/countries/flag-ar.png',
-            'country_code'           => 'AR',
-            'area_code'              => '54',
-            'document_name'          => 'DNI',
-            'document_regex'         => '^[0-9]{7,8}$',
-            'document_regex_message' => 'El DNI debe contener entre 7 y 8 dígitos numéricos.',
-            'timezone'               => 'America/Argentina/Buenos_Aires',
-            'is_active'              => true
-        ]);
+        // $argentina = Country::create([
+        //     'name'                   => 'Argentina',
+        //     'image'                  => '/images/countries/flag-ar.png',
+        //     'country_code'           => 'AR',
+        //     'area_code'              => '54',
+        //     'document_name'          => 'DNI',
+        //     'document_regex'         => '^[0-9]{7,8}$',
+        //     'document_regex_message' => 'El DNI debe contener entre 7 y 8 dígitos numéricos.',
+        //     'timezone'               => 'America/Argentina/Buenos_Aires',
+        //     'is_active'              => true
+        // ]);
 
         // 1) Asignar TODAS las marcas (todas las líneas, incluida la línea de
         //    Dependientes que agrupa medicamentos) al país Argentina.
-        $brands = Brand::withoutGlobalScopes()->get(['id', 'line_id']);
+        // $brands = Brand::withoutGlobalScopes()->get(['id', 'line_id']);
 
-        $now = now();
+        // $now = now();
 
-        $brand_country_rows = $brands
-            ->map(fn (Brand $brand) => [
-                'country_id' => $argentina->id,
-                'brand_id'   => $brand->id,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ])
-            ->all();
+        // $brand_country_rows = $brands
+        //     ->map(fn (Brand $brand) => [
+        //         'country_id' => $argentina->id,
+        //         'brand_id'   => $brand->id,
+        //         'created_at' => $now,
+        //         'updated_at' => $now,
+        //     ])
+        //     ->all();
 
-        if (! empty($brand_country_rows)) {
-            DB::table('brand_country')->insert($brand_country_rows);
-        }
+        // if (! empty($brand_country_rows)) {
+        //     DB::table('brand_country')->insert($brand_country_rows);
+        // }
 
         // 2) Por cada partido existente, generar la asignación marca/línea
         //    para Argentina (una marca aleatoria por línea), replicando la
         //    lógica de PartidoService::addPartidoBrands pero acotada a este país.
-        $brands_by_line = $brands->groupBy('line_id');
+        // $brands_by_line = $brands->groupBy('line_id');
 
-        $assignments = [];
+        // $assignments = [];
 
-        Partido::select('id')->orderBy('id')->each(function (Partido $partido) use ($brands_by_line, $argentina, $now, &$assignments) {
-            $brands_by_line->each(function (Collection $group, $line_id) use ($partido, $argentina, $now, &$assignments) {
-                $assignments[] = [
-                    'partido_id' => $partido->id,
-                    'country_id' => $argentina->id,
-                    'line_id'    => $line_id,
-                    'brand_id'   => $group->random()->id,
-                    'created_at' => $now,
-                    'updated_at' => $now,
-                ];
-            });
-        });
+        // Partido::select('id')->orderBy('id')->each(function (Partido $partido) use ($brands_by_line, $argentina, $now, &$assignments) {
+        //     $brands_by_line->each(function (Collection $group, $line_id) use ($partido, $argentina, $now, &$assignments) {
+        //         $assignments[] = [
+        //             'partido_id' => $partido->id,
+        //             'country_id' => $argentina->id,
+        //             'line_id'    => $line_id,
+        //             'brand_id'   => $group->random()->id,
+        //             'created_at' => $now,
+        //             'updated_at' => $now,
+        //         ];
+        //     });
+        // });
 
-        if (! empty($assignments)) {
-            foreach (array_chunk($assignments, 500) as $chunk) {
-                PartidoBrandAssignment::insert($chunk);
-            }
-        }
+        // if (! empty($assignments)) {
+        //     foreach (array_chunk($assignments, 500) as $chunk) {
+        //         PartidoBrandAssignment::insert($chunk);
+        //     }
+        // }
     }
 }
