@@ -19,9 +19,13 @@ class HelperService
         return $result;
     }
 
-    public static function ImagePath(string $path): string
+    public static function ImagePath(?string $path): string
     {
         $baseUrl = config('app.url');
+
+        if (empty($path)) {
+            return $baseUrl . '/images/decoracion/default-image.png';
+        }
 
         return $baseUrl . $path;
     }

@@ -35,8 +35,12 @@ class CountryController extends Controller
 
             // }
 
-            if (empty($country) || $country->is_active === false ) {
+            if (empty($country) || $country->is_active === false) {
                 $country = $this->countryService->getCountryByCode('GT');
+            }
+
+            if (empty($country) || $country->is_active === false) {
+                $country = $this->countryService->getFirstActiveCountry();
             }
 
             $country = new CountryResource($country);

@@ -18,8 +18,13 @@ class CountryService {
     }
 
     public function getCountryByCode(string $country_code)
-    {   
-        return Country::where('country_code', $country_code)->first();
+    {
+        return Country::where('country_code', strtoupper($country_code))->first();
+    }
+
+    public function getFirstActiveCountry()
+    {
+        return Country::where('is_active', true)->first();
     }
 
 }
