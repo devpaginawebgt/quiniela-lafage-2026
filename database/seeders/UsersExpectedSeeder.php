@@ -12,45 +12,82 @@ class UsersExpectedSeeder extends Seeder
      */
     public function run(): void
     {
+        DB::table('users_expected')->truncate();
+
         $now = now();
 
-        $rows = [
-            // [country_id, clerks (1), doctors (2), collaborators (3)]
-            [1, 400, 1000, 0],   // Guatemala
-            [2, 300, 900,  0],   // El Salvador
-            [3, 400, 900,  0],   // Honduras
-            [4, 400, 600,  0],   // Nicaragua
-            [5, 300, 600,  0],   // Costa Rica
-            [6, 200, 350,  0],   // Panamá
-            [7, 0,   0,    1],   // Argentina
+        // Dependientes (user_type_id=1, line_id=7).
+        // [country_id, expected]
+        $dependientes = [
+            [1, 400], // Guatemala
+            [2, 300], // El Salvador
+            [5, 300], // Costa Rica
+            [3, 400], // Honduras
+            [4, 400], // Nicaragua
+            [6, 200], // Panamá
+        ];
+
+        // Colaboradores (user_type_id=3, sin línea específica).
+        // [country_id, expected]
+        $colaboradores = [
+            [1, 55], // Guatemala
+            [2, 26], // El Salvador
+            [5, 16], // Costa Rica
+            [3, 25], // Honduras
+            [4, 23], // Nicaragua
+            [6, 11], // Panamá
+        ];
+
+        // Médicos (user_type_id=2), desglosado por línea.
+        // [country_id, dolor(1), salud_integral(2), salud_femenina(3), cardiometabolica(4), urologica(5), dermatologica(6)]
+        $medicos = [
+            [1, 220, 100, 220, 220, 180, 60], // Guatemala
+            [2, 198,  90, 198, 198, 162, 54], // El Salvador
+            [5, 132,  60, 132, 132, 108, 36], // Costa Rica
+            [3, 198,  90, 198, 198, 162, 54], // Honduras
+            [4, 132,  60, 132, 132, 108, 36], // Nicaragua
+            [6,  77,  35,  77,  77,  63, 21], // Panamá
         ];
 
         $inserts = [];
 
-        foreach ($rows as [$country_id, $clerks, $doctors, $collaborators]) {
+        foreach ($dependientes as [$country_id, $expected]) {
             $inserts[] = [
                 'user_type_id' => 1,
                 'country_id'   => $country_id,
-                'expected'     => $clerks,
-                'created_at'   => $now,
-                'updated_at'   => $now,
-            ];
-            $inserts[] = [
-                'user_type_id' => 2,
-                'country_id'   => $country_id,
-                'expected'     => $doctors,
-                'created_at'   => $now,
-                'updated_at'   => $now,
-            ];
-            $inserts[] = [
-                'user_type_id' => 3,
-                'country_id'   => $country_id,
-                'expected'     => $collaborators,
+                'line_id'      => 7,
+                'expected'     => $expected,
                 'created_at'   => $now,
                 'updated_at'   => $now,
             ];
         }
 
-        DB::table('users_expected')->insert($inserts);
+        foreach ($colaboradores as [$country_id, $expected]) {
+            $inserts[] = [
+                'user_type_id' => 3,
+                'country_id'   => $country_id,
+                'line_id'      => null,
+                'expected'     => $expected,
+                'created_at'   => $now,
+                'updated_at'   => $now,
+            ];
+        }
+
+        foreach ($medicos as [$country_id, $dolor, $integral, $femenina, $cardio, $urologica, $dermato]) {
+            foreach ([1 => $dolor, 2 => $integral, 3 => $femenina, 4 => $cardio, 5 => $urologica, 6 => $dermato] as $line_id => $expected) {
+                $inserts[] = [
+                    'user_type_id' => 2,
+                    'country_id'   => $country_id,
+                    'line_id'      => $line_id,
+                    'expected'     => $expected,
+                    'created_at'   => $now,
+                    'updated_at'   => $now,
+                ];
+            }
+        }
+
+        if (!empty($inserts)) {
+            DB::table('users_expected')->insert($inserts);
+        }
     }
 }
