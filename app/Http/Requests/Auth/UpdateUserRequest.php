@@ -54,7 +54,13 @@ class UpdateUserRequest extends FormRequest
             'branch'           => ['prohibited'],
             'numero_documento' => ['required', 'string', 'min:6', 'max:20', Rule::unique('users', 'numero_documento')->ignore($userId)->whereNull('deleted_at')],
             'line_id'          => ['required', 'integer', 'exists:lines,id'],
-            'colegiado'        => ['required', 'string', 'min:2', 'max:20', Rule::unique('users', 'colegiado')->ignore($userId)->whereNull('deleted_at')],
+            'colegiado'        => [
+                'required', 'string', 'min:2', 'max:20',
+                Rule::unique('users', 'colegiado')
+                    ->ignore($userId)
+                    ->where('pais_id', $this->user()->pais_id)
+                    ->whereNull('deleted_at'),
+            ],
         ];
     }
 
@@ -97,7 +103,7 @@ class UpdateUserRequest extends FormRequest
             'colegiado.string'     => 'El número de colegiado debe ser un texto válido.',
             'colegiado.min'        => 'El número de colegiado debe tener al menos 2 caracteres.',
             'colegiado.max'        => 'El número de colegiado no puede tener más de 20 caracteres.',
-            'colegiado.unique'     => 'Ya existe un usuario registrado con este número de colegiado.',
+            'colegiado.unique'     => 'Ya existe un usuario registrado en su país con este número de colegiado.',
 
             'company_id.required'    => 'Por favor, seleccione la cadena de farmacias para la cuál labora.',
             'company_id.prohibited'  => 'El campo cadena solo aplica para usuarios tipo dependiente.',
