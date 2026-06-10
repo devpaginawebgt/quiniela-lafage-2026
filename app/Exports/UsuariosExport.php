@@ -28,7 +28,8 @@ class UsuariosExport implements FromQuery, WithHeadings, WithMapping, WithChunkR
                         ->orWhereHas('company', fn($company) => $company->where('name', 'like', "%{$this->search}%"));
                 });
             })
-            ->orderBy('puntos', 'desc');
+            ->orderBy('puntos', 'desc')
+            ->orderBy('id');
     }
 
 
