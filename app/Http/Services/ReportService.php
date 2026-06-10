@@ -17,6 +17,7 @@ class ReportService
     public function getPronosticos()
     {
         return Preccion::with([
+            'user',
             'user.country',
             'user.type',
             'user.company',
@@ -25,6 +26,7 @@ class ReportService
             'partido.equipos.equipoDos',
             'resultado',
         ])
+            ->whereHas('user')
             ->select('preccions.*')
             ->orderBy('preccions.created_at', 'desc');
     }

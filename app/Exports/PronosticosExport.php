@@ -44,7 +44,9 @@ class PronosticosExport implements FromQuery, WithHeadings, WithMapping, WithChu
                         ->orWhereHas('partido.jornada', fn($j) => $j->where('name', 'like', "%{$this->search}%"));
                 });
             })
-            ->orderBy('created_at', 'desc');
+            ->whereHas('user')
+            ->orderBy('created_at', 'desc')
+            ->orderBy('id');
     }
 
     public function chunkSize(): int
