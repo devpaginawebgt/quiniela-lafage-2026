@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\Avatar;
+use App\Models\Country;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
@@ -34,7 +35,10 @@ class RegisteredUserController extends Controller
     {
         $terms = $this->legalDocumentService->getByType(LegalDocument::TYPE_TERMS);
 
-        return view('modulos.register', compact('terms'));
+        $countries = Country::where('is_active', true)->get();
+        $country = $this->userService->getGuestCountry();
+
+        return view('modulos.register', compact('terms', 'countries', 'country'));
     }
 
     /**
@@ -51,10 +55,8 @@ class RegisteredUserController extends Controller
 
         $codigo = null;
 
-        $id_pais = $this->userService->getGuestCountry()->id ?? 1;
-
         if ((int)$data['user_type_id'] === 1) {
-            $result = $this->codigoService->validate($data['code'], $id_pais);
+            $result = $this->codigoService->validate($data['code'], $data['pais_id']);
 
             if (!$result['success']) {
                 throw ValidationException::withMessages(['codigo' => $result['message']]);
@@ -69,7 +71,6 @@ class RegisteredUserController extends Controller
 
         unset($data['code']);
 
-        $data['pais_id']           = $id_pais;
         $data['puntos']            = 0;
         $data['password']          = Hash::make($data['password']);
         $data['completed_info']    = false;

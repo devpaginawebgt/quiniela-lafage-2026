@@ -37,7 +37,7 @@
                 <div class="max-w-xl mx-auto rounded-t-3xl bg-secondary-light p-8
                         lg:max-w-3xl lg:rounded-3xl lg:shadow-3xl lg:w-full">
 
-                    <x-register-lafage-form :lines="$lines" :country="$country" />
+                    <x-register-lafage-form :lines="$lines" :countries="$countries" :country="$country" />
 
                     {{-- Login link --}}
                     <div class="text-center mt-6">

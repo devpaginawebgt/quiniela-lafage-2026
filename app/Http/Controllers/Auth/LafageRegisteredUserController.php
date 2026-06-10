@@ -8,6 +8,7 @@ use App\Http\Services\LegalDocumentService;
 use App\Http\Services\LineService;
 use App\Http\Services\UserService;
 use App\Models\Avatar;
+use App\Models\Country;
 use App\Models\LegalDocument;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
@@ -27,11 +28,13 @@ class LafageRegisteredUserController extends Controller
     {
         $country = $this->userService->getGuestCountry();
 
+        $countries = Country::where('is_active', true)->get();
+
         $lines = $this->lineService->getLines();
 
         $terms = $this->legalDocumentService->getByType(LegalDocument::TYPE_TERMS);
 
-        return view('modulos.register-lafage', compact('country', 'lines', 'terms'));
+        return view('modulos.register-lafage', compact('country', 'countries', 'lines', 'terms'));
     }
 
     public function store(LafageRegisterRequest $request)

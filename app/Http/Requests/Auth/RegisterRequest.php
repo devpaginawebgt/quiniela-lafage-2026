@@ -29,6 +29,7 @@ class RegisterRequest extends FormRequest
             'email'        => ['required', 'email',  'min:5', 'max:255', Rule::unique('users')->whereNull('deleted_at')],
             'password'     => ['required', 'confirmed', Password::defaults()],
             'user_type_id' => ['required', 'integer', 'exists:user_types,id'],
+            'pais_id'      => ['required', 'integer', 'exists:countries,id'],
 
             'code' => [
                 'nullable',
@@ -69,6 +70,11 @@ class RegisterRequest extends FormRequest
             'user_type_id.required' => 'El tipo de usuario es incorrecto.',
             'user_type_id.integer'  => 'El tipo de usuario es incorrecto.',
             'user_type_id.exists'   => 'No se encontró el tipo de usuario.',
+
+            // PAIS
+            'pais_id.required' => 'Por favor, seleccione su país.',
+            'pais_id.integer'  => 'El país seleccionado es incorrecto.',
+            'pais_id.exists'   => 'El país seleccionado no es válido.',
 
             // CODIGO
             'code.required_if'       => 'Por favor, ingrese su código de acceso.',

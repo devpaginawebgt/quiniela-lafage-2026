@@ -88,10 +88,10 @@
                     {{-- Tab Content --}}
                     <div id="register-tab-content">
                         <div class="hidden" id="doctor-panel" role="tabpanel" aria-labelledby="doctor-tab">
-                            <x-register-doctor-form />
+                            <x-register-doctor-form :countries="$countries" :country="$country" />
                         </div>
                         <div class="hidden" id="dependiente-panel" role="tabpanel" aria-labelledby="dependiente-tab">
-                            <x-register-dependent-form />
+                            <x-register-dependent-form :countries="$countries" :country="$country" />
                         </div>
                     </div>
 

@@ -1,3 +1,12 @@
+@props([
+    'countries',
+    'country',
+])
+
+@php
+    $selectedCountry = $countries->firstWhere('id', (int) old('pais_id', $country->id ?? null)) ?? $country;
+@endphp
+
 <form
     method="POST"
     action="{{ route('register') }}"
@@ -50,6 +59,25 @@
             <span class="icon-[material-symbols--mail] w-5 h-5"></span>
         </x-slot>
     </x-auth-input>
+
+    <x-auth-select
+        label="País"
+        id="doc_pais_id"
+        name="pais_id"
+        :required="true"
+    >
+        <x-slot name="prefix">
+            <span class="icon-[material-symbols--public] w-5 h-5"></span>
+        </x-slot>
+        @foreach($countries as $countryOption)
+            <option
+                value="{{ $countryOption->id }}"
+                @selected($selectedCountry && (int) $selectedCountry->id === (int) $countryOption->id)
+            >
+                {{ $countryOption->name }}
+            </option>
+        @endforeach
+    </x-auth-select>
 
     <x-auth-password-input
         id="doc_password"

@@ -1,3 +1,13 @@
+@props([
+    'lines',
+    'countries',
+    'country',
+])
+
+@php
+    $selectedCountry = $countries->firstWhere('id', (int) old('pais_id', $country->id ?? null)) ?? $country;
+@endphp
+
 <form
     method="POST"
     action="{{ route('register.lafage') }}"
@@ -5,7 +15,6 @@
 >
     @csrf
 
-    <input type="hidden" name="pais_id" value="{{ $country->id }}">
     <input type="hidden" name="accepted_terms_version" value="">
 
     <x-auth-input
@@ -51,13 +60,16 @@
         </x-slot>
     </x-auth-input>
 
-    <x-auth-select label="Línea" id="laf_line_id" name="line_id" :required="true">
+    <x-auth-select label="País" id="laf_pais_id" name="pais_id" :required="true">
         <x-slot name="prefix">
-            <span class="icon-[material-symbols--medication] w-5 h-5"></span>
+            <span class="icon-[material-symbols--public] w-5 h-5"></span>
         </x-slot>
-        @foreach($lines ?? [] as $line)
-            <option value="{{ $line->id }}" {{ old('line_id') == $line->id ? 'selected' : '' }}>
-                {{ $line->name }}
+        @foreach($countries as $countryOption)
+            <option
+                value="{{ $countryOption->id }}"
+                @selected($selectedCountry && (int) $selectedCountry->id === (int) $countryOption->id)
+            >
+                {{ $countryOption->name }}
             </option>
         @endforeach
     </x-auth-select>
@@ -94,6 +106,17 @@
             <span class="icon-[material-symbols--lock-outline] w-5 h-5"></span>
         </x-slot>
     </x-auth-password-input>
+
+    <x-auth-select label="Línea" id="laf_line_id" name="line_id" :required="true">
+        <x-slot name="prefix">
+            <span class="icon-[material-symbols--medication] w-5 h-5"></span>
+        </x-slot>
+        @foreach($lines ?? [] as $line)
+            <option value="{{ $line->id }}" {{ old('line_id') == $line->id ? 'selected' : '' }}>
+                {{ $line->name }}
+            </option>
+        @endforeach
+    </x-auth-select>
 
     {{-- Submit --}}
     <div class="mt-2 md:col-span-2">
