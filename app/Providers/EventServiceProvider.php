@@ -7,6 +7,7 @@ use App\Events\MatchCreated;
 use App\Events\ResultCreated;
 use App\Listeners\AddMatchBrands;
 use App\Listeners\DeactivateInvalidFcmToken;
+use App\Listeners\LogFailedPushNotification;
 use App\Listeners\SendWelcomeEmail;
 use App\Listeners\UpdateCurrentJourney;
 use App\Listeners\UpdateGroupPoints;
@@ -42,6 +43,7 @@ class EventServiceProvider extends ServiceProvider
             UpdateCurrentJourney::class,
         ],
         NotificationFailed::class => [
+            LogFailedPushNotification::class,
             DeactivateInvalidFcmToken::class,
         ],
     ];
