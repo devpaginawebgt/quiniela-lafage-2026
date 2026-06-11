@@ -426,6 +426,7 @@ class PrediccionService {
     public function actualizarPuntosGlobalChunked()
     {
         Preccion::where('status', 0)
+            ->whereHas('user')
             ->whereHas('resultado')
             ->with('resultado', 'user')
             ->chunkById(500, function ($predicciones) {
