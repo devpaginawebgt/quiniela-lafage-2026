@@ -56,10 +56,10 @@ class UpdateUserRequest extends FormRequest
             'line_id'          => ['required', 'integer', 'exists:lines,id'],
             'colegiado'        => [
                 'required', 'string', 'min:2', 'max:20',
-                Rule::unique('users', 'colegiado')
-                    ->ignore($userId)
-                    ->where('pais_id', $this->user()->pais_id)
-                    ->whereNull('deleted_at'),
+                // Rule::unique('users', 'colegiado')
+                //     ->ignore($userId)
+                //     ->where('pais_id', $this->user()->pais_id)
+                //     ->whereNull('deleted_at'),
             ],
         ];
     }
