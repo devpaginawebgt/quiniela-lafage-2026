@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
             ->runInBackground();
 
         $schedule->command('app:obtener-resultados-pendientes')
-            ->everyThreeMinutes()
+            ->everyMinute()
             ->withoutOverlapping()
             ->runInBackground();
 
