@@ -29,6 +29,7 @@ class UsuariosExport implements FromQuery, WithHeadings, WithMapping, WithChunkR
                 });
             })
             ->orderBy('puntos', 'desc')
+            ->orderBy('created_at', 'asc')
             ->orderBy('id');
     }
 
@@ -76,7 +77,7 @@ class UsuariosExport implements FromQuery, WithHeadings, WithMapping, WithChunkR
             $user->company?->name ?? 'N/A',
             $user->branch ?? 'N/A',
             $user->puntos,
-            $user->created_at->timezone('America/Guatemala')->format('d/m/Y H:i'),
+            $user->created_at->timezone('America/Guatemala')->format('d/m/Y H:i:s'),
             $user->status_user ? 'Activo' : 'Inactivo',
             $user->completed_info ? 'Sí' : 'No',
             $user->pushTokens->where('is_active', true)->isNotEmpty() ? 'Sí' : 'No',

@@ -12,6 +12,7 @@ class ReportService
         return User::with(['country', 'type', 'line', 'company', 'pushTokens'])
             ->select('users.*')
             ->orderBy('puntos', 'desc')
+            ->orderBy('created_at', 'asc')
             ->orderBy('id');
     }
 

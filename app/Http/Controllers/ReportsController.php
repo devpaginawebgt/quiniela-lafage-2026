@@ -35,7 +35,7 @@ class ReportsController extends Controller
             ->addColumn('linea', fn($u) => $u->line?->name ?? 'N/A')
             ->addColumn('cadena', fn($u) => $u->company?->name ?? 'N/A')
             ->addColumn('farmacia', fn($u) => $u->branch ?? 'N/A')
-            ->addColumn('fecha_registro', fn($u) => $u->created_at->timezone('America/Guatemala')->format('d/m/Y h:i A'))
+            ->addColumn('fecha_registro', fn($u) => $u->created_at->timezone('America/Guatemala')->format('d/m/Y h:i:s A'))
             ->addColumn('estado_badge', function ($u) {
                 if ($u->status_user) {
                     return '
