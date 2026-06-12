@@ -158,5 +158,14 @@ class CountrySeeder extends Seeder
         //         PartidoBrandAssignment::insert($chunk);
         //     }
         // }
+
+        $sv = Country::find(2);
+
+        if (!$sv) return;
+
+        $sv->update([
+            'document_regex' => '^[0-9]{8}-[0-9]$',
+            'document_regex_message' => 'El número de DUI debe tener 8 dígitos numéricos seguido de un guión y otro dígito numérico.',
+        ]);
     }
 }
