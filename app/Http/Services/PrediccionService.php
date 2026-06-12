@@ -2,11 +2,15 @@
 
 namespace App\Http\Services;
 
+use App\Mail\SystemNotification;
 use App\Models\EquipoPartido;
 use App\Models\Partido;
 use App\Models\Preccion;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 class PrediccionService {
 
@@ -425,28 +429,35 @@ class PrediccionService {
      */
     public function actualizarPuntosGlobalChunked()
     {
-        Preccion::where('status', 0)
-            ->whereHas('user')
-            ->whereHas('resultado')
-            ->with('resultado', 'user')
-            ->chunkById(500, function ($predicciones) {
-                $porUsuario = $predicciones->groupBy('user_id');
-                $prediccionIds = [];
+        try {
+            Preccion::where('status', 0)
+                ->whereHas('user')
+                ->whereHas('resultado')
+                ->with('resultado', 'user')
+                ->chunkById(500, function ($predicciones) {
+                    $porUsuario = $predicciones->groupBy('user_id');
+                    $prediccionIds = [];
 
-                foreach ($porUsuario as $prediccionesUsuario) {
-                    $usuario = $prediccionesUsuario->first()->user;
-                    $puntosTotal = 0;
+                    foreach ($porUsuario as $prediccionesUsuario) {
+                        $usuario = $prediccionesUsuario->first()->user;
+                        $puntosTotal = 0;
 
-                    foreach ($prediccionesUsuario as $prediccion) {
-                        $puntosTotal += $this->getResultadoPrediccion($prediccion, $prediccion->resultado);
-                        $prediccionIds[] = $prediccion->id;
+                        foreach ($prediccionesUsuario as $prediccion) {
+                            $puntosTotal += $this->getResultadoPrediccion($prediccion, $prediccion->resultado);
+                            $prediccionIds[] = $prediccion->id;
+                        }
+
+                        $usuario->increment('puntos', $puntosTotal);
+                        $usuario->save();
                     }
 
-                    $usuario->increment('puntos', $puntosTotal);
-                    $usuario->save();
-                }
-
-                Preccion::whereIn('id', $prediccionIds)->update(['status' => 1]);
-            });
+                    Preccion::whereIn('id', $prediccionIds)->update(['status' => 1]);
+                });
+        } catch (Throwable $e) {
+            ErrorService::notify(
+                'UpdateGroupPoints — Excepción',
+                $e->getMessage() . "\n" . $e->getTraceAsString()
+            );
+        }        
     }
 }
