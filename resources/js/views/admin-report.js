@@ -20,6 +20,7 @@ $(function () {
                 { data: "colegiado", title: "Colegiado" },
                 { data: "pais", title: "País" },
                 { data: "tipo", title: "Tipo" },
+                { data: "linea", title: "Línea" },
                 { data: "cadena", title: "Cadena" },
                 { data: "farmacia", title: "Farmacia", orderable: false, searchable: false },
                 { data: "partido", title: "Partido", orderable: false },
@@ -250,6 +251,7 @@ $(function () {
             { data: "colegiado", title: "Colegiado" },
             { data: "pais", title: "País" },
             { data: "tipo", title: "Tipo" },
+            { data: "linea", title: "Línea" },
             { data: "cadena", title: "Cadena" },
             { data: "farmacia", title: "Farmacia", orderable: false, searchable: false },
             { data: "puntos", title: "Puntos Total" },
@@ -257,6 +259,12 @@ $(function () {
             {
                 data: "estado_badge",
                 title: "Estado",
+                orderable: false,
+                searchable: false,
+            },
+            {
+                data: "profile_badge",
+                title: "Completó Perfil",
                 orderable: false,
                 searchable: false,
             },

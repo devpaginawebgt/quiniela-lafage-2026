@@ -32,6 +32,7 @@ class ReportsController extends Controller
             ->addColumn('colegiado', fn($u) => $u->colegiado ?? 'N/A')
             ->addColumn('pais', fn($u) => $u->country?->name ?? 'N/A')
             ->addColumn('tipo', fn($u) => $u->type?->name ?? 'N/A')
+            ->addColumn('linea', fn($u) => $u->line?->name ?? 'N/A')
             ->addColumn('cadena', fn($u) => $u->company?->name ?? 'N/A')
             ->addColumn('farmacia', fn($u) => $u->branch ?? 'N/A')
             ->addColumn('fecha_registro', fn($u) => $u->created_at->timezone('America/Guatemala')->format('d/m/Y h:i A'))
@@ -52,7 +53,23 @@ class ReportsController extends Controller
                     </span>
                 ';
             })
+            ->addColumn('profile_badge', function ($u) {
+                if ($u->completed_info) {
+                    return '
+                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium rounded-full border bg-green-100 text-green-700 border-green-200">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                            Sí
+                        </span>
+                    ';
+                }
 
+                return '
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium rounded-full border bg-red-100 text-red-700 border-red-200">
+                        <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+                        No
+                    </span>
+                ';
+            })
             ->addColumn('notificaciones_badge', function ($u) {
 
                 $tieneNotif = $u->pushTokens
@@ -91,7 +108,7 @@ class ReportsController extends Controller
             ->filterColumn('cadena', function ($query, $keyword) {
                 $query->whereHas('company', fn($q) => $q->where('name', 'like', "%{$keyword}%"));
             })
-            ->rawColumns(['estado_badge', 'notificaciones_badge'])
+            ->rawColumns(['estado_badge', 'profile_badge', 'notificaciones_badge'])
             ->make(true);
     }
 
@@ -120,6 +137,7 @@ class ReportsController extends Controller
             ->addColumn('colegiado', fn($p) => $p->user->colegiado ?? 'N/A')
             ->addColumn('pais', fn($p) => $p->user->country?->name ?? 'N/A')
             ->addColumn('tipo', fn($p) => $p->user->type?->name ?? 'N/A')
+            ->addColumn('linea', fn($p) => $p->user->line?->name ?? 'N/A')
             ->addColumn('cadena', fn($p) => $p->user->company?->name ?? 'N/A')
             ->addColumn('farmacia', fn($p) => $p->user->branch ?? 'N/A')
             ->addColumn('partido', function ($p) {

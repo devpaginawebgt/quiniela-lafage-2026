@@ -9,7 +9,7 @@ class ReportService
 {
     public function getUsuarios()
     {
-        return User::with(['country', 'type', 'company', 'pushTokens'])
+        return User::with(['country', 'type', 'line', 'company', 'pushTokens'])
             ->select('users.*')
             ->orderBy('puntos', 'desc')
             ->orderBy('id');
@@ -21,6 +21,7 @@ class ReportService
             'user',
             'user.country',
             'user.type',
+            'user.line',
             'user.company',
             'partido.jornada',
             'partido.equipos.equipoUno',

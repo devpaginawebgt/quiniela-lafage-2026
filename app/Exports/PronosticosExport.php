@@ -24,6 +24,7 @@ class PronosticosExport implements FromQuery, WithHeadings, WithMapping, WithChu
         return Preccion::with([
             'user.country',
             'user.type',
+            'user.line',
             'user.company',
             'partido.jornada',
             'partido.equipos.equipoUno',
@@ -64,6 +65,7 @@ class PronosticosExport implements FromQuery, WithHeadings, WithMapping, WithChu
             'Colegiado',
             'País',
             'Tipo',
+            'Línea',
             'Cadena',
             'Farmacia',
             'Partido',
@@ -99,6 +101,7 @@ class PronosticosExport implements FromQuery, WithHeadings, WithMapping, WithChu
             $p->user->colegiado ?? 'N/A',
             $p->user->country?->name ?? 'N/A',
             $p->user->type?->name ?? 'N/A',
+            $p->user->line?->name ?? 'N/A',
             $p->user->company?->name ?? 'N/A',
             $p->user->branch ?? 'N/A',
             $partido,

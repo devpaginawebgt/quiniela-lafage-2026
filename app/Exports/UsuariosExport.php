@@ -16,7 +16,7 @@ class UsuariosExport implements FromQuery, WithHeadings, WithMapping, WithChunkR
 
     public function query()
     {
-        return User::with(['country', 'type', 'company', 'pushTokens'])
+        return User::with(['country', 'type', 'line', 'company', 'pushTokens'])
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('nombres', 'like', "%{$this->search}%")
@@ -50,11 +50,13 @@ class UsuariosExport implements FromQuery, WithHeadings, WithMapping, WithChunkR
             'Colegiado',
             'País',
             'Tipo',
+            'Línea',
             'Cadena',
             'Farmacia',
             'Puntos Total',
             'Fecha Registro',
             'Estado',
+            'Completó Perfil',
             'Notificaciones',
         ];
     }
@@ -70,11 +72,13 @@ class UsuariosExport implements FromQuery, WithHeadings, WithMapping, WithChunkR
             $user->colegiado ?? 'N/A',
             $user->country?->name ?? 'N/A',
             $user->type?->name ?? 'N/A',
+            $user->line?->name ?? 'N/A',
             $user->company?->name ?? 'N/A',
             $user->branch ?? 'N/A',
             $user->puntos,
             $user->created_at->timezone('America/Guatemala')->format('d/m/Y H:i'),
             $user->status_user ? 'Activo' : 'Inactivo',
+            $user->completed_info ? 'Sí' : 'No',
             $user->pushTokens->where('is_active', true)->isNotEmpty() ? 'Sí' : 'No',
         ];
     }
