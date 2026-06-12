@@ -21,7 +21,7 @@ class Kernel extends ConsoleKernel
              ->runInBackground();
 
         $schedule->command('push:dispatch-scheduled')
-            ->everyFiveMinutes()
+            ->everyMinute()
             ->withoutOverlapping()
             ->runInBackground();
 
