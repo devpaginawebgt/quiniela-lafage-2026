@@ -15,9 +15,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('queue:work --stop-when-empty --timeout=30 --max-time=55 --max-jobs=500')
+        $schedule->command('queue:work --stop-when-empty --timeout=30 --max-time=55')
              ->everyMinute()
-             ->withoutOverlapping();
+             ->withoutOverlapping()
+             ->runInBackground();
 
         $schedule->command('push:dispatch-scheduled')
             ->everyFiveMinutes()
@@ -25,7 +26,7 @@ class Kernel extends ConsoleKernel
             ->runInBackground();
 
         $schedule->command('app:obtener-resultados-pendientes')
-            ->everyFiveMinutes()
+            ->everyThreeMinutes()
             ->withoutOverlapping()
             ->runInBackground();
 

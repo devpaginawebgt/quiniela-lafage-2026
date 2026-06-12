@@ -13,9 +13,9 @@ class MatchResultRequest extends Model
     public const STATUS_FAILED    = 'failed';
     public const STATUS_CANCELED  = 'canceled';
 
-    public const OFFSET_MINUTES         = 105;
-    public const RETRY_INTERVAL_MINUTES = 5;
-    public const MAX_ATTEMPTS           = 24;
+    public const OFFSET_MINUTES         = 104;
+    public const RETRY_INTERVAL_MINUTES = 3;
+    public const MAX_ATTEMPTS           = 60;
 
     protected $fillable = [
         'partido_id',
