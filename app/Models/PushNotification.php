@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PushNotification extends Model
 {
+    use SoftDeletes;
+
     public const STATUS_PENDING  = 'pending';
     public const STATUS_SENDING  = 'sending';
     public const STATUS_SENT     = 'sent';
