@@ -348,6 +348,19 @@
             applyScheduleState(e.target.checked);
         });
 
+        submitButton?.form?.addEventListener('submit', () => {
+            if (submitButton.disabled) return;
+            submitButton.disabled = true;
+            submitButton.classList.add('opacity-60', 'cursor-not-allowed');
+            if (submitIcon) {
+                submitIcon.classList.remove(sendIconClass, scheduleIconClass);
+                submitIcon.classList.add('icon-[material-symbols--progress-activity]', 'animate-spin');
+            }
+            if (submitLabel) {
+                submitLabel.textContent = 'Enviando...';
+            }
+        });
+
         // Cuando el usuario sube una nueva imagen, desmarca el "Eliminar imagen actual"
         // para evitar combinaciones contradictorias.
         imageInput?.addEventListener('change', (e) => {
